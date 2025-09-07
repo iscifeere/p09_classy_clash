@@ -16,7 +16,8 @@ struct enemyData{
     void(*behave)(Enemy* enemy, Character* player, const float& deltaTime);
 };
 
-void shootTargetA(Enemy* enemy, Character* target, const float& deltaTime){
+void shootTargetA(Enemy* enemy, Character* target, const float& deltaTime)
+{
     Vector2& velocity = enemy->getVelocity();
     float& attCooldown = enemy->attackTimer;
     GenEntity*& proyectile = enemy->proyectile;
@@ -33,7 +34,6 @@ void shootTargetA(Enemy* enemy, Character* target, const float& deltaTime){
     if(Vector2Length(velocity) >= 330.f)
     {
         if(attCooldown == 0.f){     // if cooldown is off -> shoot proyectile
-            // EntityMng::spawnAmmo(enemy->getWorldPos(), velocity, target);
             EntityMng::spawnProyectile(proyectile, enemy->getWorldPos(), velocity, target);
             attCooldown += deltaTime;
         } else if (attCooldown >= 0.8f) attCooldown = 0.f;
@@ -46,7 +46,8 @@ void shootTargetA(Enemy* enemy, Character* target, const float& deltaTime){
 
     EntityMng::tickProyectile(proyectile, deltaTime);
 }
-void shootTargetB(Enemy* enemy, Character* target, const float& deltaTime){
+void shootTargetB(Enemy* enemy, Character* target, const float& deltaTime)
+{
     Vector2& velocity = enemy->getVelocity();
     float& attCooldown = enemy->attackTimer;
     GenEntity*& proyectile = enemy->proyectile;
@@ -87,13 +88,11 @@ void shootTargetB(Enemy* enemy, Character* target, const float& deltaTime){
             if(distance >= 200.f)
             {
                 if(attCooldown == 0.f){     // if cooldown is off -> shoot proyectile
-                    // EntityMng::spawnAmmo(enemy->getWorldPos(), velocity, target);
                     EntityMng::spawnProyectile(proyectile, enemy->getWorldPos(), velocity, target);
                     attCooldown += deltaTime;
                 } else if (attCooldown >= 0.8f) attCooldown = 0.f;
                 else attCooldown += deltaTime;
-        
-                // velocity = {};
+                
                 enemy->setDrawColor(BLUE);
             }
             else {
@@ -102,8 +101,72 @@ void shootTargetB(Enemy* enemy, Character* target, const float& deltaTime){
             }
             velocity = {};
         }
+    }
 
-        // if(enemy->chase == false) velocity = {};
+    EntityMng::tickProyectile(proyectile, deltaTime);
+}
+void shootTargetC(Enemy* enemy, Character* target, const float& deltaTime)
+{
+    if(enemy->neutral) return;
+
+    Vector2& velocity = enemy->getVelocity();
+    float& attCooldown = enemy->attackTimer;
+    GenEntity*& proyectile = enemy->proyectile;
+    float& fleeTimer = enemy->fleeTimer;
+    float& chaseTimer = enemy->getRadiusEtc(2);
+
+    // get target direction
+    velocity = Vector2Subtract(target->getScreenPos(), enemy->getScreenPos());
+    float distance = Vector2Length(velocity);       // distance from enemy to target
+
+    if(enemy->flee){
+        velocity = Vector2Scale(velocity, -1.f);
+        fleeTimer += deltaTime;
+        if(fleeTimer >= 0.7f && distance > 380.f) {fleeTimer = 0.f; enemy->flee = false;}
+    }
+        
+    if(distance > 430.f)
+    {
+        enemy->chase = true;
+        EntityMng::tickProyectile(proyectile, deltaTime);
+        
+        chaseTimer += deltaTime;
+        if(chaseTimer < 0.2f) velocity = {};        // wait a bit before chasing
+        else if (chaseTimer >= 5.f){                // become neutral after 5 sec chasing
+            velocity = {};
+            enemy->neutral = true;
+        }
+
+        return;
+    }
+    
+    chaseTimer = 0.f;
+    
+    // if in radius -> stop and shoot
+    if(!enemy->flee)
+    {   
+        if(distance <= 360.f)
+        {
+            enemy->chase = false;
+        }
+        if(!enemy->chase)
+        {
+            if(distance >= 200.f)
+            {
+                if(attCooldown == 0.f){     // if cooldown is off -> shoot proyectile
+                    EntityMng::spawnProyectile(proyectile, enemy->getWorldPos(), velocity, target);
+                    attCooldown += deltaTime;
+                } else if (attCooldown >= 0.8f) attCooldown = 0.f;
+                else attCooldown += deltaTime;
+                
+                enemy->setDrawColor(BLUE);
+            }
+            else {
+                // if too close -> get away
+                enemy->flee = true;
+            }
+            velocity = {};
+        }
     }
 
     EntityMng::tickProyectile(proyectile, deltaTime);
@@ -131,7 +194,7 @@ const enemyData MADKNIGHT_ENEMYDATA{
     10.f,
     400.f,
     &COIN_ITEMDATA,
-    shootTargetB
+    shootTargetC
 };
 const enemyData RED_ENEMYDATA{
     &Tex::texture_red_idle,
@@ -211,11 +274,8 @@ bool Enemy::tick(float deltaTime){
 
     // ====== MOVEMENT ============
     velocity = {};          // reset velocity
-    // // // get to target
-    // // velocity = Vector2Subtract(target->getScreenPos(), getScreenPos());
-
-    // if(data != nullptr) data->behave(velocity, target, getScreenPos(), radius, chaseRadius, chaseTime, deltaTime);
-    // if(data != nullptr) data->behave(this, target, deltaTime);
+    // get to target
+    // velocity = Vector2Subtract(target->getScreenPos(), getScreenPos());
 
     action(this, target, deltaTime);
 
@@ -250,13 +310,9 @@ bool Enemy::tick(float deltaTime){
         }
     }
 
-    // Enemy* ptr = this;
-
-
     // draw debug text
     DrawText(TextFormat("%01.02f",health), getScreenPos().x, getScreenPos().y, 20, WHITE);
     DrawText(TextFormat("%01.02f",chaseTime), getScreenPos().x, getScreenPos().y + height*scale, 10, WHITE);
-    // DrawText(TextFormat("%05.07f",moveTimer), getScreenPos().x + width*scale, getScreenPos().y, 10, WHITE);
 
     return true;
 }
@@ -265,10 +321,14 @@ Vector2 Enemy::getScreenPos(){
     return Vector2Subtract(worldPos, target->getWorldPos());
 }
 
+void Enemy::takeDamage(float damage)
+{
+    BaseCharacter::takeDamage(damage);
+    neutral = false;
+};
+
 void Enemy::deathSequence(){
-    setAlive(false);    
-    // EntityMng::spawnItem(worldPos, target);
-    // EntityMng::spawnItem(worldPos, target, ITEMDATA_ARR[randVal]);
+    setAlive(false);
     EntityMng::spawnItem(worldPos, target, itemDrop);
 }
 

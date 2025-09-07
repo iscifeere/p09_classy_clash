@@ -18,7 +18,7 @@ public:
     bool getAlive() { return alive; }
     void setAlive( bool isAlive ) { alive = isAlive; }
     void setSpeed( float newSpeed ) { speed = newSpeed; }
-    void takeDamage(float damage);
+    virtual void takeDamage(float damage);
     float getHealth(){ return health; }
     void setDrawColor(Color newColor){ drawColor = newColor; }
     bool getInvul(){ return invul; }

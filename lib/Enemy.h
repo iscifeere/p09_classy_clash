@@ -23,6 +23,7 @@ public:
     virtual bool tick(float deltaTime) override;
     void setTarget(Character* ptr){ target = ptr; }
     virtual Vector2 getScreenPos() override;
+    virtual void takeDamage(float damage) override;
     virtual void deathSequence() override;
     float& getRadiusEtc(int choice);
     float attackTimer{};
@@ -30,6 +31,7 @@ public:
     float fleeTimer{};
     bool flee{false};
     bool chase{false};
+    bool neutral{true};
 protected:
     Character* target{};
     float damagePerSec{10.f};
