@@ -31,7 +31,7 @@ public:
     float fleeTimer{};
     bool flee{false};
     bool chase{false};
-    bool neutral{true};
+    bool neutral{false};
 protected:
     Character* target{};
     float damagePerSec{10.f};
