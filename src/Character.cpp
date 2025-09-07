@@ -42,6 +42,44 @@ bool Character::tick(float deltaTime){
 
     // ====== TICK AND VARIABLE RESETS ============
     BaseCharacter::tick(deltaTime);
+
+    // draw health bar
+    Rectangle healthBar{50.f, 45.f, 4.f * health, 40.f};
+    // Color healthBarColor{GREEN};
+    // if( drawColor.r != 255 ||
+    //     drawColor.g != 255 ||
+    //     drawColor.b != 255 ||
+    //     drawColor.a != 255) healthBarColor = drawColor;
+    if(health <= 100.f)
+    {
+        Color healthBarColor{GREEN};
+        if( drawColor.r != 255 ||
+            drawColor.g != 255 ||
+            drawColor.b != 255 ||
+            drawColor.a != 255) healthBarColor = drawColor;
+
+        DrawRectangle(healthBar.x, healthBar.y, 400.f, healthBar.height, BLACK);
+        DrawRectangle(healthBar.x, healthBar.y, healthBar.width, healthBar.height, healthBarColor);
+    }
+    else if(health <= 300.f)
+    {
+        Color healthBarColor{BLUE};
+        if( drawColor.r != 255 ||
+            drawColor.g != 255 ||
+            drawColor.b != 255 ||
+            drawColor.a != 255) healthBarColor = drawColor;
+        
+        DrawRectangle(healthBar.x, healthBar.y, 400.f, healthBar.height, GREEN);
+        DrawRectangle(healthBar.x, healthBar.y, ( healthBar.width - (4.f * 100.f) ) * 0.5f, healthBar.height, healthBarColor);
+    } else{
+        Color healthBarColor{BLUE};
+        if( drawColor.r != 255 ||
+            drawColor.g != 255 ||
+            drawColor.b != 255 ||
+            drawColor.a != 255) healthBarColor = drawColor;
+
+        DrawRectangle(healthBar.x, healthBar.y, 400.f, healthBar.height, healthBarColor);
+    }
     
     drawColor = WHITE;  // reset draw color
     invul = false;  // reset invulnerability
@@ -81,13 +119,11 @@ bool Character::tick(float deltaTime){
     Rectangle dest{getScreenPos().x + offset.x, getScreenPos().y + offset.y, weapon->width * scale, weapon->height * scale};
     DrawTexturePro(*weapon, source, dest, origin, rotation, drawColor);
 
-    /*DrawRectangleLines(
-        weaponCollisionRec.x,
-        weaponCollisionRec.y,
-        weaponCollisionRec.width,
-        weaponCollisionRec.height,
-        RED
-    );*/
+    // // draw health bar
+    // Rectangle healthBar{55.f, 45.f, 4.f * health, 40.f};
+    // DrawRectangle(healthBar.x, healthBar.y, 400.f, healthBar.height, BLACK);
+    // DrawRectangle(healthBar.x, healthBar.y, healthBar.width, healthBar.height, GREEN);
+
 
     return true;
 }
@@ -99,5 +135,5 @@ void Character::deathSequence(){
 
 void Character::addHealth( float healthAdd ){
     BaseCharacter::addHealth( healthAdd );
-    setDrawColor(GREEN);
+    setDrawColor(PINK);
 }
