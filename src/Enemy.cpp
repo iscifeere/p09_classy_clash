@@ -102,19 +102,18 @@ bool Enemy::tick(float deltaTime){
             takeDamage(target->getDamage());
         }
     }
+    
+    // draw health bar
+    Rectangle healthBar{getScreenPos().x, getScreenPos().y, health, 5.f};
+    if(data != nullptr){
+        DrawRectangle(healthBar.x, healthBar.y, data->health, healthBar.height, BLACK);
+    }
+    DrawRectangle(healthBar.x, healthBar.y, healthBar.width, healthBar.height, GREEN);
 
     // draw debug text
     DrawText(TextFormat("%01.02f",health), getScreenPos().x, getScreenPos().y, 20, WHITE);
     DrawText(TextFormat("%01.02f",chaseTime), getScreenPos().x, getScreenPos().y + height*scale, 10, WHITE);
-
-    // draw health bar
-    Rectangle healthBar{getScreenPos().x, getScreenPos().y, health, 5.f};
-    if(data != nullptr){
-        float ogHealth = data->health;
-        DrawRectangle(healthBar.x, healthBar.y, ogHealth, healthBar.height, BLACK);
-    }
-    DrawRectangle(healthBar.x, healthBar.y, healthBar.width, healthBar.height, GREEN);
-
+    
     return true;
 }
 
