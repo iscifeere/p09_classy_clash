@@ -27,6 +27,7 @@ public:
     virtual void deathSequence() override;
     float& getRadiusEtc(int choice);
     float attackTimer{};
+    virtual void showDebugData() override;
     GenEntity* proyectile{nullptr};
     float fleeTimer{};
     bool flee{false};

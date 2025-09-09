@@ -25,6 +25,7 @@ public:
     virtual void deathSequence() = 0;
     virtual void addHealth( float healthAdd ) { health += healthAdd; }
     Vector2& getVelocity(){ return velocity; }      // returns a reference
+    virtual void showDebugData() = 0;
 protected:
     Texture2D* texture{&Tex::texture_knight_idle};
     Texture2D* idle{&Tex::texture_knight_idle};

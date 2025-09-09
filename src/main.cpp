@@ -88,6 +88,8 @@ int main(void) {
     ChangeDirectory(prev_dir);
     const std::string finishAssetsDirectory{ GetWorkingDirectory() };
 
+    bool showDebugData{false};
+
     SetTargetFPS(60);
     while (!WindowShouldClose()) {
         BeginDrawing();
@@ -142,60 +144,9 @@ int main(void) {
         // delete enemies
         if( IsKeyPressed(KEY_F) ) EntityMng::killEnemy();
 
-        // draw knight health / game over text
-        // if(!knight.getAlive()){
-        //     DrawText("Game Over!", 70.f, static_cast<float>((windowDimensions[1]/2)-20), 40, RED);
-        //     EndDrawing();
-        //     continue;
-        // } else{
-        //     std::string knightsHealth = "Health: ";
-        //     knightsHealth.append(std::to_string(knight.getHealth()), 0, 5);
-        //     DrawText(knightsHealth.c_str(), 55.f, 45.f, 40, RED);
-
-        //     std::string knightsMoney = "Money: ";
-        //     knightsMoney.append(std::to_string(knight.getMoney()), 0, 5);
-        //     DrawText(knightsMoney.c_str(), 55.f, 80.f, 40, WHITE);
-        // }
-
-        // draw knight health / game over text
+        // draw game over text if dead
         if(!knight.getAlive()){
             DrawText("Game Over!", 70.f, static_cast<float>((windowDimensions[1]/2)-20), 40, RED);
-            EndDrawing();
-            continue;
-        } else{
-            // knight tick
-            knight.tick(dT);
-
-            // check prop collisions
-            for (auto prop : props){
-                if (CheckCollisionRecs( prop.getCollisionRec(knight.getWorldPos()), knight.getCollisionRec() )){
-                    knight.undoMovementX();
-                }
-            }
-
-            // item heart tick
-            EntityMng::tickItems(dT);
-
-            // enemy tick
-            for (auto enemy : enemies){
-                enemy->tick(dT);
-            }
-            EntityMng::tickEnemies(dT);
-            bob.tick(dT);
-            rojo.tick(dT);
-            // arrow.tick(dT);
-            if(arrowPtr != nullptr) arrowPtr->tick(dT);
-            EntityMng::tickAmmo(dT);
-            
-            // draw health and money
-            std::string knightsHealth = "Health: ";
-            knightsHealth.append(std::to_string(knight.getHealth()), 0, 5);
-            DrawText(knightsHealth.c_str(), 55.f, 45.f, 40, WHITE);
-
-            std::string knightsMoney = "Money: ";
-            knightsMoney.append(std::to_string(knight.getMoney()), 0, 5);
-            DrawText(knightsMoney.c_str(), 55.f, 80.f, 40, WHITE);
-
             EndDrawing();
             continue;
         }
@@ -224,6 +175,15 @@ int main(void) {
         if(arrowPtr != nullptr) arrowPtr->tick(dT);
         EntityMng::tickAmmo(dT);
         
+        // draw player health and money
+        knight.showStats();
+
+        // draw debug data
+        if(IsKeyPressed(KEY_Z)) showDebugData = !showDebugData;
+        if(showDebugData){
+            knight.showDebugData();
+            EntityMng::showEnemiesDebugData();
+        }
 
         // GAME LOGIC ENDS =================================
 

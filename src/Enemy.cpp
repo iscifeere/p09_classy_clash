@@ -111,8 +111,13 @@ bool Enemy::tick(float deltaTime){
     DrawRectangle(healthBar.x, healthBar.y, healthBar.width, healthBar.height, GREEN);
 
     // draw debug text
-    DrawText(TextFormat("%01.02f",health), getScreenPos().x, getScreenPos().y, 20, WHITE);
-    DrawText(TextFormat("%01.02f",chaseTime), getScreenPos().x, getScreenPos().y + height*scale, 10, WHITE);
+    // DrawText(TextFormat("%01.02f",health), getScreenPos().x, getScreenPos().y, 20, WHITE);
+
+    // DrawText(TextFormat("%01.02f",chaseTime), getScreenPos().x, getScreenPos().y + height*scale, 10, WHITE);
+    
+    // DrawText(TextFormat("%01.02f",getScreenPos().x), getScreenPos().x, getScreenPos().y + height*scale, 10, WHITE);
+
+    // DrawText(TextFormat("%01.02f",getScreenPos().y), getScreenPos().x, getScreenPos().y + height*scale, 10, WHITE);
     
     return true;
 }
@@ -151,4 +156,13 @@ float& Enemy::getRadiusEtc(int choice){
         return radius;
         break;
     }
+}
+
+void Enemy::showDebugData()     // draw debug data
+{
+    DrawRectangleLines(getScreenPos().x, getScreenPos().y, scale*width, scale*height, YELLOW);
+    DrawText(TextFormat("%01.01f",health), getScreenPos().x, getScreenPos().y, 20, WHITE);
+    DrawText(TextFormat("%01.01f",getWorldPos().x), getScreenPos().x, getScreenPos().y + height*scale - 20, 10, WHITE);
+    DrawText(TextFormat("%01.01f",getWorldPos().y), getScreenPos().x, getScreenPos().y + height*scale - 10, 10, WHITE);
+    DrawText(TextFormat("%01.01f",chaseTime), getScreenPos().x, getScreenPos().y + height*scale, 10, WHITE);
 }

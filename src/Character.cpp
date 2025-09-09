@@ -45,15 +45,10 @@ bool Character::tick(float deltaTime){
 
     // draw health bar
     Rectangle healthBar{50.f, 45.f, 4.f * health, 40.f};
-    // Color healthBarColor{GREEN};
-    // if( drawColor.r != 255 ||
-    //     drawColor.g != 255 ||
-    //     drawColor.b != 255 ||
-    //     drawColor.a != 255) healthBarColor = drawColor;
     if(health <= 100.f)
     {
         Color healthBarColor{GREEN};
-        if( drawColor.r != 255 ||
+        if( drawColor.r != 255 ||       // if drawColor isn't WHITE
             drawColor.g != 255 ||
             drawColor.b != 255 ||
             drawColor.a != 255) healthBarColor = drawColor;
@@ -119,12 +114,6 @@ bool Character::tick(float deltaTime){
     Rectangle dest{getScreenPos().x + offset.x, getScreenPos().y + offset.y, weapon->width * scale, weapon->height * scale};
     DrawTexturePro(*weapon, source, dest, origin, rotation, drawColor);
 
-    // // draw health bar
-    // Rectangle healthBar{55.f, 45.f, 4.f * health, 40.f};
-    // DrawRectangle(healthBar.x, healthBar.y, 400.f, healthBar.height, BLACK);
-    // DrawRectangle(healthBar.x, healthBar.y, healthBar.width, healthBar.height, GREEN);
-
-
     return true;
 }
 
@@ -136,4 +125,16 @@ void Character::deathSequence(){
 void Character::addHealth( float healthAdd ){
     BaseCharacter::addHealth( healthAdd );
     setDrawColor(PINK);
+}
+
+void Character::showDebugData(){
+    // DrawRectangleLines(getWorldPos().x, getWorldPos().y, width*scale, height*scale, YELLOW); [SHOOTING AIM IDEA!!!]
+    DrawRectangleLines(getScreenPos().x, getScreenPos().y, width*scale, height*scale, YELLOW);
+    DrawText(TextFormat("X: %01.01f",getWorldPos().x), 55.f, 125.f, 30, WHITE);
+    DrawText(TextFormat("Y: %01.01f",getWorldPos().y), 55.f, 155.f, 30, WHITE);
+}
+
+void Character::showStats(){
+    DrawText(TextFormat("Health: %01.01f",health), 55.f, 45.f, 40, WHITE);
+    DrawText(TextFormat("Money: %i",moneyCount), 55.f, 80.f, 40, WHITE);
 }

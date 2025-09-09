@@ -121,3 +121,11 @@ void EntityMng::tickEnemies(float deltaTime){
         }
     }
 }
+
+void EntityMng::showEnemiesDebugData(){
+    for(int i{0} ; i < ENEMY_ARR_SIZE ; i++){
+        if(enemyArr[i] != nullptr){
+            enemyArr[i]->showDebugData();
+        }
+    }
+}

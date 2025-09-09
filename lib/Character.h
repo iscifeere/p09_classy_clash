@@ -17,6 +17,8 @@ public:
     virtual void addHealth( float healthAdd ) override;
     int getMoney(){ return moneyCount; }
     void addMoney(int moneyAdd){ moneyCount += moneyAdd; }
+    virtual void showDebugData() override;
+    void showStats();
 private:
     int windowWidth{};
     int windowHeight{};

@@ -21,6 +21,7 @@ public:
     static void spawnEnemy(Vector2 pos, Character* playerPtr, const enemyData* enemy_data);
     static void killEnemy();
     static void tickEnemies(float deltaTime);
+    static void showEnemiesDebugData();
 
     // static void spawnGenEnt(Vector2 pos, Vector2 direction, Character* playerPtr);
     static void spawnAmmo(Vector2 pos, Vector2 direction, Character* playerPtr);
