@@ -5,7 +5,7 @@
 #include <iostream>
 
 Enemy::Enemy(){
-    
+    action = chaseTarget;
 }
 
 Enemy::Enemy(Vector2 pos)
@@ -20,6 +20,8 @@ Enemy::Enemy(Vector2 pos)
 
     speed = 5.f;   // default speed
     health = 60;    // default health
+
+    action = chaseTarget;
 }
 
 Enemy::Enemy(Vector2 pos, const enemyData* enemy_data)
@@ -40,9 +42,9 @@ Enemy::Enemy(Vector2 pos, const enemyData* enemy_data)
     health = enemy_data->health;
     damagePerSec = enemy_data->damage;
     chaseRadius = enemy_data->chase_radius;
+    neutral = enemy_data->isNeutral;
 
     action = enemy_data->behave;
-    if(enemy_data->isNeutral) neutral = true;
 }
 
 Enemy::Enemy(Vector2 pos, Texture2D* idle_texture, Texture2D* run_texture)
@@ -57,6 +59,8 @@ Enemy::Enemy(Vector2 pos, Texture2D* idle_texture, Texture2D* run_texture)
 
     speed = 5.f;   // default speed
     health = 60;    // default health
+
+    action = chaseTarget;
 }
 
 bool Enemy::tick(float deltaTime){
@@ -65,19 +69,8 @@ bool Enemy::tick(float deltaTime){
 
     // ====== MOVEMENT ============
     velocity = {};          // reset velocity
-    // get to target
-    // velocity = Vector2Subtract(target->getScreenPos(), getScreenPos());
 
     action(this, target, deltaTime);
-
-    // // if too close / too far -> don't chase
-    // if(Vector2Length(velocity) < radius || Vector2Length(velocity) > chaseRadius ) velocity = {};
-
-    // if(Vector2Length(velocity) > 0.f) chaseTime += deltaTime;
-    // else chaseTime = 0.f;
-
-    // if(chaseTime >= 5.f) velocity = {}; // at 5 sec chaseTime stop chasing
-
 
     // ====== TICK AND VARIABLE RESETS ============
     BaseCharacter::tick(deltaTime);
@@ -103,22 +96,8 @@ bool Enemy::tick(float deltaTime){
         }
     }
     
-    // draw health bar
-    Rectangle healthBar{getScreenPos().x, getScreenPos().y, health, 5.f};
-    if(data != nullptr){
-        DrawRectangle(healthBar.x, healthBar.y, data->health, healthBar.height, BLACK);
-    }
-    DrawRectangle(healthBar.x, healthBar.y, healthBar.width, healthBar.height, GREEN);
+    drawHealthBar();
 
-    // draw debug text
-    // DrawText(TextFormat("%01.02f",health), getScreenPos().x, getScreenPos().y, 20, WHITE);
-
-    // DrawText(TextFormat("%01.02f",chaseTime), getScreenPos().x, getScreenPos().y + height*scale, 10, WHITE);
-    
-    // DrawText(TextFormat("%01.02f",getScreenPos().x), getScreenPos().x, getScreenPos().y + height*scale, 10, WHITE);
-
-    // DrawText(TextFormat("%01.02f",getScreenPos().y), getScreenPos().x, getScreenPos().y + height*scale, 10, WHITE);
-    
     return true;
 }
 
@@ -126,18 +105,18 @@ Vector2 Enemy::getScreenPos(){
     return Vector2Subtract(worldPos, target->getWorldPos());
 }
 
-void Enemy::takeDamage(float damage)
-{
+void Enemy::takeDamage(float damage){
     BaseCharacter::takeDamage(damage);
     neutral = false;
-};
+}
 
 void Enemy::deathSequence(){
     setAlive(false);
     EntityMng::spawnItem(worldPos, target, itemDrop);
 }
 
-float& Enemy::getRadiusEtc(int choice){
+float& Enemy::getRadiusEtc(int choice)
+{
     switch (choice)
     {
     case 0:
@@ -165,4 +144,13 @@ void Enemy::showDebugData()     // draw debug data
     DrawText(TextFormat("%01.01f",getWorldPos().x), getScreenPos().x, getScreenPos().y + height*scale - 20, 10, WHITE);
     DrawText(TextFormat("%01.01f",getWorldPos().y), getScreenPos().x, getScreenPos().y + height*scale - 10, 10, WHITE);
     DrawText(TextFormat("%01.01f",chaseTime), getScreenPos().x, getScreenPos().y + height*scale, 10, WHITE);
+}
+
+void Enemy::drawHealthBar()
+{
+    Rectangle healthBar{getScreenPos().x, getScreenPos().y, health, 5.f};
+    if(data != nullptr){
+        DrawRectangle(healthBar.x, healthBar.y, data->health, healthBar.height, BLACK);
+    }
+    DrawRectangle(healthBar.x, healthBar.y, healthBar.width, healthBar.height, GREEN);
 }
