@@ -36,7 +36,7 @@ private:
     static const int ITEM_ARR_SIZE{5};
     static Item* itemArr[ITEM_ARR_SIZE];
 
-    static const int ENEMY_ARR_SIZE{7};
+    static const int ENEMY_ARR_SIZE{10};
     static Enemy* enemyArr[ENEMY_ARR_SIZE];
 
     // static const int GEN_ENT_ARR_SIZE{3};

@@ -95,6 +95,13 @@ bool Enemy::tick(float deltaTime){
             takeDamage(target->getDamage());
         }
     }
+
+    // KILL WITH CURSOR
+    if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
+        if(CheckCollisionRecs(Rectangle{GetMousePosition().x - 5, GetMousePosition().y - 5, 5, 5}, getCollisionRec())){
+            setAlive(false);
+        }
+    }
     
     drawHealthBar();
 

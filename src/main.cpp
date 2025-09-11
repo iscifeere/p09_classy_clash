@@ -88,6 +88,10 @@ int main(void) {
     ChangeDirectory(prev_dir);
     const std::string finishAssetsDirectory{ GetWorkingDirectory() };
 
+    // cursor
+    Vector2 cursorPosition{};
+    Color cursorColor{BLUE};
+
     bool showDebugData{false};
 
     SetTargetFPS(60);
@@ -96,6 +100,24 @@ int main(void) {
         ClearBackground(RAYWHITE);
 
         const float dT{ GetFrameTime() }; // delta time
+
+        cursorPosition = GetMousePosition();
+        if(IsMouseButtonDown(MOUSE_BUTTON_RIGHT)){
+            cursorColor = YELLOW;
+            if(CheckCollisionRecs(Rectangle{cursorPosition.x - 5, cursorPosition.y - 5, 5, 5}, knight.getCollisionRec())){
+                // knight.setDrawColor(BLUE);
+                // knight.takeDamage(10.f*dT);
+                knight.addHealth(30.f*dT);
+            }
+        } else if(IsMouseButtonDown(MOUSE_BUTTON_LEFT)){
+            cursorColor = YELLOW;
+            if(CheckCollisionRecs(Rectangle{cursorPosition.x - 5, cursorPosition.y - 5, 5, 5}, knight.getCollisionRec())){
+                // knight.setDrawColor(BLUE);
+                knight.takeDamage(30.f*dT);
+                // knight.addHealth(10.f*dT);
+            }
+        } else cursorColor = DARKBLUE;
+        HideCursor();
 
         // GAME LOGIC BEGINS ==========================
 
@@ -127,7 +149,8 @@ int main(void) {
 
         // create enemies
         // if( IsKeyPressed(KEY_R) ) EntityMng::spawnEnemy(Vector2Add(playerWorPos, Vector2{0.f, -300.f}), &knight, ENEMYDATA_ARR[GetRandomValue(0,2)]);
-        if( IsKeyPressed(KEY_R) ) EntityMng::spawnEnemy(Vector2Add(playerWorPos, Vector2{0.f, -300.f}), &knight, &MADKNIGHT_ENEMYDATA);
+        // if( IsKeyPressed(KEY_R) ) EntityMng::spawnEnemy(Vector2Add(playerWorPos, Vector2{0.f, -300.f}), &knight, &MADKNIGHT_ENEMYDATA);
+        if( IsKeyPressed(KEY_R) ) EntityMng::spawnEnemy(Vector2Add(Vector2Subtract(playerWorPos, Vector2{768*0.5f, 768*0.5f}), cursorPosition), &knight, &MADKNIGHT_ENEMYDATA);
         if( IsKeyPressed(KEY_T) ) EntityMng::spawnEnemy(Vector2Add(playerWorPos, Vector2{0.f, -300.f}), &knight, &SLIME_ENEMYDATA);
         if( IsKeyPressed(KEY_Y) ) EntityMng::spawnEnemy(Vector2Add(playerWorPos, Vector2{0.f, -300.f}), &knight, &RED_ENEMYDATA);
 
@@ -184,6 +207,9 @@ int main(void) {
             knight.showDebugData();
             EntityMng::showEnemiesDebugData();
         }
+
+        // draw cursor
+        DrawCircleV(cursorPosition, 10, cursorColor);
 
         // GAME LOGIC ENDS =================================
 
