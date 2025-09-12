@@ -43,13 +43,48 @@ bool BaseCharacter::tick(float deltaTime){
         worldPos = Vector2Add(worldPos, movement);
         
         // check map bounds
-        if(getWorldPos().x < 0.f ||
-        getWorldPos().x + Tex::winSize[0] > Tex::texture_map.width * Tex::MAP_SCALE )
+        // if(getWorldPos().x < 0.f ||
+        // getWorldPos().x + Tex::winSize[0] > Tex::texture_map.width * Tex::MAP_SCALE )
+        // {
+        //     undoMovementX();
+        // }
+        // if(getWorldPos().y < 0.f ||
+        // getWorldPos().y + Tex::winSize[1] > Tex::texture_map.height * Tex::MAP_SCALE )
+        // {
+        //     undoMovementY();
+        // }
+
+        // if(getWorldPos().x + static_cast<float>(Tex::winSize[0])*0.5f < 0.f ||
+        // getWorldPos().x + static_cast<float>(Tex::winSize[0])*0.5f > Tex::texture_map.width * Tex::MAP_SCALE )
+        // {
+        //     undoMovementX();
+        // }
+        // if(getWorldPos().y + static_cast<float>(Tex::winSize[1])*0.5f < 0.f ||
+        // getWorldPos().y + static_cast<float>(Tex::winSize[1])*0.5f > Tex::texture_map.height * Tex::MAP_SCALE )
+        // {
+        //     undoMovementY();
+        // }
+
+        // if(getWorldPos().x < 0.f ||
+        // getWorldPos().x + width*scale > static_cast<float>(Tex::texture_map.width) * Tex::MAP_SCALE )
+        // {
+        //     undoMovementX();
+        // }
+        // if(getWorldPos().y < 0.f ||
+        // getWorldPos().y + height*scale > static_cast<float>(Tex::texture_map.height) * Tex::MAP_SCALE )
+        // {
+        //     undoMovementY();
+        // }
+
+        if(
+            getWorldPos().x < static_cast<float>(Tex::winSize[0])*0.5f ||
+            getWorldPos().x + width*scale > static_cast<float>(Tex::texture_map.width) * Tex::MAP_SCALE - static_cast<float>(Tex::winSize[0])*0.5f )
         {
             undoMovementX();
         }
-        if(getWorldPos().y < 0.f ||
-        getWorldPos().y + Tex::winSize[1] > Tex::texture_map.height * Tex::MAP_SCALE )
+        if(
+            getWorldPos().y < static_cast<float>(Tex::winSize[1]*0.5f) ||
+            getWorldPos().y + height*scale > static_cast<float>(Tex::texture_map.height) * Tex::MAP_SCALE - static_cast<float>(Tex::winSize[1])*0.5f )
         {
             undoMovementY();
         }

@@ -5,7 +5,7 @@
 #include <iostream>
 
 Enemy::Enemy(){
-    action = chaseTarget;
+    // action = chaseTarget;
 }
 
 Enemy::Enemy(Vector2 pos)
@@ -21,7 +21,7 @@ Enemy::Enemy(Vector2 pos)
     speed = 5.f;   // default speed
     health = 60;    // default health
 
-    action = chaseTarget;
+    // action = chaseTarget;
 }
 
 Enemy::Enemy(Vector2 pos, const enemyData* enemy_data)
@@ -60,7 +60,7 @@ Enemy::Enemy(Vector2 pos, Texture2D* idle_texture, Texture2D* run_texture)
     speed = 5.f;   // default speed
     health = 60;    // default health
 
-    action = chaseTarget;
+    // action = chaseTarget;
 }
 
 bool Enemy::tick(float deltaTime){
@@ -109,7 +109,10 @@ bool Enemy::tick(float deltaTime){
 }
 
 Vector2 Enemy::getScreenPos(){
-    return Vector2Subtract(worldPos, target->getWorldPos());
+    return Vector2Subtract(
+        Vector2{worldPos.x - width*scale*0.5f, worldPos.y - height*scale*0.5f}, 
+        Vector2Subtract(target->getWorldPos(), 
+        Vector2{static_cast<float>(Tex::winSize[0])*0.5f,static_cast<float>(Tex::winSize[1])*0.5f}));
 }
 
 void Enemy::takeDamage(float damage){

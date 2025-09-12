@@ -11,6 +11,30 @@ Character::Character(int winWidth, int winHeight) :
     speed = 10.f;    // default speed
 }
 
+Character::Character(Vector2 pos, int winWidth, int winHeight) :
+    windowWidth(winWidth),
+    windowHeight(winHeight)
+{
+    width = texture->width / maxFrames;
+    height = texture->height;
+
+    speed = 10.f;    // default speed
+
+    worldPos = pos;
+}
+
+// Vector2 Character::getWorldPos(){
+//     return Vector2Add( BaseCharacter::getWorldPos(),
+//     Vector2{static_cast<float>(windowWidth)*0.5f,static_cast<float>(windowHeight)*0.5f}
+//     );
+// }
+
+// Vector2 Character::getWorldPos(){
+//     return Vector2Add( BaseCharacter::getWorldPos(),
+//     Vector2{width*scale*0.5f,height*scale*0.5f}
+//     );
+// }
+
 Vector2 Character::getScreenPos(){
     return Vector2{
         static_cast<float>(windowWidth)/2.0f - (scale * (0.5f * width)) ,

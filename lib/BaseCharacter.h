@@ -9,7 +9,8 @@ class BaseCharacter
 {
 public:
     BaseCharacter();
-    Vector2 getWorldPos(){ return worldPos; }
+    // Vector2 getWorldPos(){ return worldPos; }
+    virtual Vector2 getWorldPos(){ return worldPos; }
     void undoMovementX();
     void undoMovementY();
     Rectangle getCollisionRec();

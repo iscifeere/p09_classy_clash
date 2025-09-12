@@ -38,10 +38,25 @@ int main(void) {
     Tex::loadTexturesArr();     // load every texture into memory
 
     Vector2 mapPos{0,0};
+    Vector2 mapPosCorrection{
+        static_cast<float>(Tex::winSize[0])*0.5f - (Tex::texture_knight_idle.width/6)*Tex::MAP_SCALE*0.5f,
+        static_cast<float>(Tex::winSize[1])*0.5f - Tex::texture_knight_idle.height*Tex::MAP_SCALE*0.5f
+    };
 
-    Character knight{windowDimensions[0],windowDimensions[1]};
+    // Character knight{
+    //     windowDimensions[0],
+    //     windowDimensions[1]
+    // };
+    Character knight{
+        Vector2{
+            static_cast<float>(Tex::winSize[0])*0.5f,
+            static_cast<float>(Tex::winSize[1])*0.5f},
+        windowDimensions[0],
+        windowDimensions[1]
+    };
 
-    Vector2 playerWorPos{Vector2Add( knight.getWorldPos(), Vector2{(float)windowDimensions[0]/2.f,(float)windowDimensions[1]/2.f} )};
+    // Vector2 playerWorPos{Vector2Add( knight.getWorldPos(), Vector2{(float)windowDimensions[0]/2.f,(float)windowDimensions[1]/2.f} )};
+    Vector2 playerWorPos{knight.getWorldPos()};
 
 
     Prop props[2]{
@@ -122,10 +137,12 @@ int main(void) {
         // GAME LOGIC BEGINS ==========================
 
         // update map position
-        mapPos = Vector2Scale(knight.getWorldPos(), -1.f);
+        mapPos = Vector2Scale(Vector2Subtract(knight.getWorldPos(), mapPosCorrection), -1.f);
+        // mapPos = Vector2Scale(Vector2Add( knight.getWorldPos(), Vector2{(float)windowDimensions[0]/2.f,(float)windowDimensions[1]/2.f} ), -1.f);
 
         // update playerWorldPosition
-        Vector2 playerWorPos{Vector2Add( knight.getWorldPos(), Vector2{(float)windowDimensions[0]/2.f,(float)windowDimensions[1]/2.f} )};
+        // Vector2 playerWorPos{Vector2Add( knight.getWorldPos(), Vector2{(float)windowDimensions[0]/2.f,(float)windowDimensions[1]/2.f} )};
+        Vector2 playerWorPos{knight.getWorldPos()};
 
         // draw the map
         DrawTextureEx(Tex::texture_map, mapPos, 0.0, Tex::MAP_SCALE, WHITE);
@@ -149,10 +166,14 @@ int main(void) {
 
         // create enemies
         // if( IsKeyPressed(KEY_R) ) EntityMng::spawnEnemy(Vector2Add(playerWorPos, Vector2{0.f, -300.f}), &knight, ENEMYDATA_ARR[GetRandomValue(0,2)]);
+
         // if( IsKeyPressed(KEY_R) ) EntityMng::spawnEnemy(Vector2Add(playerWorPos, Vector2{0.f, -300.f}), &knight, &MADKNIGHT_ENEMYDATA);
+        // if( IsKeyPressed(KEY_T) ) EntityMng::spawnEnemy(Vector2Add(playerWorPos, Vector2{0.f, -300.f}), &knight, &SLIME_ENEMYDATA);
+        // if( IsKeyPressed(KEY_Y) ) EntityMng::spawnEnemy(Vector2Add(playerWorPos, Vector2{0.f, -300.f}), &knight, &RED_ENEMYDATA);
+
         if( IsKeyPressed(KEY_R) ) EntityMng::spawnEnemy(Vector2Add(Vector2Subtract(playerWorPos, Vector2{768*0.5f, 768*0.5f}), cursorPosition), &knight, &MADKNIGHT_ENEMYDATA);
-        if( IsKeyPressed(KEY_T) ) EntityMng::spawnEnemy(Vector2Add(playerWorPos, Vector2{0.f, -300.f}), &knight, &SLIME_ENEMYDATA);
-        if( IsKeyPressed(KEY_Y) ) EntityMng::spawnEnemy(Vector2Add(playerWorPos, Vector2{0.f, -300.f}), &knight, &RED_ENEMYDATA);
+        if( IsKeyPressed(KEY_T) ) EntityMng::spawnEnemy(Vector2Add(Vector2Subtract(playerWorPos, Vector2{768*0.5f, 768*0.5f}), cursorPosition), &knight, &SLIME_ENEMYDATA);
+        if( IsKeyPressed(KEY_Y) ) EntityMng::spawnEnemy(Vector2Add(Vector2Subtract(playerWorPos, Vector2{768*0.5f, 768*0.5f}), cursorPosition), &knight, &RED_ENEMYDATA);
 
         // delete hearts
         if( IsKeyPressed(KEY_Q) ) EntityMng::killItem();
