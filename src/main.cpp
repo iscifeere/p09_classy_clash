@@ -137,8 +137,8 @@ int main(void) {
         if( IsKeyPressed(KEY_E) ) EntityMng::spawnItem(Vector2Add(Vector2Subtract(playerWorPos, Tex::halfWinSize), cursorPosition), &knight, &COIN_ITEMDATA);
 
         Vector2 arrowDirection{};
-        if( arrowPtr != nullptr && IsKeyPressed(KEY_O) ) arrowPtr->reset();
-        if( arrowPtr != nullptr && IsKeyPressed(KEY_U) ) arrowPtr->reset(playerWorPos, knight.getVelocity());
+        if( arrowPtr != nullptr && IsKeyPressed(KEY_O) ) arrowPtr->spawnReset();
+        if( arrowPtr != nullptr && IsKeyPressed(KEY_U) ) arrowPtr->spawnReset(playerWorPos, knight.getVelocity());
 
         // if( arrowPtr == nullptr && IsKeyPressed(KEY_N) ) arrowPtr = new GenEntity(playerWorPos, &knight);
         if( arrowPtr == nullptr && IsKeyPressed(KEY_N) ) arrowPtr = new GenEntity(playerWorPos, knight.getVelocity(), &knight);
@@ -192,6 +192,7 @@ int main(void) {
         // arrow.tick(dT);
         if(arrowPtr != nullptr) arrowPtr->tick(dT);
         EntityMng::tickAmmo(dT);
+        EntityMng::tickProyectiles(dT);
         
         // draw player health and money
         knight.showStats();
@@ -201,6 +202,8 @@ int main(void) {
         if(showDebugData){
             knight.showDebugData();
             EntityMng::showEnemiesDebugData();
+            EntityMng::showItemsDebugData();
+            EntityMng::showProyectilesDebugData();
         }
 
         // draw cursor
@@ -210,14 +213,6 @@ int main(void) {
 
         EndDrawing();
     }
-
-    // PRINT ITEM POINTERS VALUES
-    // int o{0};
-    // for(auto item : loot){
-    //     std::cout << "item[" << o << "] ptr before delete is: " << item << std::endl;
-    //     if( item != nullptr ) {delete item; item = nullptr;}
-    //     std::cout << "item[" << o++ << "] ptr after delete is: " << item << std::endl;
-    // }
 
     // UNLOAD TEXTURES
     Tex::unloadTexturesArr();

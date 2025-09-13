@@ -65,6 +65,14 @@ bool Item::tick(float deltaTime){
     DrawTexturePro(*texture, source, dest, Vector2{0.f,0.f}, 0.f, WHITE);
 
     // DrawText(TextFormat("%02.02f",moveTimer), screenPos.x, screenPos.y, 10, WHITE);
+
+    // KILL WITH CURSOR
+    if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
+        if(CheckCollisionRecs(Rectangle{GetMousePosition().x - 5, GetMousePosition().y - 5, 5, 5}, getCollisionRec())){
+            setAlive(false);
+        }
+    }
+
     return true;
 }
 
@@ -84,4 +92,10 @@ Rectangle Item::getCollisionRec()       // necesita revisión
         Tex::texture_heart.width * scale,
         Tex::texture_heart.height * scale
     };
+}
+
+void Item::showDebugData(){
+    DrawRectangleLines( getScreenPos().x, getScreenPos().y, frameWidth*scale, frameHeight*scale, YELLOW );
+    DrawText( TextFormat("%01.01f",getWorldPos().x), getScreenPos().x, getScreenPos().y + frameHeight*scale - 20, 10, WHITE );
+    DrawText( TextFormat("%01.01f",getWorldPos().y), getScreenPos().x, getScreenPos().y + frameHeight*scale - 10, 10, WHITE );
 }

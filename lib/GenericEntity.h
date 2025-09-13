@@ -6,13 +6,13 @@
 #include "Character.h"
 
 class GenEntity
-{                // FALTA HACER EL CPP
+{
 public:
     GenEntity( Vector2 pos, Character* player );
     GenEntity( Vector2 pos, Vector2 direction, Character* player );
 
-    void reset();
-    void reset( Vector2 pos, Vector2 direction );
+    void spawnReset();
+    void spawnReset( Vector2 pos, Vector2 direction );
 
     bool tick(float deltaTime);
     Vector2 getWorldPos() { return worldPos; }
@@ -20,6 +20,7 @@ public:
     Rectangle getCollisionRec();
     bool getAlive() { return alive; }
     void setAlive( bool isAlive ) { alive = isAlive; }
+    void showDebugData();
 
     Vector2 worldPos{};
     Character* player{nullptr};

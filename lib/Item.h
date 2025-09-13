@@ -27,6 +27,7 @@ public:
     bool getAlive() { return alive; }
     void setAlive( bool isAlive ) { alive = isAlive; }
     Rectangle getCollisionRec();
+    void showDebugData();
 protected:
     Vector2 worldPos{};
     Character* player{nullptr};

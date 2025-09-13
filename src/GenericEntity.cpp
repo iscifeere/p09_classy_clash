@@ -81,18 +81,22 @@ Rectangle GenEntity::getCollisionRec()
     };
 }
 
-void GenEntity::reset()
+void GenEntity::spawnReset()
 {
     moveTimer = 0.f;
     velocity = {};
     // active = true;
     setAlive(true);
 }
-void GenEntity::reset(Vector2 pos, Vector2 direction)
+void GenEntity::spawnReset(Vector2 pos, Vector2 direction)
 {
     moveTimer = 0.f;
     velocity = direction;
     worldPos = pos;
     // active = true;
     setAlive(true);
+}
+
+void GenEntity::showDebugData(){
+    DrawRectangleLines( getScreenPos().x, getScreenPos().y, frameWidth*scale, frameHeight*scale, YELLOW );
 }

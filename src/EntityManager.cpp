@@ -3,19 +3,32 @@
 
 Item* EntityMng::itemArr[ITEM_ARR_SIZE]{nullptr};
 Enemy* EntityMng::enemyArr[ENEMY_ARR_SIZE]{nullptr};
-// GenEntity* EntityMng::genEntArr[GEN_ENT_ARR_SIZE]{nullptr};
+GenEntity* EntityMng::proyectileArr[PROYECTILE_ARR_SIZE]{nullptr};
 GenEntity* EntityMng::ammo{nullptr};
 
 void EntityMng::spawnProyectile(GenEntity*& proyectile, Vector2 pos, Vector2 direction, Character* playerPtr){
     if(proyectile != nullptr){
-        proyectile->reset(pos, direction);
+        proyectile->spawnReset(pos, direction);
     } else{
         proyectile = new GenEntity(pos, direction, playerPtr);
     }
 }
+void EntityMng::spawnProyectileInPool(Vector2 pos, Vector2 direction, Character* playerPtr){
+    for(int i{0} ; i < PROYECTILE_ARR_SIZE ; i++){
+        if(proyectileArr[i] == nullptr){
+            proyectileArr[i] = new GenEntity(pos, direction, playerPtr);
+            break;
+        } else if(!proyectileArr[i]->getAlive()){
+            proyectileArr[i]->spawnReset(pos, direction);
+            break;
+        }
+        if(i >= PROYECTILE_ARR_SIZE-1) std::cout << "[Proyectile array full!]" << std::endl;
+    }
+}
+
 void EntityMng::spawnAmmo(Vector2 pos, Vector2 direction, Character* playerPtr){
     if(ammo != nullptr){
-        ammo->reset(pos, direction);
+        ammo->spawnReset(pos, direction);
     } else{
         ammo = new GenEntity(pos, direction, playerPtr);
     }
@@ -24,6 +37,22 @@ void EntityMng::spawnAmmo(Vector2 pos, Vector2 direction, Character* playerPtr){
 void EntityMng::tickProyectile(GenEntity*& proyectile, float deltaTime){
     if(proyectile != nullptr) proyectile->tick(deltaTime);
 }
+void EntityMng::tickProyectiles(float deltaTime){
+    for(int i{0} ; i < PROYECTILE_ARR_SIZE ; i++){
+        if(proyectileArr[i] != nullptr){
+            if(proyectileArr[i]->getAlive()) proyectileArr[i]->tick(deltaTime);
+        }
+    }
+}
+
+void EntityMng::showProyectilesDebugData(){
+    for(int i{0} ; i < PROYECTILE_ARR_SIZE ; i++){
+        if(proyectileArr[i] != nullptr){
+            proyectileArr[i]->showDebugData();
+        }
+    }
+}
+
 void EntityMng::tickAmmo(float deltaTime){
     if(ammo != nullptr) ammo->tick(deltaTime);
 }
@@ -70,6 +99,14 @@ void EntityMng::tickItems(float deltaTime){
                 itemArr[i] = nullptr;
                 std::cout << "[Item deleted!]" << std::endl;
             }
+        }
+    }
+}
+
+void EntityMng::showItemsDebugData(){
+    for(int i{0} ; i < ITEM_ARR_SIZE ; i++){
+        if(itemArr[i] != nullptr){
+            itemArr[i]->showDebugData();
         }
     }
 }
