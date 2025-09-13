@@ -74,6 +74,7 @@ bool Enemy::tick(float deltaTime){
 
     // ====== TICK AND VARIABLE RESETS ============
     BaseCharacter::tick(deltaTime);
+    BaseCharacter::render();
     
     if(!invul) drawColor = WHITE; // reset drawColor if not invulnerable
     else { 

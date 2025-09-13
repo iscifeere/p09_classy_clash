@@ -99,39 +99,12 @@ int main(void) {
         const float dT{ GetFrameTime() }; // delta time
 
         cursorPosition = GetMousePosition();
-        if(IsMouseButtonDown(MOUSE_BUTTON_RIGHT)){
-            cursorColor = YELLOW;
-            if(CheckCollisionRecs(Rectangle{cursorPosition.x - 5, cursorPosition.y - 5, 5, 5}, knight.getCollisionRec())){
-                // knight.setDrawColor(BLUE);
-                // knight.takeDamage(10.f*dT);
-                knight.addHealth(30.f*dT);
-            }
-        } else if(IsMouseButtonDown(MOUSE_BUTTON_LEFT)){
-            cursorColor = YELLOW;
-            if(CheckCollisionRecs(Rectangle{cursorPosition.x - 5, cursorPosition.y - 5, 5, 5}, knight.getCollisionRec())){
-                // knight.setDrawColor(BLUE);
-                knight.takeDamage(30.f*dT);
-                // knight.addHealth(10.f*dT);
-            }
-        } else cursorColor = DARKBLUE;
         HideCursor();
 
         // GAME LOGIC BEGINS ==========================
 
-        // update map position
-        mapPos = Vector2Scale(Vector2Subtract(knight.getWorldPos(), mapPosCorrection), -1.f);
-        // mapPos = Vector2Scale(Vector2Add( knight.getWorldPos(), Vector2{(float)windowDimensions[0]/2.f,(float)windowDimensions[1]/2.f} ), -1.f);
-
         // update playerWorldPosition
         Vector2 playerWorPos = knight.getWorldPos();
-
-        // draw the map
-        DrawTextureEx(Tex::texture_map, mapPos, 0.0, Tex::MAP_SCALE, WHITE);
-
-        // draw the props
-        for (auto prop : props){
-            prop.Render(knight.getWorldPos());
-        }
 
         // create items
         if( IsKeyPressed(KEY_E) ) EntityMng::spawnItem(Vector2Add(Vector2Subtract(playerWorPos, Tex::halfWinSize), cursorPosition), &knight, &COIN_ITEMDATA);
@@ -162,15 +135,21 @@ int main(void) {
         // delete enemies
         if( IsKeyPressed(KEY_F) ) EntityMng::killEnemy();
 
-        // draw game over text if dead
-        if(!knight.getAlive()){
-            DrawText("Game Over!", 70.f, static_cast<float>((windowDimensions[1]/2)-20), 40, RED);
-            EndDrawing();
-            continue;
-        }
-
         // knight tick
         knight.tick(dT);
+
+        // cursor affects player
+        if(IsMouseButtonDown(MOUSE_BUTTON_RIGHT)){
+            cursorColor = YELLOW;
+            if(CheckCollisionRecs(Rectangle{cursorPosition.x - 5, cursorPosition.y - 5, 5, 5}, knight.getCollisionRec())){
+                knight.addHealth(30.f*dT);
+            }
+        } else if(IsMouseButtonDown(MOUSE_BUTTON_LEFT)){
+            cursorColor = YELLOW;
+            if(CheckCollisionRecs(Rectangle{cursorPosition.x - 5, cursorPosition.y - 5, 5, 5}, knight.getCollisionRec())){
+                knight.takeDamage(30.f*dT);
+            }
+        } else cursorColor = DARKBLUE;
 
         // check prop collisions
         for (auto prop : props){
@@ -178,6 +157,27 @@ int main(void) {
                 knight.undoMovementX();
             }
         }
+
+        // update map position
+        mapPos = Vector2Scale(Vector2Subtract(knight.getWorldPos(), mapPosCorrection), -1.f);
+
+        // draw the map
+        DrawTextureEx(Tex::texture_map, mapPos, 0.0, Tex::MAP_SCALE, WHITE);
+
+        // draw the props
+        for (auto prop : props){
+            prop.Render(knight.getWorldPos());
+        }
+
+        // draw game over text if dead
+        if(!knight.getAlive()){
+            DrawText("Game Over!", 70.f, static_cast<float>((windowDimensions[1]/2)-20), 40, RED);
+            EndDrawing();
+            continue;
+        }
+
+        // knight render
+        knight.render();
 
         // item heart tick
         EntityMng::tickItems(dT);

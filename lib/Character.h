@@ -7,8 +7,6 @@
 class Character : public BaseCharacter
 {
 public:
-    // Character(int winWidth, int winHeight);
-    // Character(Vector2 pos, int winWidth, int winHeight);
     Character(Vector2 pos);
     virtual bool tick(float deltaTime) override;
     // virtual Vector2 getWorldPos() override;
@@ -22,6 +20,7 @@ public:
     void addMoney(int moneyAdd){ moneyCount += moneyAdd; }
     virtual void showDebugData() override;
     void showStats();
+    void render() override;
 private:
     int windowWidth{};
     int windowHeight{};
@@ -32,6 +31,11 @@ private:
     bool healing{false};
     float healTime{};
     int moneyCount{};
+    struct s{
+        Vector2 origin{};
+        Vector2 offset{};
+        float rotation{};
+    } swordVariables{};
 };
 
 #endif

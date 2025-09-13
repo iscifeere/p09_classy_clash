@@ -1,28 +1,6 @@
 #include "Character.h"
 #include "raymath.h"
 
-// Character::Character(int winWidth, int winHeight) :
-//     windowWidth(winWidth),
-//     windowHeight(winHeight)
-// {
-//     width = texture->width / maxFrames;
-//     height = texture->height;
-
-//     speed = 10.f;    // default speed
-// }
-
-// Character::Character(Vector2 pos, int winWidth, int winHeight) :
-//     windowWidth(winWidth),
-//     windowHeight(winHeight)
-// {
-//     width = texture->width / maxFrames;
-//     height = texture->height;
-
-//     speed = 10.f;    // default speed
-
-//     worldPos = pos;
-// }
-
 Character::Character(Vector2 pos) :
     windowWidth(Tex::winSize[0]),
     windowHeight(Tex::winSize[1])
@@ -79,6 +57,71 @@ bool Character::tick(float deltaTime){
     // ====== TICK AND VARIABLE RESETS ============
     BaseCharacter::tick(deltaTime);
 
+    invul = false;  // reset invulnerability
+
+    swordVariables.origin = {};
+    swordVariables.offset = {};
+    isAttacking = false;
+    swordVariables.rotation = {};
+
+    // attack & defend
+    if(IsMouseButtonDown(MOUSE_LEFT_BUTTON) || IsKeyDown(KEY_SPACE)) { isAttacking = true; swordVariables.rotation = 35.f; }
+    if(IsMouseButtonDown(MOUSE_RIGHT_BUTTON) || IsKeyDown(KEY_V)) { swordVariables.rotation = -30.f; drawColor = YELLOW; invul = true; }
+
+    if(rightLeft > 0.f){
+        swordVariables.origin = {0.f, weapon->height * scale};
+        swordVariables.offset = {70.f, 110.f};
+        weaponCollisionRec = {
+            getScreenPos().x + swordVariables.offset.x,
+            getScreenPos().y + swordVariables.offset.y - weapon->height * scale,
+            weapon->width * scale,
+            weapon->height * scale
+        };
+    } else{
+        swordVariables.origin = {weapon->width * scale, weapon->height * scale};
+        swordVariables.offset = {50.f, 110.f};
+        weaponCollisionRec = {
+            getScreenPos().x + swordVariables.offset.x - weapon->width * scale,
+            getScreenPos().y + swordVariables.offset.y - weapon->height * scale,
+            weapon->width * scale,
+            weapon->height * scale
+        };
+        swordVariables.rotation *= -1;
+    }
+
+    return true;
+}
+
+
+void Character::deathSequence(){
+    setAlive(false);
+}
+
+void Character::addHealth( float healthAdd ){
+    BaseCharacter::addHealth( healthAdd );
+    setDrawColor(PINK);
+}
+
+void Character::showDebugData(){
+    // DrawRectangleLines(getWorldPos().x, getWorldPos().y, width*scale, height*scale, YELLOW); [SHOOTING AIM IDEA!!!]
+    DrawRectangleLines(getScreenPos().x, getScreenPos().y, width*scale, height*scale, YELLOW);
+    DrawText(TextFormat("X: %01.01f",getWorldPos().x), 55.f, 125.f, 30, WHITE);
+    DrawText(TextFormat("Y: %01.01f",getWorldPos().y), 55.f, 155.f, 30, WHITE);
+}
+
+void Character::showStats(){
+    DrawText(TextFormat("Health: %01.01f",health), 55.f, 45.f, 40, WHITE);
+    DrawText(TextFormat("Money: %i",moneyCount), 55.f, 80.f, 40, WHITE);
+}
+
+void Character::render(){
+    BaseCharacter::render();
+
+    // draw the sword
+    Rectangle source{0.f, 0.f, static_cast<float>(weapon->width) * rightLeft, static_cast<float>(weapon->height)};
+    Rectangle dest{getScreenPos().x + swordVariables.offset.x, getScreenPos().y + swordVariables.offset.y, weapon->width * scale, weapon->height * scale};
+    DrawTexturePro(*weapon, source, dest, swordVariables.origin, swordVariables.rotation, drawColor);
+
     // draw health bar
     Rectangle healthBar{50.f, 45.f, 4.f * health, 40.f};
     if(health <= 100.f)
@@ -111,66 +154,6 @@ bool Character::tick(float deltaTime){
 
         DrawRectangle(healthBar.x, healthBar.y, 400.f, healthBar.height, healthBarColor);
     }
-    
+
     drawColor = WHITE;  // reset draw color
-    invul = false;  // reset invulnerability
-
-    Vector2 origin{};
-    Vector2 offset{};
-    isAttacking = false;
-    float rotation{};
-
-    // attack & defend
-    if(IsMouseButtonDown(MOUSE_LEFT_BUTTON) || IsKeyDown(KEY_SPACE)) { isAttacking = true; rotation = 35.f; }
-    if(IsMouseButtonDown(MOUSE_RIGHT_BUTTON) || IsKeyDown(KEY_V)) { rotation = -30.f; drawColor = YELLOW; invul = true; }
-
-    if(rightLeft > 0.f){
-        origin = {0.f, weapon->height * scale};
-        offset = {70.f, 110.f};
-        weaponCollisionRec = {
-            getScreenPos().x + offset.x,
-            getScreenPos().y + offset.y - weapon->height * scale,
-            weapon->width * scale,
-            weapon->height * scale
-        };
-    } else{
-        origin = {weapon->width * scale, weapon->height * scale};
-        offset = {50.f, 110.f};
-        weaponCollisionRec = {
-            getScreenPos().x + offset.x - weapon->width * scale,
-            getScreenPos().y + offset.y - weapon->height * scale,
-            weapon->width * scale,
-            weapon->height * scale
-        };
-        rotation *= -1;
-    }
-
-    // draw the sword
-    Rectangle source{0.f, 0.f, static_cast<float>(weapon->width) * rightLeft, static_cast<float>(weapon->height)};
-    Rectangle dest{getScreenPos().x + offset.x, getScreenPos().y + offset.y, weapon->width * scale, weapon->height * scale};
-    DrawTexturePro(*weapon, source, dest, origin, rotation, drawColor);
-
-    return true;
-}
-
-
-void Character::deathSequence(){
-    setAlive(false);
-}
-
-void Character::addHealth( float healthAdd ){
-    BaseCharacter::addHealth( healthAdd );
-    setDrawColor(PINK);
-}
-
-void Character::showDebugData(){
-    // DrawRectangleLines(getWorldPos().x, getWorldPos().y, width*scale, height*scale, YELLOW); [SHOOTING AIM IDEA!!!]
-    DrawRectangleLines(getScreenPos().x, getScreenPos().y, width*scale, height*scale, YELLOW);
-    DrawText(TextFormat("X: %01.01f",getWorldPos().x), 55.f, 125.f, 30, WHITE);
-    DrawText(TextFormat("Y: %01.01f",getWorldPos().y), 55.f, 155.f, 30, WHITE);
-}
-
-void Character::showStats(){
-    DrawText(TextFormat("Health: %01.01f",health), 55.f, 45.f, 40, WHITE);
-    DrawText(TextFormat("Money: %i",moneyCount), 55.f, 80.f, 40, WHITE);
 }

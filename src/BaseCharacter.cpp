@@ -41,40 +41,6 @@ bool BaseCharacter::tick(float deltaTime){
         velocity.x < 0.f ? rightLeft = -1.f : rightLeft = 1.f;
         movement = Vector2Scale(Vector2Normalize(velocity), speed);
         worldPos = Vector2Add(worldPos, movement);
-        
-        // check map bounds
-        // if(getWorldPos().x < 0.f ||
-        // getWorldPos().x + Tex::winSize[0] > Tex::texture_map.width * Tex::MAP_SCALE )
-        // {
-        //     undoMovementX();
-        // }
-        // if(getWorldPos().y < 0.f ||
-        // getWorldPos().y + Tex::winSize[1] > Tex::texture_map.height * Tex::MAP_SCALE )
-        // {
-        //     undoMovementY();
-        // }
-
-        // if(getWorldPos().x + static_cast<float>(Tex::winSize[0])*0.5f < 0.f ||
-        // getWorldPos().x + static_cast<float>(Tex::winSize[0])*0.5f > Tex::texture_map.width * Tex::MAP_SCALE )
-        // {
-        //     undoMovementX();
-        // }
-        // if(getWorldPos().y + static_cast<float>(Tex::winSize[1])*0.5f < 0.f ||
-        // getWorldPos().y + static_cast<float>(Tex::winSize[1])*0.5f > Tex::texture_map.height * Tex::MAP_SCALE )
-        // {
-        //     undoMovementY();
-        // }
-
-        // if(getWorldPos().x < 0.f ||
-        // getWorldPos().x + width*scale > static_cast<float>(Tex::texture_map.width) * Tex::MAP_SCALE )
-        // {
-        //     undoMovementX();
-        // }
-        // if(getWorldPos().y < 0.f ||
-        // getWorldPos().y + height*scale > static_cast<float>(Tex::texture_map.height) * Tex::MAP_SCALE )
-        // {
-        //     undoMovementY();
-        // }
 
         if(
             getWorldPos().x < static_cast<float>(Tex::winSize[0])*0.5f ||
@@ -90,12 +56,6 @@ bool BaseCharacter::tick(float deltaTime){
         }
 
     } else texture = idle;
-    // velocity = {};      // reset velocity
-
-    // draw the character
-    Rectangle source{ (float)frame * width , 0.f , rightLeft * width , height };
-    Rectangle dest{ getScreenPos().x , getScreenPos().y , scale * width , scale * height };
-    DrawTexturePro(*texture, source, dest, (Vector2){0.f,0.f}, 0.f, drawColor);
 
     return true;
 }
@@ -107,4 +67,10 @@ void BaseCharacter::takeDamage(float damage){
         drawColor = RED;
         invul = true;
     }
+}
+
+void BaseCharacter::render(){
+    Rectangle source{ (float)frame * width , 0.f , rightLeft * width , height };
+    Rectangle dest{ getScreenPos().x , getScreenPos().y , scale * width , scale * height };
+    DrawTexturePro(*texture, source, dest, (Vector2){0.f,0.f}, 0.f, drawColor);
 }
