@@ -33,10 +33,10 @@ public:
     static void tickProyectile(GenEntity*& proyectile, float deltaTime);
 
 private:
-    static const int ITEM_ARR_SIZE{5};
+    static const int ITEM_ARR_SIZE{10};     // max number of items
     static Item* itemArr[ITEM_ARR_SIZE];
 
-    static const int ENEMY_ARR_SIZE{10};
+    static const int ENEMY_ARR_SIZE{10};    // max number of enemies
     static Enemy* enemyArr[ENEMY_ARR_SIZE];
 
     // static const int GEN_ENT_ARR_SIZE{3};

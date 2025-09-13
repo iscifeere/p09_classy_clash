@@ -1,19 +1,31 @@
 #include "Character.h"
 #include "raymath.h"
 
-Character::Character(int winWidth, int winHeight) :
-    windowWidth(winWidth),
-    windowHeight(winHeight)
-{
-    width = texture->width / maxFrames;
-    height = texture->height;
+// Character::Character(int winWidth, int winHeight) :
+//     windowWidth(winWidth),
+//     windowHeight(winHeight)
+// {
+//     width = texture->width / maxFrames;
+//     height = texture->height;
 
-    speed = 10.f;    // default speed
-}
+//     speed = 10.f;    // default speed
+// }
 
-Character::Character(Vector2 pos, int winWidth, int winHeight) :
-    windowWidth(winWidth),
-    windowHeight(winHeight)
+// Character::Character(Vector2 pos, int winWidth, int winHeight) :
+//     windowWidth(winWidth),
+//     windowHeight(winHeight)
+// {
+//     width = texture->width / maxFrames;
+//     height = texture->height;
+
+//     speed = 10.f;    // default speed
+
+//     worldPos = pos;
+// }
+
+Character::Character(Vector2 pos) :
+    windowWidth(Tex::winSize[0]),
+    windowHeight(Tex::winSize[1])
 {
     width = texture->width / maxFrames;
     height = texture->height;

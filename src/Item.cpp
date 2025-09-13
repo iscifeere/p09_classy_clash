@@ -69,7 +69,10 @@ bool Item::tick(float deltaTime){
 }
 
 Vector2 Item::getScreenPos(){
-    return Vector2{Vector2Subtract( worldPos, player->getWorldPos() )};
+    return Vector2Subtract(
+        Vector2{worldPos.x - frameWidth*scale*0.5f, worldPos.y - frameHeight*scale*0.5f}, 
+        Vector2Subtract(player->getWorldPos(), 
+        Tex::halfWinSize) );
 }
 
 Rectangle Item::getCollisionRec()       // necesita revisión

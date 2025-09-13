@@ -2,6 +2,7 @@
 #include <iostream>
 
 int Tex::winSize[2]{};
+Vector2 Tex::halfWinSize{};
 
 Texture2D Tex::texture_map{};
 Texture2D Tex::texture_heart{};

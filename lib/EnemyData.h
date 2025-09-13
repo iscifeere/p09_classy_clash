@@ -109,7 +109,7 @@ inline void shootTarget(Enemy* enemy, Character* target, const float& deltaTime)
         }
         if(!enemy->chase)
         {
-            if(distance >= 200.f)
+            if(distance >= 215.f)
             {
                 if(attCooldown == 0.f){     // if cooldown is off -> shoot proyectile
                     EntityMng::spawnProyectile(proyectile, enemy->getWorldPos(), velocity, target);

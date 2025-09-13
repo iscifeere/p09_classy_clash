@@ -59,9 +59,15 @@ bool GenEntity::tick(float deltaTime)
     return true;
 }
 
-Vector2 GenEntity::getScreenPos()
-{
-    return Vector2{Vector2Subtract( worldPos, player->getWorldPos() )};
+// Vector2 GenEntity::getScreenPos()
+// {
+//     return Vector2{Vector2Subtract( worldPos, player->getWorldPos() )};
+// }
+Vector2 GenEntity::getScreenPos(){
+    return Vector2Subtract(
+        Vector2{worldPos.x - frameWidth*scale*0.5f, worldPos.y - frameHeight*scale*0.5f}, 
+        Vector2Subtract(player->getWorldPos(), 
+        Tex::halfWinSize) );
 }
 
 Rectangle GenEntity::getCollisionRec()

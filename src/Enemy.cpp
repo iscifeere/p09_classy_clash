@@ -112,7 +112,7 @@ Vector2 Enemy::getScreenPos(){
     return Vector2Subtract(
         Vector2{worldPos.x - width*scale*0.5f, worldPos.y - height*scale*0.5f}, 
         Vector2Subtract(target->getWorldPos(), 
-        Vector2{static_cast<float>(Tex::winSize[0])*0.5f,static_cast<float>(Tex::winSize[1])*0.5f}));
+        Tex::halfWinSize) );
 }
 
 void Enemy::takeDamage(float damage){
