@@ -7,13 +7,17 @@
 struct enemyData{
     Texture2D* texture_idle;
     Texture2D* texture_run;
-    int maxFrames;
-    int frameRows;
-    float speed;
-    float health;
-    float damage;
-    float chase_radius;
+    int maxFramesIdle{6};
+    int maxFramesRun{6};
+    int frameRows{};
+    bool ignoreFrameRows{false};
+
+    float speed{};
+    float health{};
+    float damage{};
+    float chase_radius{};
     bool isNeutral{false};
+
     const itemData* item_drop;
     void(*behave)(Enemy* enemy, Character* player, const float& deltaTime);
 };
@@ -134,7 +138,8 @@ inline void shootTarget(Enemy* enemy, Character* target, const float& deltaTime)
 const enemyData SLIME_ENEMYDATA{
     .texture_idle = &Tex::texture_slime_idle,
     .texture_run = &Tex::texture_slime_run,
-    .maxFrames = 6,
+    .maxFramesIdle = 6,
+    .maxFramesRun = 6,
     .frameRows = 1,
     .speed = 4.f,
     .health = 40.f,
@@ -146,7 +151,8 @@ const enemyData SLIME_ENEMYDATA{
 const enemyData MADKNIGHT_ENEMYDATA{
     .texture_idle = &Tex::texture_knight_idle,
     .texture_run = &Tex::texture_knight_run,
-    .maxFrames = 6,
+    .maxFramesIdle = 6,
+    .maxFramesRun = 6,
     .frameRows = 1,
     .speed = 9.f,
     .health = 120.f,
@@ -159,14 +165,16 @@ const enemyData MADKNIGHT_ENEMYDATA{
 const enemyData RED_ENEMYDATA{
     .texture_idle = &Tex::texture_red_idle,
     .texture_run = &Tex::texture_red_run,
-    .maxFrames = 4,
+    .maxFramesIdle = 4,
+    .maxFramesRun = 6,
     .frameRows = 2,
+    .ignoreFrameRows = true,
     .speed = 9.f,
     .health = 120.f,
     .damage = 10.f,
     .chase_radius = 400.f,
     .item_drop = &GEM_ITEMDATA,
-    .behave = shootTarget
+    .behave = chaseTarget
 };
 const enemyData* ENEMYDATA_ARR[]{
     &SLIME_ENEMYDATA,

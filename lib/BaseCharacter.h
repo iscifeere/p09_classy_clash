@@ -40,11 +40,16 @@ protected:
     // animation variables
     float runningTime{};
     int frame{};
+    int frameRow{};
     int maxFrames{6};
+    int maxFramesIdle{6};
+    int maxFramesRun{6};
+    int maxFrameRows{1};
+    bool ignoreFrameRows{false};
     float updateTime{1.f/12.f};
     float speed{5.f};
-    float width{};
-    float height{};
+    float frameWidth{};
+    float frameHeight{};
     float scale{8.0f};
     
     Vector2 velocity{};

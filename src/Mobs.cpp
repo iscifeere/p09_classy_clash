@@ -10,8 +10,8 @@ SlimeMob::SlimeMob(Vector2 pos, Character* playerPtr)
     idle = &Tex::texture_slime_idle;
     run = &Tex::texture_slime_run;
 
-    width = texture->width / maxFrames;
-    height = texture->height;
+    frameWidth = texture->width / maxFrames;
+    frameHeight = texture->height;
 
     speed = 4.f;
     health = 40.f;
@@ -30,8 +30,8 @@ MadKnightMob::MadKnightMob(Vector2 pos, Character* playerPtr)
     idle = &Tex::texture_knight_idle;
     run = &Tex::texture_knight_run;
 
-    width = texture->width / maxFrames;
-    height = texture->height;
+    frameWidth = texture->width / maxFrames;
+    frameHeight = texture->height;
 
     speed = 9.f;
     health = 120.f;
@@ -51,8 +51,8 @@ RedMob::RedMob(Vector2 pos, Character* playerPtr)
     run = &Tex::texture_red_run;
 
     maxFrames = 4;
-    width = texture->width / maxFrames;
-    height = texture->height / 2;
+    frameWidth = texture->width / maxFrames;
+    frameHeight = texture->height / 2;
 
     speed = 9.f;
     health = 120.f;

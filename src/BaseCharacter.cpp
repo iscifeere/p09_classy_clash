@@ -18,8 +18,8 @@ Rectangle BaseCharacter::getCollisionRec(){
     return Rectangle{
         getScreenPos().x,
         getScreenPos().y,
-        width * scale,
-        height * scale
+        frameWidth * scale,
+        frameHeight * scale
     };
 }
 
@@ -29,33 +29,29 @@ bool BaseCharacter::tick(float deltaTime){
 
     // update animation frame
     runningTime += deltaTime;
-    if(runningTime >= updateTime){
-        frame++;
-        runningTime = 0.f;
-        if(frame >= maxFrames) frame = 0;
-    }
 
     if(Vector2Length(velocity) != 0.0){
         // set worldPos = worldPos + normalized direction
         texture = run;
+        maxFrames = maxFramesRun;
         velocity.x < 0.f ? rightLeft = -1.f : rightLeft = 1.f;
         movement = Vector2Scale(Vector2Normalize(velocity), speed);
         worldPos = Vector2Add(worldPos, movement);
 
         if(
-            getWorldPos().x < static_cast<float>(Tex::winSize[0])*0.5f ||
-            getWorldPos().x + width*scale > static_cast<float>(Tex::texture_map.width) * Tex::MAP_SCALE - static_cast<float>(Tex::winSize[0])*0.5f )
+            getWorldPos().x < Tex::halfWinSize.x ||
+            getWorldPos().x + frameWidth*scale > static_cast<float>(Tex::texture_map.width) * Tex::MAP_SCALE - Tex::halfWinSize.x )
         {
             undoMovementX();
         }
         if(
-            getWorldPos().y < static_cast<float>(Tex::winSize[1]*0.5f) ||
-            getWorldPos().y + height*scale > static_cast<float>(Tex::texture_map.height) * Tex::MAP_SCALE - static_cast<float>(Tex::winSize[1])*0.5f )
+            getWorldPos().y < Tex::halfWinSize.y ||
+            getWorldPos().y + frameHeight*scale > static_cast<float>(Tex::texture_map.height) * Tex::MAP_SCALE - Tex::halfWinSize.y )
         {
             undoMovementY();
         }
 
-    } else texture = idle;
+    } else {texture = idle; maxFrames = maxFramesIdle;}
 
     return true;
 }
@@ -70,7 +66,17 @@ void BaseCharacter::takeDamage(float damage){
 }
 
 void BaseCharacter::render(){
-    Rectangle source{ (float)frame * width , 0.f , rightLeft * width , height };
-    Rectangle dest{ getScreenPos().x , getScreenPos().y , scale * width , scale * height };
+    // update animation frame
+    if(runningTime >= updateTime){
+        frame++;
+        runningTime = 0.f;
+        if(frame >= maxFrames){frame = 0; frameRow++;}
+        if(frameRow >= maxFrameRows) frameRow = 0;
+    }
+
+    // draw character
+    // Rectangle source{ static_cast<float>(frame) * frameWidth, static_cast<float>(frameRow) * frameHeight, rightLeft * frameWidth, frameHeight };
+    Rectangle source{ static_cast<float>(frame) * frameWidth, 0.f, rightLeft * frameWidth, frameHeight };
+    Rectangle dest{ getScreenPos().x , getScreenPos().y , scale * frameWidth , scale * frameHeight };
     DrawTexturePro(*texture, source, dest, (Vector2){0.f,0.f}, 0.f, drawColor);
 }

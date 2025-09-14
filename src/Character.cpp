@@ -5,8 +5,8 @@ Character::Character(Vector2 pos) :
     windowWidth(Tex::winSize[0]),
     windowHeight(Tex::winSize[1])
 {
-    width = texture->width / maxFrames;
-    height = texture->height;
+    frameWidth = texture->width / maxFrames;
+    frameHeight = texture->height;
 
     speed = 10.f;    // default speed
 
@@ -27,8 +27,8 @@ Character::Character(Vector2 pos) :
 
 Vector2 Character::getScreenPos(){
     return Vector2{
-        static_cast<float>(windowWidth)/2.0f - (scale * (0.5f * width)) ,
-        static_cast<float>(windowHeight)/2.0f - (scale * (0.5f * height))
+        Tex::halfWinSize.x - (scale * (0.5f * frameWidth)) ,
+        Tex::halfWinSize.y - (scale * (0.5f * frameHeight))
     };
 }
 
@@ -104,7 +104,7 @@ void Character::addHealth( float healthAdd ){
 
 void Character::showDebugData(){
     // DrawRectangleLines(getWorldPos().x, getWorldPos().y, width*scale, height*scale, YELLOW); [SHOOTING AIM IDEA!!!]
-    DrawRectangleLines(getScreenPos().x, getScreenPos().y, width*scale, height*scale, YELLOW);
+    DrawRectangleLines(getScreenPos().x, getScreenPos().y, frameWidth*scale, frameHeight*scale, YELLOW);
     DrawText(TextFormat("X: %01.01f",getWorldPos().x), 55.f, 125.f, 30, WHITE);
     DrawText(TextFormat("Y: %01.01f",getWorldPos().y), 55.f, 155.f, 30, WHITE);
 }
