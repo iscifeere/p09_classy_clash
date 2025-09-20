@@ -36,6 +36,7 @@ private:
         Vector2 offset{};
         float rotation{};
     } swordVariables{};
+    Color healthBarColor{WHITE};
 };
 
 #endif

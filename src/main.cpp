@@ -135,8 +135,11 @@ int main(void) {
         // delete enemies
         if( IsKeyPressed(KEY_F) ) EntityMng::killEnemy();
 
-        // knight tick
+        // entities tick ========================
         knight.tick(dT);
+        EntityMng::tickItems(dT);
+        EntityMng::tickEnemies(dT);
+        EntityMng::tickProyectiles(dT);
 
         // cursor affects player
         if(IsMouseButtonDown(MOUSE_BUTTON_RIGHT)){
@@ -160,9 +163,10 @@ int main(void) {
 
         // update map position
         mapPos = Vector2Scale(Vector2Subtract(knight.getWorldPos(), mapPosCorrection), -1.f);
-
         // draw the map
         DrawTextureEx(Tex::texture_map, mapPos, 0.0, Tex::MAP_SCALE, WHITE);
+
+        // entities render =====================
 
         // draw the props
         for (auto prop : props){
@@ -176,25 +180,22 @@ int main(void) {
             continue;
         }
 
-        // knight render
         knight.render();
-
-        // item heart tick
-        EntityMng::tickItems(dT);
+        EntityMng::renderItems();
 
         // enemy tick
         for (auto enemy : enemies){
             enemy->tick(dT);
         }
-        EntityMng::tickEnemies(dT);
+        
+        EntityMng::renderEnemies();
         bob.tick(dT);
         rojo.tick(dT);
-        // arrow.tick(dT);
         if(arrowPtr != nullptr) arrowPtr->tick(dT);
         EntityMng::tickAmmo(dT);
-        EntityMng::tickProyectiles(dT);
+        EntityMng::renderProyectiles();
         
-        // draw player health and money
+        // draw player stats
         knight.showStats();
 
         // draw debug data

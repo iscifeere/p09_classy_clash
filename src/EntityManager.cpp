@@ -45,6 +45,14 @@ void EntityMng::tickProyectiles(float deltaTime){
     }
 }
 
+void EntityMng::renderProyectiles(){
+    for( auto &proyectile : proyectileArr ){
+        if(proyectile != nullptr){
+            if(proyectile->getAlive()) proyectile->render();
+        }
+    }
+}
+
 void EntityMng::showProyectilesDebugData(){
     for(int i{0} ; i < PROYECTILE_ARR_SIZE ; i++){
         if(proyectileArr[i] != nullptr){
@@ -103,6 +111,14 @@ void EntityMng::tickItems(float deltaTime){
     }
 }
 
+void EntityMng::renderItems(){
+    for( auto &item : itemArr ){
+        if( item != nullptr ){
+            if( item->getAlive() ) item->render();
+        }
+    }
+}
+
 void EntityMng::showItemsDebugData(){
     for(int i{0} ; i < ITEM_ARR_SIZE ; i++){
         if(itemArr[i] != nullptr){
@@ -155,6 +171,14 @@ void EntityMng::tickEnemies(float deltaTime){
                 enemyArr[i] = nullptr;
                 std::cout << "[Enemy deleted!]" << std::endl;
             }
+        }
+    }
+}
+
+void EntityMng::renderEnemies(){
+    for( auto &enemy : enemyArr ){
+        if( enemy != nullptr ){
+            if( enemy->getAlive() ) enemy->render();
         }
     }
 }

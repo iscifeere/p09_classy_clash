@@ -78,14 +78,15 @@ bool Enemy::tick(float deltaTime){
 
     // ====== TICK AND VARIABLE RESETS ============
     BaseCharacter::tick(deltaTime);
-    BaseCharacter::render();
     
-    if(!invul) drawColor = WHITE; // reset drawColor if not invulnerable
-    else { 
+    if(invul){
         hurtTime += deltaTime;
-        if(hurtTime >= 0.5f) { hurtTime = 0.f; invul = false; }
+        if(hurtTime >= 0.5f){
+            hurtTime = 0.f;
+            invul = false;
+            drawColor = WHITE;
+        } else drawColor = RED;
     }
-
 
     // ====== DAMAGE TARGET ON CONTACT ============
     if(!neutral){
@@ -107,8 +108,6 @@ bool Enemy::tick(float deltaTime){
             setAlive(false);
         }
     }
-    
-    drawHealthBar();
 
     return true;
 }
@@ -168,4 +167,10 @@ void Enemy::drawHealthBar()
         DrawRectangle(healthBar.x, healthBar.y, data->health, healthBar.height, BLACK);
     }
     DrawRectangle(healthBar.x, healthBar.y, healthBar.width, healthBar.height, GREEN);
+}
+
+void Enemy::render(){
+    BaseCharacter::render();
+    drawHealthBar();
+    drawColor = WHITE;    // reset color
 }

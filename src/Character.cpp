@@ -110,6 +110,36 @@ void Character::showDebugData(){
 }
 
 void Character::showStats(){
+    // draw health bar
+    Rectangle healthBar{50.f, 45.f, 4.f * health, 40.f};
+    if(health <= 100.f)
+    {
+        if( healthBarColor.r == 255 &&       // if color is WHITE
+            healthBarColor.g == 255 &&
+            healthBarColor.b == 255 &&
+            healthBarColor.a == 255) healthBarColor = GREEN;
+
+        DrawRectangle(healthBar.x, healthBar.y, 400.f, healthBar.height, BLACK);
+        DrawRectangle(healthBar.x, healthBar.y, healthBar.width, healthBar.height, healthBarColor);
+    }
+    else if(health <= 300.f)
+    {
+        if( healthBarColor.r == 255 &&
+            healthBarColor.g == 255 &&
+            healthBarColor.b == 255 &&
+            healthBarColor.a == 255) healthBarColor = BLUE;
+        
+        DrawRectangle(healthBar.x, healthBar.y, 400.f, healthBar.height, GREEN);
+        DrawRectangle(healthBar.x, healthBar.y, ( healthBar.width - (4.f * 100.f) ) * 0.5f, healthBar.height, healthBarColor);
+    } else{
+        if( healthBarColor.r == 255 &&
+            healthBarColor.g == 255 &&
+            healthBarColor.b == 255 &&
+            healthBarColor.a == 255) healthBarColor = BLUE;
+
+        DrawRectangle(healthBar.x, healthBar.y, 400.f, healthBar.height, healthBarColor);
+    }
+
     DrawText(TextFormat("Health: %01.01f",health), 55.f, 45.f, 40, WHITE);
     DrawText(TextFormat("Money: %i",moneyCount), 55.f, 80.f, 40, WHITE);
 }
@@ -122,38 +152,6 @@ void Character::render(){
     Rectangle dest{getScreenPos().x + swordVariables.offset.x, getScreenPos().y + swordVariables.offset.y, weapon->width * scale, weapon->height * scale};
     DrawTexturePro(*weapon, source, dest, swordVariables.origin, swordVariables.rotation, drawColor);
 
-    // draw health bar
-    Rectangle healthBar{50.f, 45.f, 4.f * health, 40.f};
-    if(health <= 100.f)
-    {
-        Color healthBarColor{GREEN};
-        if( drawColor.r != 255 ||       // if drawColor isn't WHITE
-            drawColor.g != 255 ||
-            drawColor.b != 255 ||
-            drawColor.a != 255) healthBarColor = drawColor;
-
-        DrawRectangle(healthBar.x, healthBar.y, 400.f, healthBar.height, BLACK);
-        DrawRectangle(healthBar.x, healthBar.y, healthBar.width, healthBar.height, healthBarColor);
-    }
-    else if(health <= 300.f)
-    {
-        Color healthBarColor{BLUE};
-        if( drawColor.r != 255 ||
-            drawColor.g != 255 ||
-            drawColor.b != 255 ||
-            drawColor.a != 255) healthBarColor = drawColor;
-        
-        DrawRectangle(healthBar.x, healthBar.y, 400.f, healthBar.height, GREEN);
-        DrawRectangle(healthBar.x, healthBar.y, ( healthBar.width - (4.f * 100.f) ) * 0.5f, healthBar.height, healthBarColor);
-    } else{
-        Color healthBarColor{BLUE};
-        if( drawColor.r != 255 ||
-            drawColor.g != 255 ||
-            drawColor.b != 255 ||
-            drawColor.a != 255) healthBarColor = drawColor;
-
-        DrawRectangle(healthBar.x, healthBar.y, 400.f, healthBar.height, healthBarColor);
-    }
-
+    healthBarColor = drawColor;
     drawColor = WHITE;  // reset draw color
 }

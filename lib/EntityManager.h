@@ -16,12 +16,14 @@ public:
     static void spawnItem(Vector2 pos, Character* playerPtr, const itemData* item_data);
     static void killItem();
     static void tickItems(float deltaTime);
+    static void renderItems();
     static void showItemsDebugData();
     
     static void spawnEnemy(Vector2 pos, Character* playerPtr);
     static void spawnEnemy(Vector2 pos, Character* playerPtr, const enemyData* enemy_data);
     static void killEnemy();
     static void tickEnemies(float deltaTime);
+    static void renderEnemies();
     static void showEnemiesDebugData();
 
     static void spawnAmmo(Vector2 pos, Vector2 direction, Character* playerPtr);
@@ -30,6 +32,7 @@ public:
     static void spawnProyectileInPool(Vector2 pos, Vector2 direction, Character* playerPtr);
     static void tickProyectile(GenEntity*& proyectile, float deltaTime);
     static void tickProyectiles(float deltaTime);
+    static void renderProyectiles();
     static void showProyectilesDebugData();
 
 private:

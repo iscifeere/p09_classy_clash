@@ -53,8 +53,8 @@ bool GenEntity::tick(float deltaTime)
         setAlive(false);
     }
 
-    // DRAW ENTITY
-    DrawTextureEx(*texture, screenPos, 0.f, scale, drawColor);
+    // // DRAW ENTITY
+    // DrawTextureEx(*texture, screenPos, 0.f, scale, drawColor);
 
     return true;
 }
@@ -70,8 +70,7 @@ Vector2 GenEntity::getScreenPos(){
         Tex::halfWinSize) );
 }
 
-Rectangle GenEntity::getCollisionRec()
-{
+Rectangle GenEntity::getCollisionRec(){
     Vector2 screenPos{ getScreenPos() };
     return Rectangle{
         screenPos.x,
@@ -81,15 +80,13 @@ Rectangle GenEntity::getCollisionRec()
     };
 }
 
-void GenEntity::spawnReset()
-{
+void GenEntity::spawnReset(){
     moveTimer = 0.f;
     velocity = {};
     // active = true;
     setAlive(true);
 }
-void GenEntity::spawnReset(Vector2 pos, Vector2 direction)
-{
+void GenEntity::spawnReset(Vector2 pos, Vector2 direction){
     moveTimer = 0.f;
     velocity = direction;
     worldPos = pos;
@@ -99,4 +96,8 @@ void GenEntity::spawnReset(Vector2 pos, Vector2 direction)
 
 void GenEntity::showDebugData(){
     DrawRectangleLines( getScreenPos().x, getScreenPos().y, frameWidth*scale, frameHeight*scale, YELLOW );
+}
+
+void GenEntity::render(){
+    DrawTextureEx(*texture, screenPos, 0.f, scale, drawColor);
 }

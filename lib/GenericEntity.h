@@ -21,6 +21,7 @@ public:
     bool getAlive() { return alive; }
     void setAlive( bool isAlive ) { alive = isAlive; }
     void showDebugData();
+    void render();
 
     Vector2 worldPos{};
     Character* player{nullptr};

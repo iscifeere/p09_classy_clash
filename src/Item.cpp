@@ -59,12 +59,11 @@ bool Item::tick(float deltaTime){
         }
     }
 
-    // draw item
-    Rectangle source{frameWidth*frame, 0.f, frameWidth, frameHeight};
-    Rectangle dest{getScreenPos().x, getScreenPos().y, frameWidth * scale, frameHeight * scale};
-    DrawTexturePro(*texture, source, dest, Vector2{0.f,0.f}, 0.f, WHITE);
-
-    // DrawText(TextFormat("%02.02f",moveTimer), screenPos.x, screenPos.y, 10, WHITE);
+    // // draw item
+    // Rectangle source{frameWidth*frame, 0.f, frameWidth, frameHeight};
+    // Rectangle dest{getScreenPos().x, getScreenPos().y, frameWidth * scale, frameHeight * scale};
+    // DrawTexturePro(*texture, source, dest, Vector2{0.f,0.f}, 0.f, WHITE);
+    // // DrawText(TextFormat("%02.02f",moveTimer), screenPos.x, screenPos.y, 10, WHITE);
 
     // KILL WITH CURSOR
     if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
@@ -98,4 +97,13 @@ void Item::showDebugData(){
     DrawRectangleLines( getScreenPos().x, getScreenPos().y, frameWidth*scale, frameHeight*scale, YELLOW );
     DrawText( TextFormat("%01.01f",getWorldPos().x), getScreenPos().x, getScreenPos().y + frameHeight*scale - 20, 10, WHITE );
     DrawText( TextFormat("%01.01f",getWorldPos().y), getScreenPos().x, getScreenPos().y + frameHeight*scale - 10, 10, WHITE );
+}
+
+void Item::render(){
+    // draw item
+    Rectangle source{frameWidth*frame, 0.f, frameWidth, frameHeight};
+    Rectangle dest{getScreenPos().x, getScreenPos().y, frameWidth * scale, frameHeight * scale};
+    DrawTexturePro(*texture, source, dest, Vector2{0.f,0.f}, 0.f, WHITE);
+
+    // DrawText(TextFormat("%02.02f",moveTimer), screenPos.x, screenPos.y, 10, WHITE);
 }

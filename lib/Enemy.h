@@ -28,8 +28,8 @@ public:
     float attackTimer{};
     virtual void showDebugData() override;
     void drawHealthBar();
+    void render() override;
     GenEntity* proyectile{nullptr};
-    // const enemyData* data{nullptr};
     float fleeTimer{};
     bool flee{false};
     bool chase{false};
