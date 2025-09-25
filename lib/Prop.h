@@ -6,7 +6,7 @@ class Prop
 public:
     Prop(Vector2 pos);
     Prop(Vector2 pos, Texture2D* texture_ptr);
-    void Render(Vector2 knightPos);
+    void render(Vector2 knightPos);
     Rectangle getCollisionRec(Vector2 knightPos);
 private:
     Texture2D* texture{nullptr};

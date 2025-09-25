@@ -8,19 +8,21 @@ class Character : public BaseCharacter
 {
 public:
     Character(Vector2 pos);
-    virtual bool tick(float deltaTime) override;
-    // virtual Vector2 getWorldPos() override;
-    virtual Vector2 getScreenPos() override;
+
+    bool tick(float deltaTime) override;
+    // Vector2 getWorldPos() override;
+    Vector2 getScreenPos() override;
     Rectangle getWeaponCollisionRec(){ return weaponCollisionRec; }
     float getDamage(){ return damagePerHit; }
-    virtual void deathSequence() override;
+    void deathSequence() override;
     bool getIsAttack() { return isAttacking; }
-    virtual void addHealth( float healthAdd ) override;
+    void addHealth( float healthAdd ) override;
     int getMoney(){ return moneyCount; }
     void addMoney(int moneyAdd){ moneyCount += moneyAdd; }
-    virtual void showDebugData() override;
+    void showDebugData() override;
     void showStats();
     void render() override;
+    
 private:
     int windowWidth{};
     int windowHeight{};

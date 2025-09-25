@@ -6,6 +6,7 @@
 
 Enemy::Enemy(){
     // action = chaseTarget;
+    scale = 8.0f;
 }
 
 Enemy::Enemy(Vector2 pos)
@@ -17,6 +18,7 @@ Enemy::Enemy(Vector2 pos)
 
     frameWidth = texture->width / maxFrames;
     frameHeight = texture->height;
+    scale = 8.0f;
 
     speed = 5.f;   // default speed
     health = 60;    // default health
@@ -41,6 +43,7 @@ Enemy::Enemy(Vector2 pos, const enemyData* enemy_data)
 
     frameWidth = texture->width / maxFrames;
     frameHeight = texture->height / data->frameRows;
+    scale = 8.0f;
 
     speed = data->speed;
     health = data->health;
@@ -60,6 +63,7 @@ Enemy::Enemy(Vector2 pos, Texture2D* idle_texture, Texture2D* run_texture)
 
     frameWidth = texture->width / maxFrames;
     frameHeight = texture->height;
+    scale = 8.0f;
 
     speed = 5.f;   // default speed
     health = 60;    // default health

@@ -7,6 +7,7 @@ GenEntity::GenEntity( Vector2 pos, Character* playerPtr ) :
 {
     frameWidth = texture->width / maxFrames;
     frameHeight = texture->height;
+    scale = 4.f;
 }
 GenEntity::GenEntity( Vector2 pos, Vector2 direction, Character* playerPtr ) :
     worldPos(pos),
@@ -15,6 +16,7 @@ GenEntity::GenEntity( Vector2 pos, Vector2 direction, Character* playerPtr ) :
 {
     frameWidth = texture->width / maxFrames;
     frameHeight = texture->height;
+    scale = 4.f;
 }
 
 bool GenEntity::tick(float deltaTime)

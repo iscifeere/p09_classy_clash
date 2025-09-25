@@ -4,6 +4,7 @@
 #include "raylib.h"
 #include "Character.h"
 #include "Tex.h"
+#include "Entity.h"
 
 struct itemData{
     Texture2D* texture;
@@ -14,7 +15,7 @@ struct itemData{
 
 //============================
 
-class Item
+class Item : public Entity
 {
 public:
     Item();    // default constructor
@@ -23,23 +24,24 @@ public:
     
     bool tick(float deltatime);
     Vector2 getWorldPos() { return worldPos; }
-    Vector2 getScreenPos();
+    Vector2 getScreenPos() override;
     bool getAlive() { return alive; }
     void setAlive( bool isAlive ) { alive = isAlive; }
     Rectangle getCollisionRec();
     void showDebugData();
-    void render();
+    void render() override;
+
 protected:
     Vector2 worldPos{};
     Character* player{nullptr};
     Texture2D* texture{&Tex::texture_heart};
     int frame{};
     int maxFrames{1};
-    float frameWidth{};       // width of one animation frame
-    float frameHeight{};      // height of one animation frame
+    // float frameWidth{};       // width of one animation frame
+    // float frameHeight{};      // height of one animation frame
     float runningTime{};
     float updateTime{1.f/12.f};     // speed of animation
-    float scale{4.f};
+    // float scale{4.f};
     float moveTimer{0.f};
 
     const itemData* data{nullptr};

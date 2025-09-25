@@ -19,21 +19,24 @@ public:
     Enemy(Vector2 pos);
     Enemy(Vector2 pos, const enemyData* enemy_data);
     Enemy(Vector2 pos, Texture2D* idle_texture, Texture2D* run_texture);
+
     virtual bool tick(float deltaTime) override;
     void setTarget(Character* ptr){ target = ptr; }
-    virtual Vector2 getScreenPos() override;
+    Vector2 getScreenPos() override;
     virtual void takeDamage(float damage) override;
     virtual void deathSequence() override;
     float& getRadiusEtc(int choice);
-    float attackTimer{};
     virtual void showDebugData() override;
     void drawHealthBar();
     void render() override;
+
     GenEntity* proyectile{nullptr};
+    float attackTimer{};
     float fleeTimer{};
     bool flee{false};
     bool chase{false};
     bool neutral{false};
+    
 protected:
     Character* target{};
     float damagePerSec{10.f};

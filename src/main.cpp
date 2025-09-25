@@ -170,7 +170,7 @@ int main(void) {
 
         // draw the props
         for (auto prop : props){
-            prop.Render(knight.getWorldPos());
+            prop.render(knight.getWorldPos());
         }
 
         // draw game over text if dead
@@ -180,20 +180,21 @@ int main(void) {
             continue;
         }
 
-        knight.render();
-        EntityMng::renderItems();
+        // knight.render();
+        // EntityMng::renderItems();
 
         // enemy tick
         for (auto enemy : enemies){
             enemy->tick(dT);
         }
         
-        EntityMng::renderEnemies();
+        // EntityMng::renderEnemies();
         bob.tick(dT);
         rojo.tick(dT);
         if(arrowPtr != nullptr) arrowPtr->tick(dT);
         EntityMng::tickAmmo(dT);
-        EntityMng::renderProyectiles();
+        // EntityMng::renderProyectiles();
+        EntityMng::renderEntities(&knight);
         
         // draw player stats
         knight.showStats();

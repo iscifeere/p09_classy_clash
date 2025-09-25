@@ -14,7 +14,7 @@ Prop::Prop(Vector2 pos, Texture2D* texture_ptr) :
 
 }
 
-void Prop::Render(Vector2 knightPos)
+void Prop::render(Vector2 knightPos)
 {
     Vector2 screenPos{Vector2Subtract(worldPos, knightPos)};
     if(texture != nullptr) DrawTextureEx(*texture, screenPos, 0.f, scale, WHITE);

@@ -7,6 +7,7 @@ Character::Character(Vector2 pos) :
 {
     frameWidth = texture->width / maxFrames;
     frameHeight = texture->height;
+    scale = 8.0f;
 
     speed = 10.f;    // default speed
 

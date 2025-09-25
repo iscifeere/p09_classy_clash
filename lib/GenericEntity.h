@@ -4,8 +4,9 @@
 #include "raylib.h"
 #include "Tex.h"
 #include "Character.h"
+#include "Entity.h"
 
-class GenEntity
+class GenEntity : public Entity
 {
 public:
     GenEntity( Vector2 pos, Character* player );
@@ -16,12 +17,12 @@ public:
 
     bool tick(float deltaTime);
     Vector2 getWorldPos() { return worldPos; }
-    Vector2 getScreenPos();
+    Vector2 getScreenPos() override;
     Rectangle getCollisionRec();
     bool getAlive() { return alive; }
     void setAlive( bool isAlive ) { alive = isAlive; }
     void showDebugData();
-    void render();
+    void render() override;
 
     Vector2 worldPos{};
     Character* player{nullptr};
@@ -32,14 +33,15 @@ public:
     float speed{12.f};
     int frame{};
     int maxFrames{1};
-    float frameWidth{};       // width of one animation frame
-    float frameHeight{};      // height of one animation frame
+    // float frameWidth{};       // width of one animation frame
+    // float frameHeight{};      // height of one animation frame
     float runningTime{};
     float updateTime{1.f/12.f};     // speed of animation
-    float scale{4.f};
+    // float scale{4.f};
     Color drawColor{BLUE};
     float moveTimer{0.f};
     // bool active{true};
+    
 private:
     bool alive{true};
 };

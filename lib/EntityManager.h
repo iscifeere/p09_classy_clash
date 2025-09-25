@@ -6,6 +6,7 @@
 #include "Character.h"
 #include "Enemy.h"
 #include "GenericEntity.h"
+#include "Entity.h"
 
 class EntityMng
 {
@@ -35,6 +36,8 @@ public:
     static void renderProyectiles();
     static void showProyectilesDebugData();
 
+    static void renderEntities(Character* playerPtr);
+
 private:
     static const int ITEM_ARR_SIZE{10};     // max number of items
     static Item* itemArr[ITEM_ARR_SIZE];
@@ -45,6 +48,9 @@ private:
     static const int PROYECTILE_ARR_SIZE{ENEMY_ARR_SIZE};   // max number of proyectiles
     static GenEntity* proyectileArr[PROYECTILE_ARR_SIZE];
     static GenEntity* ammo;
+
+    static const int ENTITY_ARR_SIZE{ITEM_ARR_SIZE + ENEMY_ARR_SIZE + PROYECTILE_ARR_SIZE};
+    static Entity* EntityArr[ENTITY_ARR_SIZE];
 };
 
 #endif

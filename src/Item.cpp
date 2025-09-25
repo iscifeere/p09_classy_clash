@@ -3,7 +3,7 @@
 #include <cmath>
 
 Item::Item(){
-
+    scale = 4.f;
 }
 
 Item::Item(Vector2 pos, Character* player_ptr ) :
@@ -12,6 +12,7 @@ Item::Item(Vector2 pos, Character* player_ptr ) :
 {
     frameWidth = texture->width / maxFrames;
     frameHeight = texture->height;
+    scale = 4.f;
 }
 
 Item::Item(Vector2 pos, Character* player_ptr, const itemData* item_data ) :
@@ -27,6 +28,7 @@ Item::Item(Vector2 pos, Character* player_ptr, const itemData* item_data ) :
 
     frameWidth = texture->width / maxFrames;
     frameHeight = texture->height;
+    scale = 4.f;
 }
 
 bool Item::tick(float deltaTime){

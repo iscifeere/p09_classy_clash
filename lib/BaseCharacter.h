@@ -3,19 +3,20 @@
 
 #include "raylib.h"
 #include "Tex.h"
-// #include "EntityManager.h"       // [!] causes compilation error--- WHY???
+#include "Entity.h"
 
-class BaseCharacter
+class BaseCharacter : public Entity
 {
 public:
     BaseCharacter();
+    
     // Vector2 getWorldPos(){ return worldPos; }
     virtual Vector2 getWorldPos(){ return worldPos; }
     void undoMovementX();
     void undoMovementY();
     Rectangle getCollisionRec();
     virtual bool tick(float deltaTime);
-    virtual Vector2 getScreenPos() = 0;
+    // virtual Vector2 getScreenPos() = 0;
     bool getAlive() { return alive; }
     void setAlive( bool isAlive ) { alive = isAlive; }
     void setSpeed( float newSpeed ) { speed = newSpeed; }
@@ -26,8 +27,9 @@ public:
     virtual void deathSequence() = 0;
     virtual void addHealth( float healthAdd ) { health += healthAdd; }
     Vector2& getVelocity(){ return velocity; }      // returns a reference
-    virtual void render();
+    virtual void render() override;
     virtual void showDebugData() = 0;
+    
 protected:
     Texture2D* texture{&Tex::texture_knight_idle};
     Texture2D* idle{&Tex::texture_knight_idle};
@@ -48,9 +50,9 @@ protected:
     bool ignoreFrameRows{false};
     float updateTime{1.f/12.f};
     float speed{5.f};
-    float frameWidth{};
-    float frameHeight{};
-    float scale{8.0f};
+    // float frameWidth{};
+    // float frameHeight{};
+    // float scale{8.0f};
     
     Vector2 velocity{};
     Vector2 movement{};

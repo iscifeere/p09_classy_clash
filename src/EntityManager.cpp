@@ -1,10 +1,14 @@
 #include "EntityManager.h"
 #include <iostream>
+#include <vector>
+#include <algorithm>
+#include <array>
 
 Item* EntityMng::itemArr[ITEM_ARR_SIZE]{nullptr};
 Enemy* EntityMng::enemyArr[ENEMY_ARR_SIZE]{nullptr};
 GenEntity* EntityMng::proyectileArr[PROYECTILE_ARR_SIZE]{nullptr};
 GenEntity* EntityMng::ammo{nullptr};
+Entity* EntityMng::EntityArr[ENTITY_ARR_SIZE]{nullptr};
 
 void EntityMng::spawnProyectile(GenEntity*& proyectile, Vector2 pos, Vector2 direction, Character* playerPtr){
     if(proyectile != nullptr){
@@ -189,4 +193,42 @@ void EntityMng::showEnemiesDebugData(){
             enemyArr[i]->showDebugData();
         }
     }
+}
+
+void EntityMng::renderEntities(Character* playerPtr){
+    std::array<Entity*, ENTITY_ARR_SIZE> renderQueue = {nullptr};
+
+    size_t queueEnd{0};
+
+    // add entities to render
+    if(playerPtr != nullptr){
+        renderQueue[queueEnd] = playerPtr;
+        queueEnd++;
+    }
+    for( auto entity : itemArr ){
+        if(entity != nullptr){
+            renderQueue[queueEnd] = entity;
+            queueEnd++;
+    }}
+    for( auto entity : enemyArr ){
+        if(entity != nullptr){
+            renderQueue[queueEnd] = entity;
+            queueEnd++;
+    }}
+    for( auto entity : proyectileArr ){
+        if(entity != nullptr){
+            if(entity->getAlive()){
+                renderQueue[queueEnd] = entity;
+                queueEnd++;
+    }}}
+
+    std::sort(renderQueue.begin(), renderQueue.begin() + queueEnd,
+        [](Entity* a, Entity* b) {
+            return a->getScreenPos().y + a->getHeight() < b->getScreenPos().y + b->getHeight();
+        });
+
+    for(size_t i{} ; i != queueEnd ; i++){
+        renderQueue[i]->render();
+    }
+
 }
