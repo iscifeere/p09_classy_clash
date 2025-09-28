@@ -40,11 +40,9 @@ int main(void) {
 
     Vector2 playerWorPos{knight.getWorldPos()};
 
-
-    Prop props[2]{
-        Prop{Vector2{1200.f, 600.f}},
-        Prop{Vector2{800.f, 1000.f}, (Texture2D*)&Tex::texture_prop_log}
-    };
+    EntityMng::spawnProp(Vector2{1200.f, 800.f}, &Tex::texture_prop_rock, &knight);
+    EntityMng::spawnProp(Vector2{800.f, 1200.f}, &Tex::texture_prop_log, &knight);
+    EntityMng::spawnProp(Vector2{1800.f, 1200.f}, &Tex::texture_prop_sign, &knight);
 
     Enemy goblin{Vector2{1600.f, 600.f}};
 
@@ -154,12 +152,7 @@ int main(void) {
             }
         } else cursorColor = DARKBLUE;
 
-        // check prop collisions
-        for (auto prop : props){
-            if (CheckCollisionRecs( prop.getCollisionRec(knight.getWorldPos()), knight.getCollisionRec() )){
-                knight.undoMovementX();
-            }
-        }
+        EntityMng::checkPropCollisions(&knight);
 
         // update map position
         mapPos = Vector2Scale(Vector2Subtract(knight.getWorldPos(), mapPosCorrection), -1.f);
@@ -167,11 +160,6 @@ int main(void) {
         DrawTextureEx(Tex::texture_map, mapPos, 0.0, Tex::MAP_SCALE, WHITE);
 
         // entities render =====================
-
-        // draw the props
-        for (auto prop : props){
-            prop.render(knight.getWorldPos());
-        }
 
         // draw game over text if dead
         if(!knight.getAlive()){
@@ -206,6 +194,7 @@ int main(void) {
             EntityMng::showEnemiesDebugData();
             EntityMng::showItemsDebugData();
             EntityMng::showProyectilesDebugData();
+            EntityMng::showPropsDebugData();
         }
 
         // draw cursor

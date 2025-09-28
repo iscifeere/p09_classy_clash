@@ -9,8 +9,13 @@ Texture2D Tex::texture_heart{};
 Texture2D Tex::texture_coin{};
 Texture2D Tex::texture_gem_green{};
 Texture2D Tex::texture_sword{};
+
+// prop textures
 Texture2D Tex::texture_prop_rock{};
 Texture2D Tex::texture_prop_log{};
+Texture2D Tex::texture_prop_sign{};
+
+// character textures
 Texture2D Tex::texture_knight_idle{};
 Texture2D Tex::texture_knight_run{};
 Texture2D Tex::texture_goblin_idle{};
@@ -26,8 +31,13 @@ Texture2D* Tex::ptrArray_textures[]{        // array w/ every texture's ptr
     &texture_coin,
     &texture_gem_green,
     &texture_sword,
+
+    // prop textures
     &texture_prop_rock,
     &texture_prop_log,
+    &texture_prop_sign,
+
+    // character textures
     &texture_knight_idle,
     &texture_knight_run,
     &texture_goblin_idle,
@@ -44,8 +54,13 @@ const char* Tex::pathArray_textures[]{      // array w/ every texture's path to 
     "../assets/characters/MonedaD.png",
     "../assets/characters/gem_green.png",
     "../assets/characters/weapon_sword.png",
+
+    // prop textures
     "../assets/nature_tileset/Rock.png",
     "../assets/nature_tileset/Log.png",
+    "../assets/nature_tileset/Sign.png",
+
+    // character textures
     "../assets/characters/knight_idle_spritesheet.png",
     "../assets/characters/knight_run_spritesheet.png",
     "../assets/characters/goblin_idle_spritesheet.png",
@@ -79,7 +94,7 @@ void Tex::loadTexturesArr(){        // Load Textures automatically from textures
         *texturePtr = LoadTexture(pathArray_textures[i]);
         i++;
     }
-    i = 0;
+    // i = 0;
     std::cout << "=======[FINISHED TEXTURE LOADING!]=======" << std::endl;
 }
 

@@ -1,6 +1,5 @@
 #include "EntityManager.h"
 #include <iostream>
-#include <vector>
 #include <algorithm>
 #include <array>
 
@@ -8,6 +7,7 @@ Item* EntityMng::itemArr[ITEM_ARR_SIZE]{nullptr};
 Enemy* EntityMng::enemyArr[ENEMY_ARR_SIZE]{nullptr};
 GenEntity* EntityMng::proyectileArr[PROYECTILE_ARR_SIZE]{nullptr};
 GenEntity* EntityMng::ammo{nullptr};
+Prop* EntityMng::propArr[PROP_ARR_SIZE]{nullptr};
 Entity* EntityMng::EntityArr[ENTITY_ARR_SIZE]{nullptr};
 
 void EntityMng::spawnProyectile(GenEntity*& proyectile, Vector2 pos, Vector2 direction, Character* playerPtr){
@@ -195,6 +195,28 @@ void EntityMng::showEnemiesDebugData(){
     }
 }
 
+void EntityMng::spawnProp(Vector2 pos, Texture2D* texturePtr, Character* playerPtr){
+    for( auto &propPtr : propArr ){
+        if(propPtr == nullptr){
+            propPtr = new Prop(pos, texturePtr, playerPtr);
+            break;
+        }}
+}
+
+void EntityMng::showPropsDebugData(){
+    for( auto prop : propArr){
+        if(prop != nullptr) prop->showDebugData();
+    }
+}
+
+void EntityMng::checkPropCollisions(Character* playerPtr){
+    for( auto propPtr : propArr ){
+        if(propPtr != nullptr){
+            if( CheckCollisionRecs(propPtr->getCollisionRec(), playerPtr->getCollisionRec()) ){
+                playerPtr->undoMovementX();
+            }}}
+}
+
 void EntityMng::renderEntities(Character* playerPtr){
     std::array<Entity*, ENTITY_ARR_SIZE> renderQueue = {nullptr};
 
@@ -205,22 +227,27 @@ void EntityMng::renderEntities(Character* playerPtr){
         renderQueue[queueEnd] = playerPtr;
         queueEnd++;
     }
+    for( auto entity : propArr ){
+        if(entity != nullptr){
+            renderQueue[queueEnd] = entity;
+            queueEnd++;
+        }}
     for( auto entity : itemArr ){
         if(entity != nullptr){
             renderQueue[queueEnd] = entity;
             queueEnd++;
-    }}
+        }}
     for( auto entity : enemyArr ){
         if(entity != nullptr){
             renderQueue[queueEnd] = entity;
             queueEnd++;
-    }}
+        }}
     for( auto entity : proyectileArr ){
         if(entity != nullptr){
             if(entity->getAlive()){
                 renderQueue[queueEnd] = entity;
                 queueEnd++;
-    }}}
+            }}}
 
     std::sort(renderQueue.begin(), renderQueue.begin() + queueEnd,
         [](Entity* a, Entity* b) {

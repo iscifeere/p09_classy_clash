@@ -13,8 +13,13 @@ public:
     static Texture2D texture_coin;
     static Texture2D texture_gem_green;
     static Texture2D texture_sword;
+
+    // prop textures
     static Texture2D texture_prop_rock;
     static Texture2D texture_prop_log;
+    static Texture2D texture_prop_sign;
+
+    // character textures
     static Texture2D texture_knight_idle;
     static Texture2D texture_knight_run;
     static Texture2D texture_goblin_idle;

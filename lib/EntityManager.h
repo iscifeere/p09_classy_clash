@@ -7,6 +7,7 @@
 #include "Enemy.h"
 #include "GenericEntity.h"
 #include "Entity.h"
+#include "Prop.h"
 
 class EntityMng
 {
@@ -38,6 +39,10 @@ public:
 
     static void renderEntities(Character* playerPtr);
 
+    static void spawnProp(Vector2 pos, Texture2D* texturePtr, Character* playerPtr);
+    static void showPropsDebugData();
+    static void checkPropCollisions(Character* playerPtr);
+
 private:
     static const int ITEM_ARR_SIZE{10};     // max number of items
     static Item* itemArr[ITEM_ARR_SIZE];
@@ -49,7 +54,10 @@ private:
     static GenEntity* proyectileArr[PROYECTILE_ARR_SIZE];
     static GenEntity* ammo;
 
-    static const int ENTITY_ARR_SIZE{ITEM_ARR_SIZE + ENEMY_ARR_SIZE + PROYECTILE_ARR_SIZE};
+    static const int PROP_ARR_SIZE{5};      // max number of props
+    static Prop* propArr[PROP_ARR_SIZE];
+
+    static const int ENTITY_ARR_SIZE{ITEM_ARR_SIZE+ENEMY_ARR_SIZE+PROYECTILE_ARR_SIZE+PROP_ARR_SIZE};
     static Entity* EntityArr[ENTITY_ARR_SIZE];
 };
 
