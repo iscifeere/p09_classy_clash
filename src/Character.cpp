@@ -165,5 +165,6 @@ void Character::resurrect(){
 
 void Character::resetState(){
     setWorldPos(Tex::halfWinSize);
+    moneyCount = 0;
     resurrect();
 }
