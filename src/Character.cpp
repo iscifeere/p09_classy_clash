@@ -159,6 +159,7 @@ void Character::render(){
 
 void Character::resurrect(){
     setHealth(100.f);
+    setDrawColor(WHITE);    // reset color
     setAlive(true);
 }
 

@@ -276,4 +276,6 @@ void EntityMng::clearEntityPools(){
             delete entityPtr;
             entityPtr = nullptr;
         }}
+
+    std::cout << "[Entity pools cleared]" << std::endl;
 }
