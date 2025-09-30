@@ -159,14 +159,23 @@ int main(void) {
         // draw the map
         DrawTextureEx(Tex::texture_map, mapPos, 0.0, Tex::MAP_SCALE, WHITE);
 
-        // entities render =====================
-
-        // draw game over text if dead
-        if(!knight.getAlive()){
-            DrawText("Game Over!", 70.f, static_cast<float>((windowDimensions[1]/2)-20), 40, RED);
+        // reset game with key
+        if(IsKeyPressed(KEY_J)){
+            knight.resetState();
+            EntityMng::clearEntityPools();
             EndDrawing();
             continue;
         }
+
+        // draw game over text if dead
+        if(!knight.getAlive()){
+            DrawText("Game Over! (press J to reset)", 70.f, static_cast<float>((windowDimensions[1]/2)-20), 40, RED);
+            if(IsKeyPressed(KEY_H)) knight.resurrect();
+            EndDrawing();
+            continue;
+        }
+
+        // ENTITIES RENDER =====================
 
         // knight.render();
         // EntityMng::renderItems();

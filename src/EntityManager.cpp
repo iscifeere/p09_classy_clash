@@ -259,3 +259,21 @@ void EntityMng::renderEntities(Character* playerPtr){
     }
 
 }
+
+void EntityMng::clearEntityPools(){
+    for( auto &entityPtr : itemArr ){
+        if(entityPtr != nullptr){
+            delete entityPtr;
+            entityPtr = nullptr;
+        }}
+    for( auto &entityPtr : enemyArr ){
+        if(entityPtr != nullptr){
+            delete entityPtr;
+            entityPtr = nullptr;
+        }}
+    for( auto &entityPtr : proyectileArr ){
+        if(entityPtr != nullptr){
+            delete entityPtr;
+            entityPtr = nullptr;
+        }}
+}

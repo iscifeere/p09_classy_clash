@@ -43,6 +43,8 @@ public:
     static void showPropsDebugData();
     static void checkPropCollisions(Character* playerPtr);
 
+    static void clearEntityPools();
+
 private:
     static const int ITEM_ARR_SIZE{10};     // max number of items
     static Item* itemArr[ITEM_ARR_SIZE];

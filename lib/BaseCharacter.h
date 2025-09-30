@@ -29,6 +29,7 @@ public:
     Vector2& getVelocity(){ return velocity; }      // returns a reference
     virtual void render() override;
     virtual void showDebugData() = 0;
+    void setWorldPos( Vector2 newPos ){ worldPos = newPos; }
     
 protected:
     Texture2D* texture{&Tex::texture_knight_idle};

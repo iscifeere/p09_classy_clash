@@ -156,3 +156,13 @@ void Character::render(){
     healthBarColor = drawColor;
     drawColor = WHITE;  // reset draw color
 }
+
+void Character::resurrect(){
+    setHealth(100.f);
+    setAlive(true);
+}
+
+void Character::resetState(){
+    setWorldPos(Tex::halfWinSize);
+    resurrect();
+}

@@ -17,11 +17,14 @@ public:
     void deathSequence() override;
     bool getIsAttack() { return isAttacking; }
     void addHealth( float healthAdd ) override;
+    void setHealth( float newHealth ){ health = newHealth; }
     int getMoney(){ return moneyCount; }
     void addMoney(int moneyAdd){ moneyCount += moneyAdd; }
     void showDebugData() override;
     void showStats();
     void render() override;
+    void resurrect();
+    void resetState();
     
 private:
     int windowWidth{};
