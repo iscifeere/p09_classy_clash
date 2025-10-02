@@ -94,21 +94,21 @@ bool Enemy::tick(float deltaTime){
 
     // ====== DAMAGE TARGET ON CONTACT ============
     if(!neutral){
-        if(CheckCollisionRecs(target->getCollisionRec(),getCollisionRec())){
+        if(CheckCollisionRecs(target->getHurtRec(),getHurtRec())){
             target->takeDamage(damagePerSec * deltaTime);
         }
     }
 
     // ====== TAKE DAMAGE ============      (MAKE IT A FUNCTION!!!)
     if(target->getIsAttack()) {
-        if(CheckCollisionRecs( getCollisionRec(), target->getWeaponCollisionRec() )) {
+        if(CheckCollisionRecs( getHurtRec(), target->getWeaponCollisionRec() )) {
             takeDamage(target->getDamage());
         }
     }
 
     // KILL WITH CURSOR
     if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
-        if(CheckCollisionRecs(Rectangle{GetMousePosition().x - 5, GetMousePosition().y - 5, 5, 5}, getCollisionRec())){
+        if(CheckCollisionRecs(Rectangle{GetMousePosition().x - 5, GetMousePosition().y - 5, 5, 5}, getHurtRec())){
             setAlive(false);
         }
     }
@@ -157,11 +157,19 @@ float& Enemy::getRadiusEtc(int choice)
 
 void Enemy::showDebugData()     // draw debug data
 {
-    DrawRectangleLines(getScreenPos().x, getScreenPos().y, scale*frameWidth, scale*frameHeight, YELLOW);
-    DrawText(TextFormat("%01.01f",health), getScreenPos().x, getScreenPos().y, 20, WHITE);
-    DrawText(TextFormat("%01.01f",getWorldPos().x), getScreenPos().x, getScreenPos().y + frameHeight*scale - 20, 10, WHITE);
-    DrawText(TextFormat("%01.01f",getWorldPos().y), getScreenPos().x, getScreenPos().y + frameHeight*scale - 10, 10, WHITE);
-    DrawText(TextFormat("%01.01f",chaseTime), getScreenPos().x, getScreenPos().y + frameHeight*scale, 10, WHITE);
+    Vector2 screenPos{getScreenPos()};
+    Rectangle collisionRec{getCollisionRec()};
+    Rectangle hurtRec{getHurtRec()};
+    float scaledWidth = frameWidth*scale;
+    float scaledHeight = frameHeight*scale;
+
+    // DrawRectangleLines(screenPos.x, screenPos.y, scaledWidth, scaledHeight, RED);
+    DrawRectangleLines(hurtRec.x, hurtRec.y, hurtRec.width, hurtRec.height, RED);
+    DrawRectangleLines(collisionRec.x, collisionRec.y, collisionRec.width, collisionRec.height, YELLOW);
+    DrawText(TextFormat("%01.01f",health), screenPos.x + 5, screenPos.y, 20, WHITE);
+    DrawText(TextFormat("%01.01f",worldPos.x), collisionRec.x + 5, collisionRec.y + collisionRec.height - 20, 10, WHITE);
+    DrawText(TextFormat("%01.01f",worldPos.y), collisionRec.x + 5, collisionRec.y + collisionRec.height - 10, 10, WHITE);
+    DrawText(TextFormat("%01.01f",chaseTime), collisionRec.x + 5, collisionRec.y + collisionRec.height, 10, WHITE);
 }
 
 void Enemy::drawHealthBar()

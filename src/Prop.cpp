@@ -27,30 +27,20 @@ void Prop::render()
     else DrawTextureEx(Tex::texture_prop_rock, screenPos, 0.f, scale, RED);
 }
 
-Rectangle Prop::getCollisionRecOld()
-{
-    Vector2 screenPos{getScreenPos()};
-    return Rectangle{
-        screenPos.x,
-        screenPos.y,
-        frameWidth * scale,
-        frameHeight * scale
-    };
-}
 Rectangle Prop::getCollisionRec()
 {
     Vector2 screenPos{getScreenPos()};
-    float totalWidth = frameWidth*scale;
-    float totalHeight = frameHeight*scale;
+    float scaledWidth = frameWidth*scale;
+    float scaledHeight = frameHeight*scale;
 
     return Rectangle{
         // displacement
-        screenPos.x + totalWidth * data->collisionBox.x,
-        screenPos.y + totalHeight * data->collisionBox.y,
+        screenPos.x + scaledWidth * data->collisionBox.x,
+        screenPos.y + scaledHeight * data->collisionBox.y,
 
         // scaling
-        totalWidth * data->collisionBox.width,
-        totalHeight * data->collisionBox.height
+        scaledWidth * data->collisionBox.width,
+        scaledHeight * data->collisionBox.height
     };
 }
 

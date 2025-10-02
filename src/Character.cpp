@@ -33,6 +33,22 @@ Vector2 Character::getScreenPos(){
     };
 }
 
+Rectangle Character::getHurtRec(){
+    Vector2 screenPos{getScreenPos()};
+    float scaledWidth = frameWidth*scale;
+    float scaledHeight = frameHeight*scale;
+
+    return Rectangle{
+        // displacement
+        screenPos.x + scaledWidth * 0.2f,
+        screenPos.y + scaledHeight * 0.2f,
+
+        // scaling
+        scaledWidth * 0.6f,
+        scaledHeight * 0.8f
+    };
+}
+
 bool Character::tick(float deltaTime){
 
     if (!getAlive()) return false;    // if not alive, do nothing
@@ -104,10 +120,16 @@ void Character::addHealth( float healthAdd ){
 }
 
 void Character::showDebugData(){
+    Vector2 screenPos{getScreenPos()};
+    Rectangle collisionRec{getCollisionRec()};
+    Rectangle hurtRec{getHurtRec()};
+
     // DrawRectangleLines(getWorldPos().x, getWorldPos().y, width*scale, height*scale, YELLOW); [SHOOTING AIM IDEA!!!]
-    DrawRectangleLines(getScreenPos().x, getScreenPos().y, frameWidth*scale, frameHeight*scale, YELLOW);
-    DrawText(TextFormat("X: %01.01f",getWorldPos().x), 55.f, 125.f, 30, WHITE);
-    DrawText(TextFormat("Y: %01.01f",getWorldPos().y), 55.f, 155.f, 30, WHITE);
+    // DrawRectangleLines(screenPos.x, screenPos.y, frameWidth*scale, frameHeight*scale, RED);
+    DrawRectangleLines(hurtRec.x, hurtRec.y, hurtRec.width, hurtRec.height, RED);
+    DrawRectangleLines(collisionRec.x, collisionRec.y, collisionRec.width, collisionRec.height, YELLOW);
+    DrawText(TextFormat("X: %01.01f",worldPos.x), 55.f, 125.f, 30, WHITE);
+    DrawText(TextFormat("Y: %01.01f",worldPos.y), 55.f, 155.f, 30, WHITE);
 }
 
 void Character::showStats(){

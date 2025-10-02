@@ -15,13 +15,46 @@ void BaseCharacter::undoMovementY(){
 }
 
 Rectangle BaseCharacter::getCollisionRec(){
+    Vector2 screenPos{getScreenPos()};
+    float scaledWidth = frameWidth*scale;
+    float scaledHeight = frameHeight*scale;
+
     return Rectangle{
-        getScreenPos().x,
-        getScreenPos().y,
-        frameWidth * scale,
-        frameHeight * scale
+        // displacement
+        screenPos.x + scaledWidth * 0.2f,
+        screenPos.y + scaledHeight * 0.75f,
+
+        // scaling
+        scaledWidth * 0.6f,
+        scaledHeight * 0.25f
     };
 }
+
+Rectangle BaseCharacter::getHurtRec(){
+    Vector2 screenPos{getScreenPos()};
+
+    return Rectangle{
+        screenPos.x,
+        screenPos.y,
+        frameWidth*scale,
+        frameHeight*scale
+    };
+}
+// Rectangle BaseCharacter::getHurtRec(){
+//     Vector2 screenPos{getScreenPos()};
+//     float scaledWidth = frameWidth*scale;
+//     float scaledHeight = frameHeight*scale;
+
+//     return Rectangle{
+//         // displacement
+//         screenPos.x + scaledWidth * 0.125f,
+//         screenPos.y + scaledHeight * 0.166f,
+
+//         // scaling
+//         scaledWidth * 0.75f,
+//         scaledHeight * 0.833f
+//     };
+// }
 
 bool BaseCharacter::tick(float deltaTime){
     // save previous world position

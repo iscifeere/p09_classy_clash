@@ -49,7 +49,7 @@ bool GenEntity::tick(float deltaTime)
     screenPos = getScreenPos();
 
     // check collision
-    if( CheckCollisionRecs(getCollisionRec(), player->getCollisionRec()) ){
+    if( CheckCollisionRecs(getCollisionRec(), player->getHurtRec()) ){
         player->addHealth(10);
         // active = false;
         setAlive(false);
@@ -73,12 +73,15 @@ Vector2 GenEntity::getScreenPos(){
 }
 
 Rectangle GenEntity::getCollisionRec(){
-    Vector2 screenPos{ getScreenPos() };
+    Vector2 screenPos{getScreenPos()};  // necessary when not active
+    float scaledWidth = frameWidth*scale;
+    float scaledHeight = frameHeight*scale;
+
     return Rectangle{
-        screenPos.x,
-        screenPos.y,
-        frameWidth,
-        frameHeight
+        screenPos.x + scaledWidth * 0.25f,
+        screenPos.y + scaledHeight * 0.25f,
+        scaledWidth * 0.5f,
+        scaledHeight * 0.5f
     };
 }
 
@@ -97,7 +100,8 @@ void GenEntity::spawnReset(Vector2 pos, Vector2 direction){
 }
 
 void GenEntity::showDebugData(){
-    DrawRectangleLines( getScreenPos().x, getScreenPos().y, frameWidth*scale, frameHeight*scale, YELLOW );
+    Rectangle collisionRec{getCollisionRec()};
+    DrawRectangleLines( collisionRec.x, collisionRec.y, collisionRec.width, collisionRec.height, YELLOW );
 }
 
 void GenEntity::render(){

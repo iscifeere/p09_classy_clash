@@ -13,6 +13,7 @@ public:
     // Vector2 getWorldPos() override;
     Vector2 getScreenPos() override;
     Rectangle getWeaponCollisionRec(){ return weaponCollisionRec; }
+    Rectangle getHurtRec() override;
     float getDamage(){ return damagePerHit; }
     void deathSequence() override;
     bool getIsAttack() { return isAttacking; }

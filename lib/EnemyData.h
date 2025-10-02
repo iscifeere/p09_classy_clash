@@ -79,6 +79,10 @@ inline void shootTarget(Enemy* enemy, Character* target, const float& deltaTime)
 
     // get target direction
     velocity = Vector2Subtract(target->getScreenPos(), enemy->getScreenPos());
+    // velocity = Vector2{
+    //     .x = target->getCollisionRec().x - enemy->getCollisionRec().x,
+    //     .y = target->getCollisionRec().y - enemy->getCollisionRec().y
+    // };
     float distance = Vector2Length(velocity);       // distance from enemy to target
 
     if(enemy->flee){

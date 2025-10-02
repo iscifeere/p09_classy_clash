@@ -96,9 +96,13 @@ Rectangle Item::getCollisionRec()       // necesita revisión
 }
 
 void Item::showDebugData(){
-    DrawRectangleLines( getScreenPos().x, getScreenPos().y, frameWidth*scale, frameHeight*scale, YELLOW );
-    DrawText( TextFormat("%01.01f",getWorldPos().x), getScreenPos().x, getScreenPos().y + frameHeight*scale - 20, 10, WHITE );
-    DrawText( TextFormat("%01.01f",getWorldPos().y), getScreenPos().x, getScreenPos().y + frameHeight*scale - 10, 10, WHITE );
+    Vector2 screenPos{getScreenPos()};
+    float scaledWidth = frameWidth*scale;
+    float scaledHeight = frameHeight*scale;
+
+    DrawRectangleLines( screenPos.x, screenPos.y, scaledWidth, scaledHeight, YELLOW );
+    DrawText( TextFormat("%01.01f",worldPos.x), screenPos.x + 5, screenPos.y + scaledHeight - 20, 10, WHITE );
+    DrawText( TextFormat("%01.01f",worldPos.y), screenPos.x + 5, screenPos.y + scaledHeight - 10, 10, WHITE );
 }
 
 void Item::render(){

@@ -8,7 +8,9 @@
 
 struct propData{
     Texture2D* texture;
-    Rectangle collisionBox;     // proportions in relation to texture
+    Rectangle collisionBox;     // Location and size of collision box.
+                                // x and y are displacement from sprite screen position,
+                                // width and height are scaling proportional to texture.
 };
 
 class Prop : public Entity
@@ -18,7 +20,6 @@ public:
     Prop(Vector2 pos, const propData* prop_data, Character* player_ptr);
     void render() override;
     Rectangle getCollisionRec();
-    Rectangle getCollisionRecOld();
     Vector2 getScreenPos() override;
     void showDebugData();
 
