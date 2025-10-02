@@ -13,6 +13,7 @@ public:
 
     virtual Vector2 getScreenPos() = 0;
     Texture2D* getTexture() { return texture; }
+    float getWidth() { return frameWidth*scale; }
     float getHeight() { return frameHeight*scale; }
 
 protected:

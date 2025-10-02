@@ -3,14 +3,16 @@
 
 Prop::Prop(Vector2 pos, Character* player_ptr) :
     worldPos(pos),
-    player(player_ptr)
+    player(player_ptr),
+    data(&ROCK_PROPDATA)
 {
-    texture = &Tex::texture_prop_rock;      // default texture
+    
 }
 
-Prop::Prop(Vector2 pos, Texture2D* texture_ptr, Character* player_ptr) :
+Prop::Prop(Vector2 pos, const propData* prop_data, Character* player_ptr) :
     worldPos(pos),
-    texture(texture_ptr),
+    data(prop_data),
+    texture(prop_data->texture),
     player(player_ptr)
 {
     frameWidth = texture->width;
@@ -25,14 +27,30 @@ void Prop::render()
     else DrawTextureEx(Tex::texture_prop_rock, screenPos, 0.f, scale, RED);
 }
 
-Rectangle Prop::getCollisionRec()
+Rectangle Prop::getCollisionRecOld()
 {
     Vector2 screenPos{getScreenPos()};
     return Rectangle{
         screenPos.x,
         screenPos.y,
-        texture->width * scale,
-        texture->height * scale
+        frameWidth * scale,
+        frameHeight * scale
+    };
+}
+Rectangle Prop::getCollisionRec()
+{
+    Vector2 screenPos{getScreenPos()};
+    float totalWidth = frameWidth*scale;
+    float totalHeight = frameHeight*scale;
+
+    return Rectangle{
+        // displacement
+        screenPos.x + totalWidth * data->collisionBox.x,
+        screenPos.y + totalHeight * data->collisionBox.y,
+
+        // scaling
+        totalWidth * data->collisionBox.width,
+        totalHeight * data->collisionBox.height
     };
 }
 
@@ -42,7 +60,9 @@ Vector2 Prop::getScreenPos(){
 
 void Prop::showDebugData(){
     Vector2 screenPos{getScreenPos()};
-    DrawRectangleLines( screenPos.x, screenPos.y, frameWidth*scale, frameHeight*scale, YELLOW );
-    DrawText( TextFormat("%01.01f",worldPos.x), screenPos.x, screenPos.y + frameHeight*scale - 20, 10, WHITE );
-    DrawText( TextFormat("%01.01f",worldPos.y), screenPos.x, screenPos.y + frameHeight*scale - 10, 10, WHITE );
+    Rectangle collisionRec{getCollisionRec()};
+    DrawRectangleLines( screenPos.x, screenPos.y, frameWidth*scale, frameHeight*scale, RED );   // sprite box
+    DrawRectangleLines( collisionRec.x, collisionRec.y, collisionRec.width, collisionRec.height, YELLOW );  // collision box
+    DrawText( TextFormat("%01.01f",worldPos.x), collisionRec.x + 5, collisionRec.y + collisionRec.height - 20, 10, WHITE );
+    DrawText( TextFormat("%01.01f",worldPos.y), collisionRec.x + 5, collisionRec.y + collisionRec.height - 10, 10, WHITE );
 }

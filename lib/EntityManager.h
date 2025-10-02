@@ -39,7 +39,7 @@ public:
 
     static void renderEntities(Character* playerPtr);
 
-    static void spawnProp(Vector2 pos, Texture2D* texturePtr, Character* playerPtr);
+    static void spawnProp(Vector2 pos, const propData* prop_data, Character* playerPtr);
     static void showPropsDebugData();
     static void checkPropCollisions(Character* playerPtr);
 

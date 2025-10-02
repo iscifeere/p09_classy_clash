@@ -40,9 +40,9 @@ int main(void) {
 
     Vector2 playerWorPos{knight.getWorldPos()};
 
-    EntityMng::spawnProp(Vector2{1200.f, 800.f}, &Tex::texture_prop_rock, &knight);
-    EntityMng::spawnProp(Vector2{800.f, 1200.f}, &Tex::texture_prop_log, &knight);
-    EntityMng::spawnProp(Vector2{1800.f, 1200.f}, &Tex::texture_prop_sign, &knight);
+    EntityMng::spawnProp(Vector2{1200.f, 800.f}, &ROCK_PROPDATA, &knight);
+    EntityMng::spawnProp(Vector2{800.f, 1200.f}, &LOG_PROPDATA, &knight);
+    EntityMng::spawnProp(Vector2{1800.f, 1200.f}, &SIGN_PROPDATA, &knight);
 
     Enemy goblin{Vector2{1600.f, 600.f}};
 

@@ -195,10 +195,10 @@ void EntityMng::showEnemiesDebugData(){
     }
 }
 
-void EntityMng::spawnProp(Vector2 pos, Texture2D* texturePtr, Character* playerPtr){
+void EntityMng::spawnProp(Vector2 pos, const propData* prop_data, Character* playerPtr){
     for( auto &propPtr : propArr ){
         if(propPtr == nullptr){
-            propPtr = new Prop(pos, texturePtr, playerPtr);
+            propPtr = new Prop(pos, prop_data, playerPtr);
             break;
         }}
 }
@@ -214,6 +214,7 @@ void EntityMng::checkPropCollisions(Character* playerPtr){
         if(propPtr != nullptr){
             if( CheckCollisionRecs(propPtr->getCollisionRec(), playerPtr->getCollisionRec()) ){
                 playerPtr->undoMovementX();
+                playerPtr->undoMovementY();
             }}}
 }
 
