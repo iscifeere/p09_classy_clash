@@ -11,7 +11,7 @@ public:
     BaseCharacter();
     
     // Vector2 getWorldPos(){ return worldPos; }
-    virtual Vector2 getWorldPos(){ return worldPos; }
+    Vector2 getWorldPos(){ return worldPos; }
     void undoMovementX();
     void undoMovementY();
     Rectangle getCollisionRec();
@@ -31,6 +31,7 @@ public:
     virtual void render() override;
     virtual void showDebugData() = 0;
     void setWorldPos( Vector2 newPos ){ worldPos = newPos; }
+    void checkMapBoundsCollision();
     
 protected:
     Texture2D* texture{&Tex::texture_knight_idle};

@@ -40,21 +40,6 @@ Rectangle BaseCharacter::getHurtRec(){
         frameHeight*scale
     };
 }
-// Rectangle BaseCharacter::getHurtRec(){
-//     Vector2 screenPos{getScreenPos()};
-//     float scaledWidth = frameWidth*scale;
-//     float scaledHeight = frameHeight*scale;
-
-//     return Rectangle{
-//         // displacement
-//         screenPos.x + scaledWidth * 0.125f,
-//         screenPos.y + scaledHeight * 0.166f,
-
-//         // scaling
-//         scaledWidth * 0.75f,
-//         scaledHeight * 0.833f
-//     };
-// }
 
 bool BaseCharacter::tick(float deltaTime){
     // save previous world position
@@ -71,18 +56,7 @@ bool BaseCharacter::tick(float deltaTime){
         movement = Vector2Scale(Vector2Normalize(velocity), speed);
         worldPos = Vector2Add(worldPos, movement);
 
-        if(
-            getWorldPos().x < Tex::halfWinSize.x ||
-            getWorldPos().x + frameWidth*scale > static_cast<float>(Tex::texture_map.width) * Tex::MAP_SCALE - Tex::halfWinSize.x )
-        {
-            undoMovementX();
-        }
-        if(
-            getWorldPos().y < Tex::halfWinSize.y ||
-            getWorldPos().y + frameHeight*scale > static_cast<float>(Tex::texture_map.height) * Tex::MAP_SCALE - Tex::halfWinSize.y )
-        {
-            undoMovementY();
-        }
+        checkMapBoundsCollision();
 
     } else {texture = idle; maxFrames = maxFramesIdle;}
 
@@ -112,4 +86,22 @@ void BaseCharacter::render(){
     Rectangle source{ static_cast<float>(frame) * frameWidth, 0.f, rightLeft * frameWidth, frameHeight };
     Rectangle dest{ getScreenPos().x , getScreenPos().y , scale * frameWidth , scale * frameHeight };
     DrawTexturePro(*texture, source, dest, (Vector2){0.f,0.f}, 0.f, drawColor);
+}
+
+void BaseCharacter::checkMapBoundsCollision(){  // necesita optimización/reestructuración
+    float entityWidth{getWidth()};
+    float entityHeight{getHeight()};
+
+    if(
+        worldPos.x + entityWidth * 0.2f < Tex::halfWinSize.x ||
+        worldPos.x + entityWidth * 0.2f + entityWidth * 0.6f > static_cast<float>(Tex::texture_map.width) * Tex::MAP_SCALE - Tex::halfWinSize.x )
+    {
+        undoMovementX();
+    }
+    if(
+        worldPos.y + entityHeight * 0.75f < Tex::halfWinSize.y ||
+        worldPos.y + entityHeight * 0.75f + entityHeight * 0.25f > static_cast<float>(Tex::texture_map.height) * Tex::MAP_SCALE - Tex::halfWinSize.y )
+    {
+        undoMovementY();
+    }
 }

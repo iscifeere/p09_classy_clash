@@ -204,6 +204,43 @@ int main(void) {
             EntityMng::showItemsDebugData();
             EntityMng::showProyectilesDebugData();
             EntityMng::showPropsDebugData();
+
+            // draw map borders
+            {
+                Vector2 windowOriginWorPos = Vector2Subtract(knight.getWorldPos(), Tex::halfWinSize);
+                Vector2 knightHalfSize{knight.getWidth()*0.5f, knight.getHeight()*0.5f};
+                Vector2 mapScaledSize{ Tex::texture_map.width * Tex::MAP_SCALE, Tex::texture_map.height * Tex::MAP_SCALE };
+
+                // bound points absolute position (world pos)
+                Vector2 topLeftBoundWorPos = Vector2Subtract(Tex::halfWinSize, knightHalfSize);
+                Vector2 topRightBoundWorPos{
+                    (mapScaledSize.x - Tex::halfWinSize.x) - knightHalfSize.x,
+                    Tex::halfWinSize.y - knightHalfSize.y
+                };
+                Vector2 bottomLeftBoundWorPos{
+                    Tex::halfWinSize.x - knightHalfSize.x,
+                    (mapScaledSize.y - Tex::halfWinSize.y) - knightHalfSize.y
+                };
+                Vector2 bottomRightBoundWorPos{
+                    (mapScaledSize.x - Tex::halfWinSize.x) - knightHalfSize.x,
+                    (mapScaledSize.y - Tex::halfWinSize.y) - knightHalfSize.y
+                };
+                
+                // bound points relative position (screen pos)
+                Vector2 topLeftBoundScreenPos = Vector2Subtract(topLeftBoundWorPos, windowOriginWorPos);
+                Vector2 topRightBoundScreenPos = Vector2Subtract(topRightBoundWorPos, windowOriginWorPos);
+                Vector2 bottomLeftBoundScreenPos = Vector2Subtract(bottomLeftBoundWorPos, windowOriginWorPos);
+                Vector2 bottomRightBoundScreenPos = Vector2Subtract(bottomRightBoundWorPos, windowOriginWorPos);
+
+                // top horizontal
+                DrawLine(topLeftBoundScreenPos.x, topLeftBoundScreenPos.y, topRightBoundScreenPos.x, topRightBoundScreenPos.y, YELLOW);
+                // bottom horizontal
+                DrawLine(bottomLeftBoundScreenPos.x, bottomLeftBoundScreenPos.y, bottomRightBoundScreenPos.x, bottomRightBoundScreenPos.y, YELLOW);
+                // left vertical
+                DrawLine(topLeftBoundScreenPos.x, topLeftBoundScreenPos.y, bottomLeftBoundScreenPos.x, bottomLeftBoundScreenPos.y, YELLOW);
+                // right vertical
+                DrawLine(topRightBoundScreenPos.x, topRightBoundScreenPos.y, bottomRightBoundScreenPos.x, bottomRightBoundScreenPos.y, YELLOW);
+            }
         }
 
         // draw cursor
