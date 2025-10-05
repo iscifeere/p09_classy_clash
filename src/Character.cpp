@@ -40,6 +40,22 @@ Vector2 Character::getWorldPosScreenPos(){
     };
 }
 
+Rectangle Character::getCollisionRec(){
+    Vector2 screenPos{getScreenPos()};
+    float scaledWidth = frameWidth*scale;
+    float scaledHeight = frameHeight*scale;
+
+    return Rectangle{
+        // displacement
+        screenPos.x + ( scaledWidth * collisionBox.x ),
+        screenPos.y + ( scaledHeight * collisionBox.y ),
+
+        // scaling
+        scaledWidth * collisionBox.width,
+        scaledHeight * collisionBox.height
+    };
+}
+
 Rectangle Character::getHurtRec(){
     Vector2 screenPos{getScreenPos()};
     float scaledWidth = frameWidth*scale;
@@ -47,12 +63,12 @@ Rectangle Character::getHurtRec(){
 
     return Rectangle{
         // displacement
-        screenPos.x + scaledWidth * 0.2f,
-        screenPos.y + scaledHeight * 0.2f,
+        screenPos.x + ( scaledWidth * hurtBox.x ),
+        screenPos.y + ( scaledHeight * hurtBox.y ),
 
         // scaling
-        scaledWidth * 0.6f,
-        scaledHeight * 0.8f
+        scaledWidth * hurtBox.width,
+        scaledHeight * hurtBox.height
     };
 }
 

@@ -13,8 +13,9 @@ public:
     // Vector2 getWorldPos() override;
     Vector2 getScreenPos() override;
     Vector2 getWorldPosScreenPos();
+    Rectangle getCollisionRec();
     Rectangle getWeaponCollisionRec(){ return weaponCollisionRec; }
-    Rectangle getHurtRec() override;
+    Rectangle getHurtRec();
     float getDamage(){ return damagePerHit; }
     void deathSequence() override;
     bool getIsAttack() { return isAttacking; }
@@ -44,6 +45,18 @@ private:
         float rotation{};
     } swordVariables{};
     Color healthBarColor{WHITE};
+    Rectangle collisionBox{
+        .x = 0.2f,
+        .y = 0.75f,
+        .width = 0.6f,
+        .height = 0.25f
+    };
+    Rectangle hurtBox{
+        .x = 0.2f,
+        .y = 0.2f,
+        .width = 0.6f,
+        .height = 0.8f
+    };
 };
 
 #endif

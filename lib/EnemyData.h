@@ -18,6 +18,22 @@ struct enemyData{
     float chase_radius{};
     bool isNeutral{false};
 
+    // Location and size of collisionBox & hurtBox.
+    // x and y are propotional displacement from sprite screen position,
+    // width and height are scaling proportional to texture.
+    Rectangle collisionBox{
+        .x = 0.f,
+        .y = 0.f,
+        .width = 1.f,
+        .height = 1.f,
+    };
+    Rectangle hurtBox{
+        .x = 0.f,
+        .y = 0.f,
+        .width = 1.f,
+        .height = 1.f,
+    };
+
     const itemData* item_drop;
     void(*behave)(Enemy* enemy, Character* player, const float& deltaTime);
 };
@@ -163,6 +179,12 @@ const enemyData MADKNIGHT_ENEMYDATA{
     .damage = 10.f,
     .chase_radius = 400.f,
     .isNeutral = true,
+    .collisionBox = {
+        .x = 0.2f,
+        .y = 0.75f,
+        .width = 0.6f,
+        .height = 0.25f
+    },
     .item_drop = &COIN_ITEMDATA,
     .behave = shootTarget
 };
@@ -177,6 +199,12 @@ const enemyData RED_ENEMYDATA{
     .health = 120.f,
     .damage = 10.f,
     .chase_radius = 400.f,
+    .collisionBox = {
+        .x = 0.25f,
+        .y = 0.25f,
+        .width = 0.5f,
+        .height = 0.5f
+    },
     .item_drop = &GEM_ITEMDATA,
     .behave = chaseTarget
 };

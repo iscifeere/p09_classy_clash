@@ -14,33 +14,6 @@ void BaseCharacter::undoMovementY(){
     drawColor = BLACK;
 }
 
-Rectangle BaseCharacter::getCollisionRec(){
-    Vector2 screenPos{getScreenPos()};
-    float scaledWidth = frameWidth*scale;
-    float scaledHeight = frameHeight*scale;
-
-    return Rectangle{
-        // displacement
-        screenPos.x + scaledWidth * 0.2f,
-        screenPos.y + scaledHeight * 0.75f,
-
-        // scaling
-        scaledWidth * 0.6f,
-        scaledHeight * 0.25f
-    };
-}
-
-Rectangle BaseCharacter::getHurtRec(){
-    Vector2 screenPos{getScreenPos()};
-
-    return Rectangle{
-        screenPos.x,
-        screenPos.y,
-        frameWidth*scale,
-        frameHeight*scale
-    };
-}
-
 bool BaseCharacter::tick(float deltaTime){
     // save previous world position
     worldPosLastFrame = worldPos;       // unused

@@ -23,6 +23,8 @@ public:
     virtual bool tick(float deltaTime) override;
     void setTarget(Character* ptr){ target = ptr; }
     Vector2 getScreenPos() override;
+    Rectangle getCollisionRec();
+    Rectangle getHurtRec();
     virtual void takeDamage(float damage) override;
     virtual void deathSequence() override;
     float& getRadiusEtc(int choice);

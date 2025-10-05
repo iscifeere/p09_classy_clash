@@ -9,7 +9,7 @@
 struct propData{
     Texture2D* texture;
     Rectangle collisionBox;     // Location and size of collision box.
-                                // x and y are displacement from sprite screen position,
+                                // x and y are propotional displacement from sprite screen position,
                                 // width and height are scaling proportional to texture.
 };
 

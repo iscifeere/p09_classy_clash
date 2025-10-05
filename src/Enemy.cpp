@@ -123,6 +123,41 @@ Vector2 Enemy::getScreenPos(){
         Tex::halfWinSize) );
 }
 
+Rectangle Enemy::getCollisionRec(){
+    Vector2 screenPos{getScreenPos()};
+    float scaledWidth = frameWidth*scale;
+    float scaledHeight = frameHeight*scale;
+
+    return Rectangle{
+        // displacement
+        screenPos.x + ( scaledWidth * data->collisionBox.x ),
+        screenPos.y + ( scaledHeight * data->collisionBox.y ),
+
+        // scaling
+        scaledWidth * data->collisionBox.width,
+        scaledHeight * data->collisionBox.height
+    };
+}
+
+Rectangle Enemy::getHurtRec(){
+    if(data!=nullptr){
+        Vector2 screenPos{getScreenPos()};
+        float scaledWidth = frameWidth*scale;
+        float scaledHeight = frameHeight*scale;
+    
+        return Rectangle{
+            // displacement
+            screenPos.x + ( scaledWidth * data->hurtBox.x ),
+            screenPos.y + ( scaledHeight * data->hurtBox.y ),
+    
+            // scaling
+            scaledWidth * data->hurtBox.width,
+            scaledHeight * data->hurtBox.height
+        };
+    }
+    return Rectangle{};
+}
+
 void Enemy::takeDamage(float damage){
     BaseCharacter::takeDamage(damage);
     neutral = false;
