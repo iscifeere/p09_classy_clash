@@ -5,11 +5,11 @@
 #include "EntityManager.h"
 
 struct enemyData{
-    Texture2D* texture_idle;
-    Texture2D* texture_run;
+    Texture2D* texture_idle{&Tex::texture_goblin_idle};
+    Texture2D* texture_run{&Tex::texture_goblin_run};
     int maxFramesIdle{6};
     int maxFramesRun{6};
-    int frameRows{};
+    int frameRows{1};
     bool ignoreFrameRows{false};
 
     float speed{};
@@ -34,7 +34,7 @@ struct enemyData{
         .height = 1.f,
     };
 
-    const itemData* item_drop;
+    const itemData* item_drop{&HEART_ITEMDATA};
     void(*behave)(Enemy* enemy, Character* player, const float& deltaTime);
 };
 
@@ -155,6 +155,9 @@ inline void shootTarget(Enemy* enemy, Character* target, const float& deltaTime)
 
 // ========= ENEMY DATA STRUCTS ============================
 
+const enemyData DEFAULT_ENEMYDATA{
+    .behave = chaseTarget
+};
 const enemyData SLIME_ENEMYDATA{
     .texture_idle = &Tex::texture_slime_idle,
     .texture_run = &Tex::texture_slime_run,

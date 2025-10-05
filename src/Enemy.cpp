@@ -7,6 +7,7 @@
 Enemy::Enemy(){
     // action = chaseTarget;
     scale = 8.0f;
+    data = &DEFAULT_ENEMYDATA;
 }
 
 Enemy::Enemy(Vector2 pos)
@@ -24,6 +25,7 @@ Enemy::Enemy(Vector2 pos)
     health = 60;    // default health
 
     // action = chaseTarget;
+    data = &DEFAULT_ENEMYDATA;
 }
 
 Enemy::Enemy(Vector2 pos, const enemyData* enemy_data)
@@ -69,6 +71,7 @@ Enemy::Enemy(Vector2 pos, Texture2D* idle_texture, Texture2D* run_texture)
     health = 60;    // default health
 
     // action = chaseTarget;
+    data = &DEFAULT_ENEMYDATA;
 }
 
 bool Enemy::tick(float deltaTime){
@@ -140,22 +143,19 @@ Rectangle Enemy::getCollisionRec(){
 }
 
 Rectangle Enemy::getHurtRec(){
-    if(data!=nullptr){
-        Vector2 screenPos{getScreenPos()};
-        float scaledWidth = frameWidth*scale;
-        float scaledHeight = frameHeight*scale;
-    
-        return Rectangle{
-            // displacement
-            screenPos.x + ( scaledWidth * data->hurtBox.x ),
-            screenPos.y + ( scaledHeight * data->hurtBox.y ),
-    
-            // scaling
-            scaledWidth * data->hurtBox.width,
-            scaledHeight * data->hurtBox.height
-        };
-    }
-    return Rectangle{};
+    Vector2 screenPos{getScreenPos()};
+    float scaledWidth = frameWidth*scale;
+    float scaledHeight = frameHeight*scale;
+
+    return Rectangle{
+        // displacement
+        screenPos.x + ( scaledWidth * data->hurtBox.x ),
+        screenPos.y + ( scaledHeight * data->hurtBox.y ),
+
+        // scaling
+        scaledWidth * data->hurtBox.width,
+        scaledHeight * data->hurtBox.height
+    };   
 }
 
 void Enemy::takeDamage(float damage){
