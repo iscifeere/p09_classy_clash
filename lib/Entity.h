@@ -13,6 +13,15 @@ public:
 
     virtual Vector2 getScreenPos() = 0;
     Texture2D* getTexture() { return texture; }
+    
+    Vector2 getRenderPos(){     // adjusted rendering position so that screenPos is at the centre
+        Vector2 screenPos{getScreenPos()};
+        return Vector2{screenPos.x - getWidth()*0.5f, screenPos.y - getHeight()*0.5f};
+    }
+    Vector2 getRenderPos(Vector2 screenPos){
+        return Vector2{screenPos.x - getWidth()*0.5f, screenPos.y - getHeight()*0.5f};
+    }
+
     float getWidth() { return frameWidth*scale; }   // returns scaled width
     float getHeight() { return frameHeight*scale; } // returns scaled height
 

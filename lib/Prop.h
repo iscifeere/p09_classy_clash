@@ -19,7 +19,8 @@ public:
     Prop(Vector2 pos, Character* player_ptr);
     Prop(Vector2 pos, const propData* prop_data, Character* player_ptr);
     void render() override;
-    Rectangle getCollisionRec();
+    Rectangle getCollisionRec();            // relative position version
+    Rectangle getCollisionRecWorPos();      // absolute position version
     Vector2 getScreenPos() override;
     void showDebugData();
 

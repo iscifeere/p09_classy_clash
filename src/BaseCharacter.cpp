@@ -54,10 +54,12 @@ void BaseCharacter::render(){
         if(frameRow >= maxFrameRows) frameRow = 0;
     }
 
+    Vector2 renderPos{getRenderPos()};
+
     // draw character
     // Rectangle source{ static_cast<float>(frame) * frameWidth, static_cast<float>(frameRow) * frameHeight, rightLeft * frameWidth, frameHeight };
     Rectangle source{ static_cast<float>(frame) * frameWidth, 0.f, rightLeft * frameWidth, frameHeight };
-    Rectangle dest{ getScreenPos().x , getScreenPos().y , scale * frameWidth , scale * frameHeight };
+    Rectangle dest{ renderPos.x , renderPos.y , scale * frameWidth , scale * frameHeight };
     DrawTexturePro(*texture, source, dest, (Vector2){0.f,0.f}, 0.f, drawColor);
 }
 

@@ -209,10 +209,18 @@ void EntityMng::showPropsDebugData(){
     }
 }
 
+// void EntityMng::checkPropCollisions(Character* playerPtr){
+//     for( auto propPtr : propArr ){
+//         if(propPtr != nullptr){
+//             if( CheckCollisionRecs(propPtr->getCollisionRec(), playerPtr->getCollisionRec()) ){
+//                 playerPtr->undoMovementX();
+//                 playerPtr->undoMovementY();
+//             }}}
+// }
 void EntityMng::checkPropCollisions(Character* playerPtr){
     for( auto propPtr : propArr ){
         if(propPtr != nullptr){
-            if( CheckCollisionRecs(propPtr->getCollisionRec(), playerPtr->getCollisionRec()) ){
+            if( CheckCollisionRecs(propPtr->getCollisionRecWorPos(), playerPtr->getCollisionRecWorPos()) ){
                 playerPtr->undoMovementX();
                 playerPtr->undoMovementY();
             }}}
@@ -252,7 +260,7 @@ void EntityMng::renderEntities(Character* playerPtr){
 
     std::sort(renderQueue.begin(), renderQueue.begin() + queueEnd,
         [](Entity* a, Entity* b) {
-            return a->getScreenPos().y + a->getHeight() < b->getScreenPos().y + b->getHeight();
+            return a->getRenderPos().y + a->getHeight() < b->getRenderPos().y + b->getHeight();
         });
 
     for(size_t i{} ; i != queueEnd ; i++){

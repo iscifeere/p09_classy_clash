@@ -120,21 +120,18 @@ bool Enemy::tick(float deltaTime){
 }
 
 Vector2 Enemy::getScreenPos(){
-    return Vector2Subtract(
-        Vector2{worldPos.x - frameWidth*scale*0.5f, worldPos.y - frameHeight*scale*0.5f}, 
-        Vector2Subtract(target->getWorldPos(), 
-        Tex::halfWinSize) );
+    return Vector2Subtract(worldPos, target->getWindowOriginWorPos());
 }
 
 Rectangle Enemy::getCollisionRec(){
-    Vector2 screenPos{getScreenPos()};
+    Vector2 renderPos{getRenderPos()};
     float scaledWidth = frameWidth*scale;
     float scaledHeight = frameHeight*scale;
 
     return Rectangle{
         // displacement
-        screenPos.x + ( scaledWidth * data->collisionBox.x ),
-        screenPos.y + ( scaledHeight * data->collisionBox.y ),
+        renderPos.x + ( scaledWidth * data->collisionBox.x ),
+        renderPos.y + ( scaledHeight * data->collisionBox.y ),
 
         // scaling
         scaledWidth * data->collisionBox.width,
@@ -143,14 +140,14 @@ Rectangle Enemy::getCollisionRec(){
 }
 
 Rectangle Enemy::getHurtRec(){
-    Vector2 screenPos{getScreenPos()};
+    Vector2 renderPos{getRenderPos()};
     float scaledWidth = frameWidth*scale;
     float scaledHeight = frameHeight*scale;
 
     return Rectangle{
         // displacement
-        screenPos.x + ( scaledWidth * data->hurtBox.x ),
-        screenPos.y + ( scaledHeight * data->hurtBox.y ),
+        renderPos.x + ( scaledWidth * data->hurtBox.x ),
+        renderPos.y + ( scaledHeight * data->hurtBox.y ),
 
         // scaling
         scaledWidth * data->hurtBox.width,
@@ -193,15 +190,16 @@ float& Enemy::getRadiusEtc(int choice)
 void Enemy::showDebugData()     // draw debug data
 {
     Vector2 screenPos{getScreenPos()};
+    Vector2 renderPos{getRenderPos(screenPos)};
     Rectangle collisionRec{getCollisionRec()};
     Rectangle hurtRec{getHurtRec()};
     float scaledWidth = frameWidth*scale;
     float scaledHeight = frameHeight*scale;
 
-    // DrawRectangleLines(screenPos.x, screenPos.y, scaledWidth, scaledHeight, RED);
     DrawRectangleLines(hurtRec.x, hurtRec.y, hurtRec.width, hurtRec.height, RED);
     DrawRectangleLines(collisionRec.x, collisionRec.y, collisionRec.width, collisionRec.height, YELLOW);
-    DrawText(TextFormat("%01.01f",health), screenPos.x + 5, screenPos.y, 20, WHITE);
+    DrawCircleV(screenPos, 5.f, BLUE);  // worldPos mark
+    DrawText(TextFormat("%01.01f",health), renderPos.x + 5, renderPos.y, 20, WHITE);
     DrawText(TextFormat("%01.01f",worldPos.x), collisionRec.x + 5, collisionRec.y + collisionRec.height - 20, 10, WHITE);
     DrawText(TextFormat("%01.01f",worldPos.y), collisionRec.x + 5, collisionRec.y + collisionRec.height - 10, 10, WHITE);
     DrawText(TextFormat("%01.01f",chaseTime), collisionRec.x + 5, collisionRec.y + collisionRec.height, 10, WHITE);
@@ -209,7 +207,8 @@ void Enemy::showDebugData()     // draw debug data
 
 void Enemy::drawHealthBar()
 {
-    Rectangle healthBar{getScreenPos().x, getScreenPos().y, health, 5.f};
+    Vector2 renderPos{getRenderPos()};
+    Rectangle healthBar{renderPos.x, renderPos.y, health, 5.f};
     if(data != nullptr){
         DrawRectangle(healthBar.x, healthBar.y, data->health, healthBar.height, BLACK);
     }

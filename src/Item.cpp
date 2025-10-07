@@ -78,18 +78,15 @@ bool Item::tick(float deltaTime){
 }
 
 Vector2 Item::getScreenPos(){
-    return Vector2Subtract(
-        Vector2{worldPos.x - frameWidth*scale*0.5f, worldPos.y - frameHeight*scale*0.5f}, 
-        Vector2Subtract(player->getWorldPos(), 
-        Tex::halfWinSize) );
+    return Vector2Subtract(worldPos, player->getWindowOriginWorPos());
 }
 
-Rectangle Item::getCollisionRec()       // necesita revisión
+Rectangle Item::getCollisionRec()
 {
-    Vector2 charPos{ getScreenPos() };
+    Vector2 renderPos{getRenderPos()};
     return Rectangle{
-        charPos.x,
-        charPos.y,
+        renderPos.x,
+        renderPos.y,
         Tex::texture_heart.width * scale,
         Tex::texture_heart.height * scale
     };
@@ -97,18 +94,22 @@ Rectangle Item::getCollisionRec()       // necesita revisión
 
 void Item::showDebugData(){
     Vector2 screenPos{getScreenPos()};
+    Vector2 renderPos{getRenderPos(screenPos)};
     float scaledWidth = frameWidth*scale;
     float scaledHeight = frameHeight*scale;
 
-    DrawRectangleLines( screenPos.x, screenPos.y, scaledWidth, scaledHeight, YELLOW );
-    DrawText( TextFormat("%01.01f",worldPos.x), screenPos.x + 5, screenPos.y + scaledHeight - 20, 10, WHITE );
-    DrawText( TextFormat("%01.01f",worldPos.y), screenPos.x + 5, screenPos.y + scaledHeight - 10, 10, WHITE );
+    DrawRectangleLines( renderPos.x, renderPos.y, scaledWidth, scaledHeight, YELLOW );
+    // DrawCircleV(screenPos, 5.f, BLUE);  // worldPos mark
+    DrawText( TextFormat("%01.01f",worldPos.x), renderPos.x + 5, renderPos.y + scaledHeight - 20, 10, WHITE );
+    DrawText( TextFormat("%01.01f",worldPos.y), renderPos.x + 5, renderPos.y + scaledHeight - 10, 10, WHITE );
 }
 
 void Item::render(){
+    Vector2 renderPos{getRenderPos()};
+
     // draw item
     Rectangle source{frameWidth*frame, 0.f, frameWidth, frameHeight};
-    Rectangle dest{getScreenPos().x, getScreenPos().y, frameWidth * scale, frameHeight * scale};
+    Rectangle dest{renderPos.x, renderPos.y, frameWidth * scale, frameHeight * scale};
     DrawTexturePro(*texture, source, dest, Vector2{0.f,0.f}, 0.f, WHITE);
 
     // DrawText(TextFormat("%02.02f",moveTimer), screenPos.x, screenPos.y, 10, WHITE);

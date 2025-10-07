@@ -12,8 +12,10 @@ public:
     bool tick(float deltaTime) override;
     // Vector2 getWorldPos() override;
     Vector2 getScreenPos() override;
-    Vector2 getWorldPosScreenPos();
-    Rectangle getCollisionRec();
+    Vector2 getWindowOriginWorPos();
+    Vector2 getPrevWorldPos();  // calculate worldPos from previous tick
+    Rectangle getCollisionRec();        // relative position version
+    Rectangle getCollisionRecWorPos();  // absolute position version
     Rectangle getWeaponCollisionRec(){ return weaponCollisionRec; }
     Rectangle getHurtRec();
     float getDamage(){ return damagePerHit; }

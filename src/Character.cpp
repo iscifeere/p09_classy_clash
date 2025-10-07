@@ -14,41 +14,49 @@ Character::Character(Vector2 pos) :
     worldPos = pos;
 }
 
-// Vector2 Character::getWorldPos(){
-//     return Vector2Add( BaseCharacter::getWorldPos(),
-//     Vector2{static_cast<float>(windowWidth)*0.5f,static_cast<float>(windowHeight)*0.5f}
-//     );
-// }
-
-// Vector2 Character::getWorldPos(){
-//     return Vector2Add( BaseCharacter::getWorldPos(),
-//     Vector2{width*scale*0.5f,height*scale*0.5f}
-//     );
-// }
-
 Vector2 Character::getScreenPos(){
-    return Vector2{
-        Tex::halfWinSize.x - (scale * (0.5f * frameWidth)) ,
-        Tex::halfWinSize.y - (scale * (0.5f * frameHeight))
-    };
+    return Tex::halfWinSize;
 }
 
-Vector2 Character::getWorldPosScreenPos(){
-    return Vector2{
-        Tex::halfWinSize.x,
-        Tex::halfWinSize.y
+Vector2 Character::getWindowOriginWorPos(){
+    return Vector2Subtract( worldPos, Tex::halfWinSize );
+}
+
+Vector2 Character::getPrevWorldPos(){
+    Vector2 prevWorldPos{
+        Vector2Subtract( worldPos, movement )
     };
+    return prevWorldPos;
 }
 
 Rectangle Character::getCollisionRec(){
-    Vector2 screenPos{getScreenPos()};
+    Vector2 renderPos{getRenderPos()};
     float scaledWidth = frameWidth*scale;
     float scaledHeight = frameHeight*scale;
 
     return Rectangle{
         // displacement
-        screenPos.x + ( scaledWidth * collisionBox.x ),
-        screenPos.y + ( scaledHeight * collisionBox.y ),
+        renderPos.x + ( scaledWidth * collisionBox.x ),
+        renderPos.y + ( scaledHeight * collisionBox.y ),
+
+        // scaling
+        scaledWidth * collisionBox.width,
+        scaledHeight * collisionBox.height
+    };
+}
+
+Rectangle Character::getCollisionRecWorPos(){
+    float scaledWidth = frameWidth*scale;
+    float scaledHeight = frameHeight*scale;
+    Vector2 worldPosTopLeft{
+        worldPos.x - scaledWidth*0.5f,
+        worldPos.y - scaledHeight*0.5f
+    };
+
+    return Rectangle{
+        // displacement
+        worldPosTopLeft.x + ( scaledWidth * collisionBox.x ),
+        worldPosTopLeft.y + ( scaledHeight * collisionBox.y ),
 
         // scaling
         scaledWidth * collisionBox.width,
@@ -57,14 +65,14 @@ Rectangle Character::getCollisionRec(){
 }
 
 Rectangle Character::getHurtRec(){
-    Vector2 screenPos{getScreenPos()};
+    Vector2 renderPos{getRenderPos()};
     float scaledWidth = frameWidth*scale;
     float scaledHeight = frameHeight*scale;
 
     return Rectangle{
         // displacement
-        screenPos.x + ( scaledWidth * hurtBox.x ),
-        screenPos.y + ( scaledHeight * hurtBox.y ),
+        renderPos.x + ( scaledWidth * hurtBox.x ),
+        renderPos.y + ( scaledHeight * hurtBox.y ),
 
         // scaling
         scaledWidth * hurtBox.width,
@@ -111,18 +119,22 @@ bool Character::tick(float deltaTime){
     if(rightLeft > 0.f){
         swordVariables.origin = {0.f, weapon->height * scale};
         swordVariables.offset = {70.f, 110.f};
+        Vector2 renderPos{getRenderPos()};
+
         weaponCollisionRec = {
-            getScreenPos().x + swordVariables.offset.x,
-            getScreenPos().y + swordVariables.offset.y - weapon->height * scale,
+            renderPos.x + swordVariables.offset.x,
+            renderPos.y + swordVariables.offset.y - weapon->height * scale,
             weapon->width * scale,
             weapon->height * scale
         };
     } else{
         swordVariables.origin = {weapon->width * scale, weapon->height * scale};
         swordVariables.offset = {50.f, 110.f};
+        Vector2 renderPos{getRenderPos()};
+
         weaponCollisionRec = {
-            getScreenPos().x + swordVariables.offset.x - weapon->width * scale,
-            getScreenPos().y + swordVariables.offset.y - weapon->height * scale,
+            renderPos.x + swordVariables.offset.x - weapon->width * scale,
+            renderPos.y + swordVariables.offset.y - weapon->height * scale,
             weapon->width * scale,
             weapon->height * scale
         };
@@ -144,15 +156,15 @@ void Character::addHealth( float healthAdd ){
 
 void Character::showDebugData(){
     Vector2 screenPos{getScreenPos()};
+    Vector2 renderPos{getRenderPos( screenPos )};
     Rectangle collisionRec{getCollisionRec()};
     Rectangle hurtRec{getHurtRec()};
-    Vector2 worldPosScreenPos{getWorldPosScreenPos()};
 
     // DrawRectangleLines(getWorldPos().x, getWorldPos().y, width*scale, height*scale, YELLOW); [SHOOTING AIM IDEA!!!]
-    DrawRectangleLines(screenPos.x, screenPos.y, frameWidth*scale, frameHeight*scale, BLUE);    // sprite box
+    DrawRectangleLines(renderPos.x, renderPos.y, frameWidth*scale, frameHeight*scale, BLUE);    // sprite box
     DrawRectangleLines(hurtRec.x, hurtRec.y, hurtRec.width, hurtRec.height, RED);               // hurt box
     DrawRectangleLines(collisionRec.x, collisionRec.y, collisionRec.width, collisionRec.height, YELLOW);    // collision box
-    DrawCircle(worldPosScreenPos.x, worldPosScreenPos.y, 5.f, BLUE);
+    DrawCircleV(screenPos, 5.f, BLUE);  // worldPos mark
     DrawText(TextFormat("X: %01.01f",worldPos.x), 55.f, 125.f, 30, WHITE);
     DrawText(TextFormat("Y: %01.01f",worldPos.y), 55.f, 155.f, 30, WHITE);
 }
@@ -195,9 +207,11 @@ void Character::showStats(){
 void Character::render(){
     BaseCharacter::render();
 
+    Vector2 renderPos{getRenderPos()};
+
     // draw the sword
     Rectangle source{0.f, 0.f, static_cast<float>(weapon->width) * rightLeft, static_cast<float>(weapon->height)};
-    Rectangle dest{getScreenPos().x + swordVariables.offset.x, getScreenPos().y + swordVariables.offset.y, weapon->width * scale, weapon->height * scale};
+    Rectangle dest{renderPos.x + swordVariables.offset.x, renderPos.y + swordVariables.offset.y, weapon->width * scale, weapon->height * scale};
     DrawTexturePro(*weapon, source, dest, swordVariables.origin, swordVariables.rotation, drawColor);
 
     healthBarColor = drawColor;

@@ -66,20 +66,17 @@ bool GenEntity::tick(float deltaTime)
 //     return Vector2{Vector2Subtract( worldPos, player->getWorldPos() )};
 // }
 Vector2 GenEntity::getScreenPos(){
-    return Vector2Subtract(
-        Vector2{worldPos.x - frameWidth*scale*0.5f, worldPos.y - frameHeight*scale*0.5f}, 
-        Vector2Subtract(player->getWorldPos(), 
-        Tex::halfWinSize) );
+    return Vector2Subtract(worldPos, player->getWindowOriginWorPos());
 }
 
 Rectangle GenEntity::getCollisionRec(){
-    Vector2 screenPos{getScreenPos()};  // necessary when not active
+    Vector2 renderPos{getRenderPos()};  // necessary when not active
     float scaledWidth = frameWidth*scale;
     float scaledHeight = frameHeight*scale;
 
     return Rectangle{
-        screenPos.x + scaledWidth * 0.25f,
-        screenPos.y + scaledHeight * 0.25f,
+        renderPos.x + scaledWidth * 0.25f,
+        renderPos.y + scaledHeight * 0.25f,
         scaledWidth * 0.5f,
         scaledHeight * 0.5f
     };
@@ -105,5 +102,6 @@ void GenEntity::showDebugData(){
 }
 
 void GenEntity::render(){
-    DrawTextureEx(*texture, screenPos, 0.f, scale, drawColor);
+    Vector2 renderPos{getRenderPos(screenPos)};
+    DrawTextureEx(*texture, renderPos, 0.f, scale, drawColor);
 }
