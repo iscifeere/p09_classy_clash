@@ -16,6 +16,7 @@ public:
     Vector2 getPrevWorldPos();  // calculate worldPos from previous tick
     Rectangle getCollisionRec();        // relative position version
     Rectangle getCollisionRecWorPos();  // absolute position version
+    Rectangle getPrevCollisionRecWorPos();
     Rectangle getWeaponCollisionRec(){ return weaponCollisionRec; }
     Rectangle getHurtRec();
     float getDamage(){ return damagePerHit; }

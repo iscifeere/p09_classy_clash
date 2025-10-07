@@ -21,6 +21,7 @@ public:
     void render() override;
     Rectangle getCollisionRec();            // relative position version
     Rectangle getCollisionRecWorPos();      // absolute position version
+    Vector2 getWorldPos(){ return worldPos; }
     Vector2 getScreenPos() override;
     void showDebugData();
 

@@ -23,10 +23,7 @@ Vector2 Character::getWindowOriginWorPos(){
 }
 
 Vector2 Character::getPrevWorldPos(){
-    Vector2 prevWorldPos{
-        Vector2Subtract( worldPos, movement )
-    };
-    return prevWorldPos;
+    return Vector2Subtract( worldPos, movement );
 }
 
 Rectangle Character::getCollisionRec(){
@@ -51,6 +48,26 @@ Rectangle Character::getCollisionRecWorPos(){
     Vector2 worldPosTopLeft{
         worldPos.x - scaledWidth*0.5f,
         worldPos.y - scaledHeight*0.5f
+    };
+
+    return Rectangle{
+        // displacement
+        worldPosTopLeft.x + ( scaledWidth * collisionBox.x ),
+        worldPosTopLeft.y + ( scaledHeight * collisionBox.y ),
+
+        // scaling
+        scaledWidth * collisionBox.width,
+        scaledHeight * collisionBox.height
+    };
+}
+
+Rectangle Character::getPrevCollisionRecWorPos(){
+    float scaledWidth = frameWidth*scale;
+    float scaledHeight = frameHeight*scale;
+    Vector2 prevWorldPos{getPrevWorldPos()};
+    Vector2 worldPosTopLeft{
+        prevWorldPos.x - scaledWidth*0.5f,
+        prevWorldPos.y - scaledHeight*0.5f
     };
 
     return Rectangle{

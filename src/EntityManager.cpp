@@ -209,20 +209,19 @@ void EntityMng::showPropsDebugData(){
     }
 }
 
-// void EntityMng::checkPropCollisions(Character* playerPtr){
-//     for( auto propPtr : propArr ){
-//         if(propPtr != nullptr){
-//             if( CheckCollisionRecs(propPtr->getCollisionRec(), playerPtr->getCollisionRec()) ){
-//                 playerPtr->undoMovementX();
-//                 playerPtr->undoMovementY();
-//             }}}
-// }
 void EntityMng::checkPropCollisions(Character* playerPtr){
+    Rectangle playerPrevCollisionRec{playerPtr->getPrevCollisionRecWorPos()};
+
     for( auto propPtr : propArr ){
         if(propPtr != nullptr){
-            if( CheckCollisionRecs(propPtr->getCollisionRecWorPos(), playerPtr->getCollisionRecWorPos()) ){
-                playerPtr->undoMovementX();
-                playerPtr->undoMovementY();
+            Rectangle propCollisionRec{propPtr->getCollisionRecWorPos()};
+            
+            if( CheckCollisionRecs(propCollisionRec, playerPtr->getCollisionRecWorPos()) ){
+                if(
+                    playerPrevCollisionRec.x + playerPrevCollisionRec.width < propCollisionRec.x ||
+                    playerPrevCollisionRec.x > propCollisionRec.x + propCollisionRec.width
+                ) playerPtr->undoMovementX();
+                else playerPtr->undoMovementY();
             }}}
 }
 
