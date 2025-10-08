@@ -117,7 +117,7 @@ int main(void) {
 
         // create enemies
         if( IsKeyPressed(KEY_R) ) EntityMng::spawnEnemy(Vector2Add(Vector2Subtract(playerWorPos, Tex::halfWinSize), cursorPosition), &knight, &MADKNIGHT_ENEMYDATA);
-        if( IsKeyPressed(KEY_T) ) EntityMng::spawnEnemy(Vector2Add(Vector2Subtract(playerWorPos, Tex::halfWinSize), cursorPosition), &knight, &SLIME_ENEMYDATA);
+        if( IsKeyPressed(KEY_T) ) EntityMng::spawnEnemyInPool(Vector2Add(Vector2Subtract(playerWorPos, Tex::halfWinSize), cursorPosition), &knight, &SLIME_ENEMYDATA);
         if( IsKeyPressed(KEY_Y) ) EntityMng::spawnEnemy(Vector2Add(Vector2Subtract(playerWorPos, Tex::halfWinSize), cursorPosition), &knight, &RED_ENEMYDATA);
 
         // delete hearts
@@ -131,12 +131,13 @@ int main(void) {
         //     // }
 
         // delete enemies
-        if( IsKeyPressed(KEY_F) ) EntityMng::killEnemy();
+        if( IsKeyPressed(KEY_F) ) EntityMng::killEnemyInPool();
 
         // entities tick ========================
         knight.tick(dT);
         EntityMng::tickItems(dT);
         EntityMng::tickEnemies(dT);
+        EntityMng::tickEnemiesInPool(dT);
         EntityMng::tickProyectiles(dT);
 
         // cursor affects player
@@ -191,6 +192,7 @@ int main(void) {
         if(arrowPtr != nullptr) arrowPtr->tick(dT);
         EntityMng::tickAmmo(dT);
         // EntityMng::renderProyectiles();
+        EntityMng::renderEnemiesInPool();
         EntityMng::renderEntities(&knight);
         
         // draw player stats

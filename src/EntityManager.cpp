@@ -1,10 +1,10 @@
 #include "EntityManager.h"
 #include <iostream>
 #include <algorithm>
-#include <array>
 
 Item* EntityMng::itemArr[ITEM_ARR_SIZE]{nullptr};
 Enemy* EntityMng::enemyArr[ENEMY_ARR_SIZE]{nullptr};
+std::array<Enemy, EntityMng::ENEMY_ARR_SIZE> EntityMng::enemyPool{};
 GenEntity* EntityMng::proyectileArr[PROYECTILE_ARR_SIZE]{nullptr};
 GenEntity* EntityMng::ammo{nullptr};
 Prop* EntityMng::propArr[PROP_ARR_SIZE]{nullptr};
@@ -153,6 +153,17 @@ void EntityMng::spawnEnemy(Vector2 pos, Character* playerPtr, const enemyData* e
         if(i >= ENEMY_ARR_SIZE-1) std::cout << "[Enemy array full!]" << std::endl;
     }
 }
+void EntityMng::spawnEnemyInPool(Vector2 pos, Character* playerPtr, const enemyData* enemy_data){
+    for( auto& enemy : enemyPool ){
+        if(!enemy.getAlive()){
+            enemy.spawnReset(pos, enemy_data);
+            enemy.setTarget(playerPtr);
+            std::cout << "[Enemy spawned in pool!]" << std::endl;
+            return;
+        }
+    }
+    std::cout << "[Enemy pool full!]" << std::endl;
+}
 
 void EntityMng::killEnemy(){
     for(int i{0} ; i < ENEMY_ARR_SIZE ; i++){
@@ -166,6 +177,16 @@ void EntityMng::killEnemy(){
         if( i >= ENEMY_ARR_SIZE-1 ) std::cout << "[Enemy array empty!]" << std::endl;
     }
 }
+void EntityMng::killEnemyInPool(){
+    for( auto& enemy : enemyPool ){
+        if(enemy.getAlive()){
+            enemy.deathSequence();
+            std::cout << "[Enemy deactivated!]" << std::endl;
+            return;
+        }
+    }
+    std::cout << "[Enemy pool empty!]" << std::endl;
+}
 
 void EntityMng::tickEnemies(float deltaTime){
     for(int i{0} ; i < ENEMY_ARR_SIZE ; i++){
@@ -178,6 +199,14 @@ void EntityMng::tickEnemies(float deltaTime){
         }
     }
 }
+void EntityMng::tickEnemiesInPool(float deltaTime){
+    for( auto& enemy : enemyPool ){
+        if(enemy.getAlive()){
+            enemy.tick(deltaTime);
+            if(!enemy.getAlive()) std::cout << "[Enemy deactivated!]" << std::endl;
+        }
+    }
+}
 
 void EntityMng::renderEnemies(){
     for( auto &enemy : enemyArr ){
@@ -186,12 +215,20 @@ void EntityMng::renderEnemies(){
         }
     }
 }
+void EntityMng::renderEnemiesInPool(){
+    for( auto& enemy : enemyPool ){
+        if(enemy.getAlive()) enemy.render();
+    }
+}
 
 void EntityMng::showEnemiesDebugData(){
     for(int i{0} ; i < ENEMY_ARR_SIZE ; i++){
         if(enemyArr[i] != nullptr){
             enemyArr[i]->showDebugData();
         }
+    }
+    for( auto& enemy : enemyPool ){
+        if(enemy.getAlive()) enemy.showDebugData();
     }
 }
 
@@ -284,6 +321,9 @@ void EntityMng::clearEntityPools(){
             delete entityPtr;
             entityPtr = nullptr;
         }}
+    for( auto& enemy : enemyPool ){
+        if(enemy.getAlive()) enemy.setAlive(false);
+    }
 
     std::cout << "[Entity pools cleared]" << std::endl;
 }

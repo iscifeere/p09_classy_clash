@@ -8,6 +8,7 @@
 #include "GenericEntity.h"
 #include "Entity.h"
 #include "Prop.h"
+#include <array>
 
 class EntityMng
 {
@@ -23,9 +24,13 @@ public:
     
     static void spawnEnemy(Vector2 pos, Character* playerPtr);
     static void spawnEnemy(Vector2 pos, Character* playerPtr, const enemyData* enemy_data);
+    static void spawnEnemyInPool(Vector2 pos, Character* playerPtr, const enemyData* enemy_data);
     static void killEnemy();
+    static void killEnemyInPool();
     static void tickEnemies(float deltaTime);
+    static void tickEnemiesInPool(float deltaTime);
     static void renderEnemies();
+    static void renderEnemiesInPool();
     static void showEnemiesDebugData();
 
     static void spawnAmmo(Vector2 pos, Vector2 direction, Character* playerPtr);
@@ -51,6 +56,7 @@ private:
 
     static const int ENEMY_ARR_SIZE{10};    // max number of enemies
     static Enemy* enemyArr[ENEMY_ARR_SIZE];
+    static std::array<Enemy, ENEMY_ARR_SIZE> enemyPool;
 
     static const int PROYECTILE_ARR_SIZE{ENEMY_ARR_SIZE};   // max number of proyectiles
     static GenEntity* proyectileArr[PROYECTILE_ARR_SIZE];

@@ -20,6 +20,8 @@ public:
     Enemy(Vector2 pos, const enemyData* enemy_data);
     Enemy(Vector2 pos, Texture2D* idle_texture, Texture2D* run_texture);
 
+    void spawnReset(Vector2 pos, const enemyData* enemy_data);
+
     virtual bool tick(float deltaTime) override;
     void setTarget(Character* ptr){ target = ptr; }
     Vector2 getScreenPos() override;
@@ -40,7 +42,7 @@ public:
     bool neutral{false};
     
 protected:
-    Character* target{};
+    Character* target{nullptr};
     float damagePerSec{10.f};
     float radius{50.f};
     float chaseRadius{400.f};

@@ -5,7 +5,7 @@
 #include <iostream>
 
 Enemy::Enemy(){
-    // action = chaseTarget;
+    setAlive(false);
     scale = 8.0f;
     data = &DEFAULT_ENEMYDATA;
 }
@@ -72,6 +72,36 @@ Enemy::Enemy(Vector2 pos, Texture2D* idle_texture, Texture2D* run_texture)
 
     // action = chaseTarget;
     data = &DEFAULT_ENEMYDATA;
+}
+
+void Enemy::spawnReset(Vector2 pos, const enemyData* enemy_data)
+{
+    worldPos = pos;
+    data = enemy_data;
+
+    texture = data->texture_idle;
+    idle = data->texture_idle;
+    run = data->texture_run;
+    maxFramesIdle = data->maxFramesIdle;
+    maxFramesRun = data->maxFramesRun;
+    maxFrames = maxFramesIdle;
+    maxFrameRows = data->frameRows;
+    ignoreFrameRows = data->ignoreFrameRows;
+    itemDrop = data->item_drop;
+
+    frameWidth = texture->width / maxFrames;
+    frameHeight = texture->height / data->frameRows;
+    scale = 8.0f;
+
+    speed = data->speed;
+    health = data->health;
+    damagePerSec = data->damage;
+    chaseRadius = data->chase_radius;
+    neutral = data->isNeutral;
+
+    action = data->behave;
+
+    setAlive(true);
 }
 
 bool Enemy::tick(float deltaTime){
