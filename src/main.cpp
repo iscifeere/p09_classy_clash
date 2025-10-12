@@ -44,41 +44,6 @@ int main(void) {
     EntityMng::spawnProp(Vector2{800.f, 1200.f}, &LOG_PROPDATA, &knight);
     EntityMng::spawnProp(Vector2{1800.f, 1200.f}, &SIGN_PROPDATA, &knight);
 
-    Enemy goblin{Vector2{1600.f, 600.f}};
-
-    Enemy slime{
-        Vector2{1000.f, 1400.f},
-        (Texture2D*)&Tex::texture_slime_idle,
-        (Texture2D*)&Tex::texture_slime_run
-    };
-
-    Enemy madKnight{
-        Vector2{3000.f, 1400.f},
-        &Tex::texture_knight_idle,
-        &Tex::texture_knight_run
-    };
-
-    slime.setSpeed(4.f);
-    madKnight.setSpeed(9.f);
-    madKnight.addHealth(60.f);
-
-    Enemy* enemies[]{
-        &goblin,
-        &slime,
-        &madKnight
-    };
-
-    // set target of each enemy
-    for (auto enemy : enemies){
-        enemy->setTarget(&knight);
-    }
-
-    SlimeMob bob(Vector2{1000.f, 1000.f}, &knight);
-    RedMob rojo(Vector2{1000.f, 1700.f}, &knight);
-    // CoinItem* moneda = new CoinItem(Vector2{500.f, 500.f}, &knight);
-    // GenEntity arrow{Vector2{700.f,500.f}, &knight};
-    GenEntity* arrowPtr{nullptr};
-
     // finish textures load | change to previous working directory
     ChangeDirectory(prev_dir);
     const std::string finishAssetsDirectory{ GetWorkingDirectory() };
@@ -107,37 +72,21 @@ int main(void) {
         // create items
         if( IsKeyPressed(KEY_E) ) EntityMng::spawnItem(Vector2Add(Vector2Subtract(playerWorPos, Tex::halfWinSize), cursorPosition), &knight, &COIN_ITEMDATA);
 
-        Vector2 arrowDirection{};
-        if( arrowPtr != nullptr && IsKeyPressed(KEY_O) ) arrowPtr->spawnReset();
-        if( arrowPtr != nullptr && IsKeyPressed(KEY_U) ) arrowPtr->spawnReset(playerWorPos, knight.getVelocity());
-
-        // if( arrowPtr == nullptr && IsKeyPressed(KEY_N) ) arrowPtr = new GenEntity(playerWorPos, &knight);
-        if( arrowPtr == nullptr && IsKeyPressed(KEY_N) ) arrowPtr = new GenEntity(playerWorPos, knight.getVelocity(), &knight);
-        if( arrowPtr != nullptr && IsKeyPressed(KEY_M) ) { delete arrowPtr; arrowPtr = nullptr; }
-
         // create enemies
         if( IsKeyPressed(KEY_R) ) EntityMng::spawnEnemy(Vector2Add(Vector2Subtract(playerWorPos, Tex::halfWinSize), cursorPosition), &knight, &MADKNIGHT_ENEMYDATA);
-        if( IsKeyPressed(KEY_T) ) EntityMng::spawnEnemyInPool(Vector2Add(Vector2Subtract(playerWorPos, Tex::halfWinSize), cursorPosition), &knight, &SLIME_ENEMYDATA);
+        if( IsKeyPressed(KEY_T) ) EntityMng::spawnEnemy(Vector2Add(Vector2Subtract(playerWorPos, Tex::halfWinSize), cursorPosition), &knight, &SLIME_ENEMYDATA);
         if( IsKeyPressed(KEY_Y) ) EntityMng::spawnEnemy(Vector2Add(Vector2Subtract(playerWorPos, Tex::halfWinSize), cursorPosition), &knight, &RED_ENEMYDATA);
 
         // delete hearts
         if( IsKeyPressed(KEY_Q) ) EntityMng::killItem();
-        // if( IsKeyPressed(KEY_F) ){
-        //     // for( auto item : loot ){         // <--- don't know why it doesn't work w/ range for loop
-        //     //     if( item != nullptr ){       // [!] seems like messing w/ objects in heap inside range based for loops causes trouble
-        //     //         delete item;          // <-- CRASH!!  (Deleting from heap inside range based loop seems
-        //     //         item = nullptr;       //               to be the problem)
-        //     //     }
-        //     // }
 
         // delete enemies
-        if( IsKeyPressed(KEY_F) ) EntityMng::killEnemyInPool();
+        if( IsKeyPressed(KEY_F) ) EntityMng::killEnemy();
 
         // entities tick ========================
         knight.tick(dT);
         EntityMng::tickItems(dT);
         EntityMng::tickEnemies(dT);
-        EntityMng::tickEnemiesInPool(dT);
         EntityMng::tickProyectiles(dT);
 
         // cursor affects player
@@ -178,21 +127,6 @@ int main(void) {
 
         // ENTITIES RENDER =====================
 
-        // knight.render();
-        // EntityMng::renderItems();
-
-        // enemy tick
-        for (auto enemy : enemies){
-            enemy->tick(dT);
-        }
-        
-        // EntityMng::renderEnemies();
-        bob.tick(dT);
-        rojo.tick(dT);
-        if(arrowPtr != nullptr) arrowPtr->tick(dT);
-        EntityMng::tickAmmo(dT);
-        // EntityMng::renderProyectiles();
-        EntityMng::renderEnemiesInPool();
         EntityMng::renderEntities(&knight);
         
         // draw player stats

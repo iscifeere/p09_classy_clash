@@ -19,8 +19,10 @@ class Item : public Entity
 {
 public:
     Item();    // default constructor
-    Item( Vector2 pos, Character* player_ptr );
-    Item( Vector2 pos, Character* player_ptr, const itemData* item_data );
+    Item(Vector2 pos, Character* player_ptr);
+    Item(Vector2 pos, Character* player_ptr, const itemData*item_data);
+
+    void spawnReset(Vector2 pos, Character* player_ptr, const itemData* item_data);
     
     bool tick(float deltatime);
     Vector2 getWorldPos() { return worldPos; }

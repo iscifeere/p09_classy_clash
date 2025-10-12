@@ -1,6 +1,13 @@
 #include "GenericEntity.h"
 #include "raymath.h"
 
+GenEntity::GenEntity(){
+    setAlive(false);
+    
+    frameWidth = texture->width / maxFrames;
+    frameHeight = texture->height;
+    scale = 4.f;
+}
 GenEntity::GenEntity( Vector2 pos, Character* playerPtr ) :
     worldPos(pos),
     player(playerPtr)
@@ -88,11 +95,12 @@ void GenEntity::spawnReset(){
     // active = true;
     setAlive(true);
 }
-void GenEntity::spawnReset(Vector2 pos, Vector2 direction){
-    moveTimer = 0.f;
-    velocity = direction;
+void GenEntity::spawnReset(Vector2 pos, Vector2 direction, Character* playerPtr){
     worldPos = pos;
-    // active = true;
+    velocity = direction;
+    player = playerPtr;
+    moveTimer = 0.f;
+    
     setAlive(true);
 }
 

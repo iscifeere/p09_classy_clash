@@ -9,11 +9,12 @@
 class GenEntity : public Entity
 {
 public:
+    GenEntity();
     GenEntity( Vector2 pos, Character* player );
     GenEntity( Vector2 pos, Vector2 direction, Character* player );
 
     void spawnReset();
-    void spawnReset( Vector2 pos, Vector2 direction );
+    void spawnReset(Vector2 pos, Vector2 direction, Character* playerPtr);
 
     bool tick(float deltaTime);
     Vector2 getWorldPos() { return worldPos; }

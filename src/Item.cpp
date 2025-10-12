@@ -3,6 +3,7 @@
 #include <cmath>
 
 Item::Item(){
+    setAlive(false);
     scale = 4.f;
 }
 
@@ -29,6 +30,24 @@ Item::Item(Vector2 pos, Character* player_ptr, const itemData* item_data ) :
     frameWidth = texture->width / maxFrames;
     frameHeight = texture->height;
     scale = 4.f;
+}
+
+void Item::spawnReset(Vector2 pos, Character* player_ptr, const itemData* item_data )
+{
+    worldPos = pos;
+    player = player_ptr;
+    data = item_data;
+
+    texture = data->texture;
+    maxFrames = data->maxFrames;
+    updateTime = data->updateTime;
+    item_effect = data->effect;
+
+    frameWidth = texture->width / maxFrames;
+    frameHeight = texture->height;
+    scale = 4.f;
+
+    setAlive(true);
 }
 
 bool Item::tick(float deltaTime){

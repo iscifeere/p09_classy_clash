@@ -16,20 +16,27 @@ struct propData{
 class Prop : public Entity
 {
 public:
+    Prop();
     Prop(Vector2 pos, Character* player_ptr);
     Prop(Vector2 pos, const propData* prop_data, Character* player_ptr);
+
+    void spawnReset(Vector2 pos, const propData* prop_data, Character* player_ptr);
+
     void render() override;
     Rectangle getCollisionRec();            // relative position version
     Rectangle getCollisionRecWorPos();      // absolute position version
     Vector2 getWorldPos(){ return worldPos; }
     Vector2 getScreenPos() override;
     void showDebugData();
+    bool getAlive(){ return alive; }
+    void setAlive(bool isAlive){ alive = isAlive; }
 
 private:
     Texture2D* texture{&Tex::texture_prop_rock};    // default texture
     Vector2 worldPos{};
     Character* player{nullptr};
     const propData* data{nullptr};
+    bool alive{true};
 };
 
 //==============================
