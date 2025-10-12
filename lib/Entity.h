@@ -9,8 +9,11 @@ class Entity
 public:
     Entity(){};
 
+    virtual bool tick(float deltaTime) = 0;
     virtual void render() = 0;
 
+    bool getAlive() { return alive; }
+    void setAlive( bool isAlive ) { alive = isAlive; }
     virtual Vector2 getScreenPos() = 0;
     Texture2D* getTexture() { return texture; }
     
@@ -31,6 +34,8 @@ protected:
     float frameWidth{};       // width of one animation frame
     float frameHeight{};      // height of one animation frame
     float scale{};            // texture scaling
+
+    bool alive{true};
 };
 
 #endif

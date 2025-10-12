@@ -22,7 +22,7 @@ public:
 
     void spawnReset(Vector2 pos, const enemyData* enemy_data);
 
-    virtual bool tick(float deltaTime) override;
+    bool tick(float deltaTime) override;
     void setTarget(Character* ptr){ target = ptr; }
     Vector2 getScreenPos() override;
     Rectangle getCollisionRec();

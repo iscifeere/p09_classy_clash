@@ -22,21 +22,25 @@ public:
 
     void spawnReset(Vector2 pos, const propData* prop_data, Character* player_ptr);
 
+    bool tick(float deltaTime) override {
+        if(!getAlive()) return false;
+        else return true;
+    }
     void render() override;
     Rectangle getCollisionRec();            // relative position version
     Rectangle getCollisionRecWorPos();      // absolute position version
     Vector2 getWorldPos(){ return worldPos; }
     Vector2 getScreenPos() override;
     void showDebugData();
-    bool getAlive(){ return alive; }
-    void setAlive(bool isAlive){ alive = isAlive; }
+    // bool getAlive(){ return alive; }
+    // void setAlive(bool isAlive){ alive = isAlive; }
 
 private:
     Texture2D* texture{&Tex::texture_prop_rock};    // default texture
     Vector2 worldPos{};
     Character* player{nullptr};
     const propData* data{nullptr};
-    bool alive{true};
+    // bool alive{true};
 };
 
 //==============================

@@ -24,11 +24,11 @@ public:
 
     void spawnReset(Vector2 pos, Character* player_ptr, const itemData* item_data);
     
-    bool tick(float deltatime);
+    bool tick(float deltaTime) override;
     Vector2 getWorldPos() { return worldPos; }
     Vector2 getScreenPos() override;
-    bool getAlive() { return alive; }
-    void setAlive( bool isAlive ) { alive = isAlive; }
+    // bool getAlive() { return alive; }
+    // void setAlive( bool isAlive ) { alive = isAlive; }
     Rectangle getCollisionRec();
     void showDebugData();
     void render() override;
@@ -54,7 +54,7 @@ protected:
     };
 
 private:
-    bool alive{true};
+    // bool alive{true};
 };
 
 //============================

@@ -8,16 +8,23 @@ std::array<Item, EntityMng::ITEM_ARR_SIZE> EntityMng::itemPool{};
 std::array<Enemy, EntityMng::ENEMY_ARR_SIZE> EntityMng::enemyPool{};
 std::array<GenEntity, EntityMng::PROYECTILE_ARR_SIZE> EntityMng::proyectilePool{};
 std::array<Prop, EntityMng::PROP_ARR_SIZE> EntityMng::propPool{};
-std::array<Entity*, EntityMng::ENTITY_ARR_SIZE> EntityMng::activeEntitiesPtrPool{nullptr};
+std::array<Entity*, EntityMng::ENTITY_ARR_SIZE> EntityMng::activeEntities{nullptr};
+size_t EntityMng::i_EntitiesEnd{0};
 
 void EntityMng::spawnProyectile(Vector2 pos, Vector2 direction, Character* playerPtr){
     for(auto& proyectile : proyectilePool){
         if(!proyectile.getAlive()){
             proyectile.spawnReset(pos, direction, playerPtr);
-            // std::cout << "[Proyectile spawned in pool!]" << std::endl;
+
+            // add to active entities
+            if(i_EntitiesEnd < ENTITY_ARR_SIZE){
+                activeEntities[i_EntitiesEnd] = &proyectile;
+                i_EntitiesEnd++;
+            }
+
             return;
         }}
-    // std::cout << "[Proyectile pool full!]" << std::endl;
+    std::cout << "[Proyectile pool full!]" << std::endl;
 }
 
 void EntityMng::tickProyectiles(float deltaTime){
@@ -39,6 +46,13 @@ void EntityMng::spawnItem(Vector2 pos, Character* playerPtr, const itemData* ite
     for(auto& item : itemPool){
         if(!item.getAlive()){
             item.spawnReset(pos, playerPtr, item_data);
+
+            // add to active entities
+            if(i_EntitiesEnd < ENTITY_ARR_SIZE){
+                activeEntities[i_EntitiesEnd] = &item;
+                i_EntitiesEnd++;
+            }
+
             std::cout << "[Item spawned in pool!]" << std::endl;
             return;
         }
@@ -77,6 +91,13 @@ void EntityMng::spawnEnemy(Vector2 pos, Character* playerPtr, const enemyData* e
         if(!enemy.getAlive()){
             enemy.spawnReset(pos, enemy_data);
             enemy.setTarget(playerPtr);
+
+            // add to active entities
+            if(i_EntitiesEnd < ENTITY_ARR_SIZE){
+                activeEntities[i_EntitiesEnd] = &enemy;
+                i_EntitiesEnd++;
+            }
+
             std::cout << "[Enemy spawned in pool!]" << std::endl;
             return;
         }
@@ -114,6 +135,13 @@ void EntityMng::spawnProp(Vector2 pos, const propData* prop_data, Character* pla
     for(auto& prop : propPool){
         if(!prop.getAlive()){
             prop.spawnReset(pos, prop_data, playerPtr);
+
+            // add to active entities
+            if(i_EntitiesEnd < ENTITY_ARR_SIZE){
+                activeEntities[i_EntitiesEnd] = &prop;
+                i_EntitiesEnd++;
+            }
+
             std::cout << "[Prop spawned in pool!]" << std::endl;
             return;
         }}
@@ -140,6 +168,33 @@ void EntityMng::checkPropCollisions(Character* playerPtr){
                 ) playerPtr->undoMovementX();
                 else playerPtr->undoMovementY();
             }}}
+}
+
+void EntityMng::tickEntities(float deltaTime, Character* playerPtr){
+    playerPtr->tick(deltaTime);
+
+    for(int i{} ; i < i_EntitiesEnd ; i++){
+        activeEntities[i]->tick(deltaTime);
+
+        // if entity died inside tick logic
+        if(!activeEntities[i]->getAlive()){
+
+            // if index is last active entity
+            if(i == i_EntitiesEnd-1){
+                // free the spot and update array end
+                activeEntities[i] = nullptr;
+                i_EntitiesEnd = i;
+            }
+            else{
+                // swap index for last active entity,
+                activeEntities[i] = activeEntities[i_EntitiesEnd-1];
+                // free last active entity and update array end
+                activeEntities[i_EntitiesEnd-1] = nullptr;
+                i_EntitiesEnd--;
+            }
+        }
+
+    }
 }
 
 void EntityMng::renderEntities(Character* playerPtr){

@@ -33,6 +33,7 @@ public:
     static void showPropsDebugData();
     static void checkPropCollisions(Character* playerPtr);
 
+    static void tickEntities(float deltaTime, Character* playerPtr);
     static void renderEntities(Character* playerPtr);
     static void clearEntityPools();
 
@@ -48,7 +49,9 @@ private:
     static std::array<Enemy, ENEMY_ARR_SIZE> enemyPool;
     static std::array<GenEntity, PROYECTILE_ARR_SIZE> proyectilePool;
     static std::array<Prop, PROP_ARR_SIZE> propPool;
-    static std::array<Entity*, ENTITY_ARR_SIZE> activeEntitiesPtrPool;
+
+    static std::array<Entity*, ENTITY_ARR_SIZE> activeEntities;
+    static size_t i_EntitiesEnd;
 };
 
 #endif
