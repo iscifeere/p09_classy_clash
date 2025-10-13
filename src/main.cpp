@@ -84,10 +84,6 @@ int main(void) {
         if( IsKeyPressed(KEY_F) ) EntityMng::killEnemy();
 
         // entities tick ========================
-        // knight.tick(dT);
-        // EntityMng::tickItems(dT);
-        // EntityMng::tickEnemies(dT);
-        // EntityMng::tickProyectiles(dT);
         EntityMng::tickEntities(dT, &knight);
 
         // cursor affects player

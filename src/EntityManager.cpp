@@ -8,7 +8,7 @@ std::array<Item, EntityMng::ITEM_ARR_SIZE> EntityMng::itemPool{};
 std::array<Enemy, EntityMng::ENEMY_ARR_SIZE> EntityMng::enemyPool{};
 std::array<GenEntity, EntityMng::PROYECTILE_ARR_SIZE> EntityMng::proyectilePool{};
 std::array<Prop, EntityMng::PROP_ARR_SIZE> EntityMng::propPool{};
-std::array<Entity*, EntityMng::ENTITY_ARR_SIZE> EntityMng::activeEntities{nullptr};
+std::array<EntityVariant, EntityMng::ENTITY_ARR_SIZE> EntityMng::activeEntities{};
 size_t EntityMng::i_EntitiesEnd{0};
 
 void EntityMng::spawnProyectile(Vector2 pos, Vector2 direction, Character* playerPtr){
@@ -174,22 +174,33 @@ void EntityMng::tickEntities(float deltaTime, Character* playerPtr){
     playerPtr->tick(deltaTime);
 
     for(int i{} ; i < i_EntitiesEnd ; i++){
-        activeEntities[i]->tick(deltaTime);
+        EntityVariant& currentEntity = activeEntities[i];
+        EntityVariant& lastEntity = activeEntities[i_EntitiesEnd-1];
+        bool isEntityAlive{false};
+
+        // do tick on currentEntity
+        std::visit(
+            [&deltaTime, &isEntityAlive](auto&& e){
+                e->tick(deltaTime);
+                isEntityAlive = e->getAlive();  // update currentEntity alive state after tick
+            },
+            currentEntity
+        );
 
         // if entity died inside tick logic
-        if(!activeEntities[i]->getAlive()){
+        if(!isEntityAlive){
 
             // if index is last active entity
             if(i == i_EntitiesEnd-1){
                 // free the spot and update array end
-                activeEntities[i] = nullptr;
+                currentEntity.emplace<0>(nullptr);  // resetting to null Item*
                 i_EntitiesEnd = i;
             }
             else{
-                // swap index for last active entity,
-                activeEntities[i] = activeEntities[i_EntitiesEnd-1];
+                // copy last active entity ptr into current one
+                currentEntity = lastEntity;
                 // free last active entity and update array end
-                activeEntities[i_EntitiesEnd-1] = nullptr;
+                lastEntity.emplace<0>(nullptr);
                 i_EntitiesEnd--;
             }
         }

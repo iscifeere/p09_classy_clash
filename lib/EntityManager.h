@@ -6,9 +6,11 @@
 #include "Character.h"
 #include "Enemy.h"
 #include "GenericEntity.h"
-#include "Entity.h"
 #include "Prop.h"
 #include <array>
+#include <variant>
+
+using EntityVariant = std::variant<Item*, Enemy*, GenEntity*, Prop*>;
 
 class EntityMng
 {
@@ -50,7 +52,7 @@ private:
     static std::array<GenEntity, PROYECTILE_ARR_SIZE> proyectilePool;
     static std::array<Prop, PROP_ARR_SIZE> propPool;
 
-    static std::array<Entity*, ENTITY_ARR_SIZE> activeEntities;
+    static std::array<EntityVariant, ENTITY_ARR_SIZE> activeEntities;
     static size_t i_EntitiesEnd;
 };
 

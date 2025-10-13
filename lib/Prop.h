@@ -22,7 +22,7 @@ public:
 
     void spawnReset(Vector2 pos, const propData* prop_data, Character* player_ptr);
 
-    bool tick(float deltaTime) override {
+    bool tick(float deltaTime) {
         if(!getAlive()) return false;
         else return true;
     }
@@ -32,15 +32,15 @@ public:
     Vector2 getWorldPos(){ return worldPos; }
     Vector2 getScreenPos() override;
     void showDebugData();
-    // bool getAlive(){ return alive; }
-    // void setAlive(bool isAlive){ alive = isAlive; }
+    bool getAlive(){ return alive; }
+    void setAlive(bool isAlive){ alive = isAlive; }
 
 private:
     Texture2D* texture{&Tex::texture_prop_rock};    // default texture
     Vector2 worldPos{};
     Character* player{nullptr};
     const propData* data{nullptr};
-    // bool alive{true};
+    bool alive{true};
 };
 
 //==============================

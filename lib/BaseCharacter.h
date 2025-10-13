@@ -14,10 +14,10 @@ public:
     Vector2 getWorldPos(){ return worldPos; }
     void undoMovementX();
     void undoMovementY();
-    virtual bool tick(float deltaTime) override;
+    virtual bool tick(float deltaTime);
     // virtual Vector2 getScreenPos() = 0;
-    // bool getAlive() { return alive; }
-    // void setAlive( bool isAlive ) { alive = isAlive; }
+    bool getAlive() { return alive; }
+    void setAlive( bool isAlive ) { alive = isAlive; }
     void setSpeed( float newSpeed ) { speed = newSpeed; }
     virtual void takeDamage(float damage);
     float getHealth(){ return health; }
@@ -62,7 +62,7 @@ protected:
     float hurtTime{};
     bool invul{false};  // invulnerable
 private:
-    // bool alive{true};
+    bool alive{true};
 };
 
 #endif
