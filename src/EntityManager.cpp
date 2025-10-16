@@ -35,11 +35,16 @@ void EntityMng::tickProyectiles(float deltaTime){
 }
 
 void EntityMng::showProyectilesDebugData(){
+    int proyectilesAlive{};
+
     for(auto& proyectile : proyectilePool){
         if(proyectile.getAlive()){
             proyectile.showDebugData();
+            proyectilesAlive++;
         }
     }
+
+    DrawText(TextFormat("proy: %01i",proyectilesAlive), 55.f, 185.f, 30, WHITE);
 }
 
 void EntityMng::spawnItem(Vector2 pos, Character* playerPtr, const itemData* item_data){
@@ -205,6 +210,22 @@ void EntityMng::tickEntities(float deltaTime, Character* playerPtr){
             }
         }
 
+    }
+}
+void EntityMng::tickEntities2(float deltaTime, Character* playerPtr){
+    playerPtr->tick(deltaTime);
+
+    for(auto& enemy : enemyPool){
+        if(enemy.getAlive()) enemy.tick(deltaTime);
+    }
+    for(auto& item : itemPool){
+        if(item.getAlive()) item.tick(deltaTime);
+    }
+    for(auto& proyectile : proyectilePool){
+        if(proyectile.getAlive()) proyectile.tick(deltaTime);
+    }
+    for(auto& prop : propPool){
+        if(prop.getAlive()) prop.tick(deltaTime);
     }
 }
 

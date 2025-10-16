@@ -10,10 +10,8 @@ class GenEntity : public Entity
 {
 public:
     GenEntity();
-    GenEntity( Vector2 pos, Character* player );
     GenEntity( Vector2 pos, Vector2 direction, Character* player );
 
-    void spawnReset();
     void spawnReset(Vector2 pos, Vector2 direction, Character* playerPtr);
 
     bool tick(float deltaTime);
@@ -41,7 +39,6 @@ public:
     // float scale{4.f};
     Color drawColor{BLUE};
     float moveTimer{0.f};
-    // bool active{true};
     
 private:
     bool alive{true};

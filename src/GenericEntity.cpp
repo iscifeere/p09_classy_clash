@@ -3,18 +3,6 @@
 
 GenEntity::GenEntity(){
     setAlive(false);
-    
-    frameWidth = texture->width / maxFrames;
-    frameHeight = texture->height;
-    scale = 4.f;
-}
-GenEntity::GenEntity( Vector2 pos, Character* playerPtr ) :
-    worldPos(pos),
-    player(playerPtr)
-{
-    frameWidth = texture->width / maxFrames;
-    frameHeight = texture->height;
-    scale = 4.f;
 }
 GenEntity::GenEntity( Vector2 pos, Vector2 direction, Character* playerPtr ) :
     worldPos(pos),
@@ -30,15 +18,12 @@ bool GenEntity::tick(float deltaTime)
 {
     if( !getAlive() ) return false;
 
-    // drawColor = BLUE;       // reset
-
     // MOVEMENT
     if(Vector2Length(velocity) != 0.0)
     {   
         movement = Vector2Scale(Vector2Normalize(velocity), speed);
         worldPos = Vector2Add(worldPos, movement);
         moveTimer += deltaTime;
-        // if(Vector2Length( getScreenPos() ) > 600.f) {velocity = {}; drawColor = RED; }
         drawColor = RED;
         if( moveTimer >= 0.7f ) setAlive(false);
     } else
@@ -53,8 +38,6 @@ bool GenEntity::tick(float deltaTime)
         if(IsKeyPressed(KEY_K)) velocity.y += 1.f;
     }
 
-    screenPos = getScreenPos();
-
     // check collision
     if( CheckCollisionRecs(getCollisionRec(), player->getHurtRec()) ){
         player->addHealth(10);
@@ -62,22 +45,15 @@ bool GenEntity::tick(float deltaTime)
         setAlive(false);
     }
 
-    // // DRAW ENTITY
-    // DrawTextureEx(*texture, screenPos, 0.f, scale, drawColor);
-
     return true;
 }
 
-// Vector2 GenEntity::getScreenPos()
-// {
-//     return Vector2{Vector2Subtract( worldPos, player->getWorldPos() )};
-// }
 Vector2 GenEntity::getScreenPos(){
     return Vector2Subtract(worldPos, player->getWindowOriginWorPos());
 }
 
 Rectangle GenEntity::getCollisionRec(){
-    Vector2 renderPos{getRenderPos()};  // necessary when not active
+    Vector2 renderPos{getRenderPos()};
     float scaledWidth = frameWidth*scale;
     float scaledHeight = frameHeight*scale;
 
@@ -89,16 +65,15 @@ Rectangle GenEntity::getCollisionRec(){
     };
 }
 
-void GenEntity::spawnReset(){
-    moveTimer = 0.f;
-    velocity = {};
-    // active = true;
-    setAlive(true);
-}
 void GenEntity::spawnReset(Vector2 pos, Vector2 direction, Character* playerPtr){
     worldPos = pos;
     velocity = direction;
     player = playerPtr;
+
+    frameWidth = texture->width / maxFrames;
+    frameHeight = texture->height;
+    scale = 4.f;
+
     moveTimer = 0.f;
     
     setAlive(true);
@@ -110,6 +85,6 @@ void GenEntity::showDebugData(){
 }
 
 void GenEntity::render(){
-    Vector2 renderPos{getRenderPos(screenPos)};
+    Vector2 renderPos{getRenderPos()};
     DrawTextureEx(*texture, renderPos, 0.f, scale, drawColor);
 }

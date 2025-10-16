@@ -36,6 +36,7 @@ public:
     static void checkPropCollisions(Character* playerPtr);
 
     static void tickEntities(float deltaTime, Character* playerPtr);
+    static void tickEntities2(float deltaTime, Character* playerPtr);
     static void renderEntities(Character* playerPtr);
     static void clearEntityPools();
 
