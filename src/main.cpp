@@ -53,6 +53,7 @@ int main(void) {
     Color cursorColor{BLUE};
 
     bool showDebugData{false};
+    bool pauseGame{false};
 
     SetTargetFPS(60);
     while (!WindowShouldClose()) {
@@ -84,8 +85,10 @@ int main(void) {
         // delete enemies
         if( IsKeyPressed(KEY_F) ) EntityMng::killEnemy();
 
+        if(IsKeyPressed(KEY_P)) pauseGame = !pauseGame;
+
         // entities tick ========================
-        EntityMng::tickEntities(dT, &knight);
+        if(!pauseGame) EntityMng::tickEntities(dT, &knight);
 
         if(IsKeyPressed(KEY_N)) EntityMng::logEntityArrayStatus();
 
@@ -177,6 +180,11 @@ int main(void) {
                 // right vertical
                 DrawLine(topRightBoundScreenPos.x, topRightBoundScreenPos.y, bottomRightBoundScreenPos.x, bottomRightBoundScreenPos.y, YELLOW);
             }
+        }
+
+        if(pauseGame){
+            DrawRectangle(0, 0, Tex::winSize[0], Tex::winSize[1], Color{0,0,0,125});
+            DrawText("game paused", Tex::winSize[0]-220, 60, 30, WHITE);
         }
 
         // draw cursor
