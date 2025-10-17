@@ -85,7 +85,9 @@ int main(void) {
         if( IsKeyPressed(KEY_F) ) EntityMng::killEnemy();
 
         // entities tick ========================
-        EntityMng::tickEntities2(dT, &knight);
+        EntityMng::tickEntities(dT, &knight);
+
+        if(IsKeyPressed(KEY_N)) EntityMng::logEntityArrayStatus();
 
         // cursor affects player
         if(IsMouseButtonDown(MOUSE_BUTTON_RIGHT)){
@@ -133,11 +135,7 @@ int main(void) {
         // draw debug data
         if(IsKeyPressed(KEY_Z)) showDebugData = !showDebugData;
         if(showDebugData){
-            knight.showDebugData();
-            EntityMng::showEnemiesDebugData();
-            EntityMng::showItemsDebugData();
-            EntityMng::showProyectilesDebugData();
-            EntityMng::showPropsDebugData();
+            EntityMng::showEntitiesDebugData();
 
             DrawText(TextFormat("frameTime(ms): %01.02f",dT*1000), 200.f, 125.f, 30, WHITE);
             DrawText(TextFormat("FPS: %02i",FPS), 200.f, 155.f, 30, WHITE);

@@ -26,7 +26,7 @@ public:
     virtual void deathSequence() = 0;
     virtual void addHealth( float healthAdd ) { health += healthAdd; }
     Vector2& getVelocity(){ return velocity; }      // returns a reference
-    virtual void render() override;
+    virtual void render();
     virtual void showDebugData() = 0;
     void setWorldPos( Vector2 newPos ){ worldPos = newPos; }
     void checkMapBoundsCollision();

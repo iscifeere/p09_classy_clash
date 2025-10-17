@@ -3,6 +3,7 @@
 
 GenEntity::GenEntity(){
     setAlive(false);
+    scale = 4.f;
 }
 GenEntity::GenEntity( Vector2 pos, Vector2 direction, Character* playerPtr ) :
     worldPos(pos),
@@ -19,24 +20,11 @@ bool GenEntity::tick(float deltaTime)
     if( !getAlive() ) return false;
 
     // MOVEMENT
-    if(Vector2Length(velocity) != 0.0)
-    {   
-        movement = Vector2Scale(Vector2Normalize(velocity), speed);
-        worldPos = Vector2Add(worldPos, movement);
-        moveTimer += deltaTime;
-        drawColor = RED;
-        if( moveTimer >= 0.7f ) setAlive(false);
-    } else
-    {
-        velocity = {};
-        moveTimer = 0.f;
-        drawColor = BLUE;
-
-        if(IsKeyPressed(KEY_L)) velocity.x += 1.f;
-        if(IsKeyPressed(KEY_J)) velocity.x -= 1.f;
-        if(IsKeyPressed(KEY_I)) velocity.y -= 1.f;
-        if(IsKeyPressed(KEY_K)) velocity.y += 1.f;
-    }
+    movement = Vector2Scale(Vector2Normalize(velocity), speed);
+    worldPos = Vector2Add(worldPos, movement);
+    moveTimer += deltaTime;
+    drawColor = RED;
+    if( moveTimer >= 0.7f ) setAlive(false);
 
     // check collision
     if( CheckCollisionRecs(getCollisionRec(), player->getHurtRec()) ){

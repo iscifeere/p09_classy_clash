@@ -26,7 +26,7 @@ public:
         if(!getAlive()) return false;
         else return true;
     }
-    void render() override;
+    void render();
     Rectangle getCollisionRec();            // relative position version
     Rectangle getCollisionRecWorPos();      // absolute position version
     Vector2 getWorldPos(){ return worldPos; }

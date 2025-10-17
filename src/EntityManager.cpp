@@ -4,8 +4,8 @@
 
 #define DEBUG // for console logging when debugging
 
-std::array<Item, EntityMng::ITEM_ARR_SIZE> EntityMng::itemPool{};
 std::array<Enemy, EntityMng::ENEMY_ARR_SIZE> EntityMng::enemyPool{};
+std::array<Item, EntityMng::ITEM_ARR_SIZE> EntityMng::itemPool{};
 std::array<GenEntity, EntityMng::PROYECTILE_ARR_SIZE> EntityMng::proyectilePool{};
 std::array<Prop, EntityMng::PROP_ARR_SIZE> EntityMng::propPool{};
 std::array<EntityVariant, EntityMng::ENTITY_ARR_SIZE> EntityMng::activeEntities{};
@@ -15,13 +15,6 @@ void EntityMng::spawnProyectile(Vector2 pos, Vector2 direction, Character* playe
     for(auto& proyectile : proyectilePool){
         if(!proyectile.getAlive()){
             proyectile.spawnReset(pos, direction, playerPtr);
-
-            // add to active entities
-            if(i_EntitiesEnd < ENTITY_ARR_SIZE){
-                activeEntities[i_EntitiesEnd] = &proyectile;
-                i_EntitiesEnd++;
-            }
-
             return;
         }}
     std::cout << "[Proyectile pool full!]" << std::endl;
@@ -51,13 +44,6 @@ void EntityMng::spawnItem(Vector2 pos, Character* playerPtr, const itemData* ite
     for(auto& item : itemPool){
         if(!item.getAlive()){
             item.spawnReset(pos, playerPtr, item_data);
-
-            // add to active entities
-            if(i_EntitiesEnd < ENTITY_ARR_SIZE){
-                activeEntities[i_EntitiesEnd] = &item;
-                i_EntitiesEnd++;
-            }
-
             std::cout << "[Item spawned in pool!]" << std::endl;
             return;
         }
@@ -96,13 +82,6 @@ void EntityMng::spawnEnemy(Vector2 pos, Character* playerPtr, const enemyData* e
         if(!enemy.getAlive()){
             enemy.spawnReset(pos, enemy_data);
             enemy.setTarget(playerPtr);
-
-            // add to active entities
-            if(i_EntitiesEnd < ENTITY_ARR_SIZE){
-                activeEntities[i_EntitiesEnd] = &enemy;
-                i_EntitiesEnd++;
-            }
-
             std::cout << "[Enemy spawned in pool!]" << std::endl;
             return;
         }
@@ -140,13 +119,6 @@ void EntityMng::spawnProp(Vector2 pos, const propData* prop_data, Character* pla
     for(auto& prop : propPool){
         if(!prop.getAlive()){
             prop.spawnReset(pos, prop_data, playerPtr);
-
-            // add to active entities
-            if(i_EntitiesEnd < ENTITY_ARR_SIZE){
-                activeEntities[i_EntitiesEnd] = &prop;
-                i_EntitiesEnd++;
-            }
-
             std::cout << "[Prop spawned in pool!]" << std::endl;
             return;
         }}
@@ -176,96 +148,94 @@ void EntityMng::checkPropCollisions(Character* playerPtr){
 }
 
 void EntityMng::tickEntities(float deltaTime, Character* playerPtr){
+    i_EntitiesEnd = 0;
+
     playerPtr->tick(deltaTime);
-
-    for(int i{} ; i < i_EntitiesEnd ; i++){
-        EntityVariant& currentEntity = activeEntities[i];
-        EntityVariant& lastEntity = activeEntities[i_EntitiesEnd-1];
-        bool isEntityAlive{false};
-
-        // do tick on currentEntity
-        std::visit(
-            [&deltaTime, &isEntityAlive](auto&& e){
-                e->tick(deltaTime);
-                isEntityAlive = e->getAlive();  // update currentEntity alive state after tick
-            },
-            currentEntity
-        );
-
-        // if entity died inside tick logic
-        if(!isEntityAlive){
-
-            // if index is last active entity
-            if(i == i_EntitiesEnd-1){
-                // free the spot and update array end
-                currentEntity.emplace<0>(nullptr);  // resetting to null Item*
-                i_EntitiesEnd = i;
-            }
-            else{
-                // copy last active entity ptr into current one
-                currentEntity = lastEntity;
-                // free last active entity and update array end
-                lastEntity.emplace<0>(nullptr);
-                i_EntitiesEnd--;
-            }
-        }
-
-    }
-}
-void EntityMng::tickEntities2(float deltaTime, Character* playerPtr){
-    playerPtr->tick(deltaTime);
+    // add player to active entities
+    activeEntities[i_EntitiesEnd] = playerPtr;
+    i_EntitiesEnd++;
 
     for(auto& enemy : enemyPool){
-        if(enemy.getAlive()) enemy.tick(deltaTime);
-    }
+        if(enemy.getAlive()){
+            enemy.tick(deltaTime);
+
+            // if(!enemy.getAlive()) break;    // filter out entities who died inside tick logic
+            activeEntities[i_EntitiesEnd] = &enemy; // add alive entity to active entities
+            i_EntitiesEnd++;
+        }}
     for(auto& item : itemPool){
-        if(item.getAlive()) item.tick(deltaTime);
-    }
+        if(item.getAlive()){
+            item.tick(deltaTime);
+
+            // if(!item.getAlive()) break;
+            activeEntities[i_EntitiesEnd] = &item;
+            i_EntitiesEnd++;
+        }}
     for(auto& proyectile : proyectilePool){
-        if(proyectile.getAlive()) proyectile.tick(deltaTime);
-    }
+        if(proyectile.getAlive()){
+            proyectile.tick(deltaTime);
+
+            // if(!proyectile.getAlive()) break;       // filtering out after tick glitches them, for some reason
+            activeEntities[i_EntitiesEnd] = &proyectile;
+            i_EntitiesEnd++;
+        }}
     for(auto& prop : propPool){
-        if(prop.getAlive()) prop.tick(deltaTime);
+        if(prop.getAlive()){
+            prop.tick(deltaTime);
+
+            // if(!prop.getAlive()) break;
+            activeEntities[i_EntitiesEnd] = &prop;
+            i_EntitiesEnd++;
+        }}
+}
+
+void EntityMng::showEntitiesDebugData(){
+    int entitiesAlive{};
+
+    for(int i{} ; i < i_EntitiesEnd ; ++i){
+        std::visit(
+            [&entitiesAlive](auto& entity) {
+                entity->showDebugData();
+                entitiesAlive++;
+            },
+            activeEntities[i]
+        );
     }
+
+    DrawText(TextFormat("ent: %01i",entitiesAlive), 55.f, 185.f, 30, WHITE);
 }
 
 void EntityMng::renderEntities(Character* playerPtr){
-    std::array<Entity*, ENTITY_ARR_SIZE> renderQueue = {nullptr};
 
-    size_t queueEnd{0};
+    // sort active entities by their anchor point positions
+    std::sort(activeEntities.begin(), activeEntities.begin() + i_EntitiesEnd,
+        [](EntityVariant a, EntityVariant b) {
+            float anchorPosA{};
+            float anchorPosB{};
 
-    // add entities to render
-    renderQueue[queueEnd] = playerPtr;
-    queueEnd++;
-    
-    for(auto& entity : itemPool){
-        if(entity.getAlive()){
-            renderQueue[queueEnd] = &entity;
-            queueEnd++;
-        }}
-    for(auto& entity : enemyPool){
-        if(entity.getAlive()){
-            renderQueue[queueEnd] = &entity;
-            queueEnd++;
-        }}
-    for(auto& entity : proyectilePool){
-        if(entity.getAlive()){
-            renderQueue[queueEnd] = &entity;
-            queueEnd++;
-        }}
-    for(auto& entity : propPool){
-        if(entity.getAlive()){
-            renderQueue[queueEnd] = &entity;
-            queueEnd++;
-        }}
+            std::visit(
+                [&anchorPosA](auto& entityA) {
+                    anchorPosA = entityA->getRenderPos().y + entityA->getHeight();
+                },
+                a
+            );
+            std::visit(
+                [&anchorPosB](auto& entityB) {
+                    anchorPosB = entityB->getRenderPos().y + entityB->getHeight();
+                },
+                b
+            );
 
-    std::sort(renderQueue.begin(), renderQueue.begin() + queueEnd,
-        [](Entity* a, Entity* b) {
-            return a->getRenderPos().y + a->getHeight() < b->getRenderPos().y + b->getHeight();
+            return anchorPosA < anchorPosB;
         });
 
-    for(size_t i{} ; i != queueEnd ; i++){
-        renderQueue[i]->render();
+    for(size_t i{} ; i < i_EntitiesEnd ; i++){
+        std::visit(
+            [](auto& entity) {
+                entity->render();
+            },
+            activeEntities[i]
+        );
     }
 }
 
@@ -279,9 +249,36 @@ void EntityMng::clearEntityPools(){
     for(auto& proyectile : proyectilePool){
         if(proyectile.getAlive()) proyectile.setAlive(false);
     }
-    for(auto& prop : propPool){
-        if(prop.getAlive()) prop.setAlive(false);
+    
+    // props pool must not get cleared
+
+    for(auto& variant : activeEntities){    // resetting array of pointers
+        variant.emplace<0>(nullptr);
     }
 
     std::cout << "EntityManager: [Entity pools cleared]" << std::endl;
+}
+
+void EntityMng::logEntityArrayStatus(){
+    bool alive{false};
+    size_t aliveEntityPtr{};
+    size_t notAliveEntityPtr{};
+    std::cout << "\nEntityManager: Logging activeEntities array status" << std::endl;
+
+    for(int i{} ; i < ENTITY_ARR_SIZE ; ++i){
+        std::visit(
+            [&alive](auto& entity){
+                if(entity!=nullptr) alive = entity->getAlive();
+                else alive = false;
+            },
+            activeEntities[i]
+        );
+        alive ? aliveEntityPtr++ : notAliveEntityPtr++;
+        std::cout << "activeEntities[" << i << "]: " << alive << " , " << activeEntities[i].index() << std::endl;
+        if(i == i_EntitiesEnd-1) std::cout << "END INDEX: [" << i_EntitiesEnd << "]" << std::endl;
+    }
+
+    std::cout << "Pointers to alive entitys: " << aliveEntityPtr << std::endl;
+    std::cout << "Pointers to notAlive entity: " << notAliveEntityPtr << std::endl;
+    std::cout << "Total pointers to entity: " << (aliveEntityPtr+notAliveEntityPtr) << std::endl;
 }

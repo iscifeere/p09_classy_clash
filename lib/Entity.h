@@ -9,7 +9,7 @@ class Entity
 public:
     Entity(){};
 
-    virtual void render() = 0;
+    // virtual void render() = 0;
     virtual Vector2 getScreenPos() = 0;
 
     Vector2 getRenderPos(){     // adjusted rendering position so that screenPos is at the centre

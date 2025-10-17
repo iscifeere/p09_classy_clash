@@ -31,7 +31,7 @@ public:
     void setAlive( bool isAlive ) { alive = isAlive; }
     Rectangle getCollisionRec();
     void showDebugData();
-    void render() override;
+    void render();
 
 protected:
     Vector2 worldPos{};

@@ -101,6 +101,11 @@ void Enemy::spawnReset(Vector2 pos, const enemyData* enemy_data)
 
     action = data->behave;
 
+    // resetting state variables
+    drawColor = WHITE;
+    hurtTime = 0.f;
+    invul = false;
+
     setAlive(true);
 }
 
