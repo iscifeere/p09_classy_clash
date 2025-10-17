@@ -17,15 +17,20 @@ class EntityMng
 public:
     EntityMng() = delete;       // no constructor = un-instantiable --> "static class"
 
-    static void spawnItem(Vector2 pos, Character* playerPtr, const itemData* item_data);
-    static void killItem();
-    static void tickItems(float deltaTime);
-    static void showItemsDebugData();
+    static Character player;
+    
+    static void initializePlayerInstance(){ player = Character(); }
+    static Character* getPlayerPtr(){ return &player; }
     
     static void spawnEnemy(Vector2 pos, Character* playerPtr, const enemyData* enemy_data);
     static void killEnemy();
     static void tickEnemies(float deltaTime);
     static void showEnemiesDebugData();
+
+    static void spawnItem(Vector2 pos, Character* playerPtr, const itemData* item_data);
+    static void killItem();
+    static void tickItems(float deltaTime);
+    static void showItemsDebugData();
 
     static void spawnProyectile(Vector2 pos, Vector2 direction, Character* playerPtr);
     static void tickProyectiles(float deltaTime);
@@ -47,6 +52,8 @@ private:
     static const int PROYECTILE_ARR_SIZE{ENEMY_ARR_SIZE};
     static const int PROP_ARR_SIZE{5};
     static const int ENTITY_ARR_SIZE{ITEM_ARR_SIZE+ENEMY_ARR_SIZE+PROYECTILE_ARR_SIZE+PROP_ARR_SIZE};
+
+    // static Character* playerPtr;
 
     // static entity object pools
     static std::array<Enemy, ENEMY_ARR_SIZE> enemyPool;

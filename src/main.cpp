@@ -36,13 +36,14 @@ int main(void) {
         static_cast<float>(Tex::winSize[1])*0.5f - Tex::texture_knight_idle.height*Tex::MAP_SCALE*0.5f
     };
 
-    Character knight{Tex::halfWinSize};
+    EntityMng::initializePlayerInstance();
+    Character* knight{EntityMng::getPlayerPtr()};
+    knight->setWorldPos(Tex::halfWinSize);
+    Vector2 playerWorPos{knight->getWorldPos()};
 
-    Vector2 playerWorPos{knight.getWorldPos()};
-
-    EntityMng::spawnProp(Vector2{1200.f, 800.f}, &ROCK_PROPDATA, &knight);
-    EntityMng::spawnProp(Vector2{800.f, 1200.f}, &LOG_PROPDATA, &knight);
-    EntityMng::spawnProp(Vector2{1800.f, 1200.f}, &SIGN_PROPDATA, &knight);
+    EntityMng::spawnProp(Vector2{1200.f, 800.f}, &ROCK_PROPDATA, knight);
+    EntityMng::spawnProp(Vector2{800.f, 1200.f}, &LOG_PROPDATA, knight);
+    EntityMng::spawnProp(Vector2{1800.f, 1200.f}, &SIGN_PROPDATA, knight);
 
     // finish textures load | change to previous working directory
     ChangeDirectory(prev_dir);
@@ -69,15 +70,15 @@ int main(void) {
         // GAME LOGIC BEGINS ==========================
 
         // update playerWorldPosition
-        Vector2 playerWorPos = knight.getWorldPos();
+        Vector2 playerWorPos = knight->getWorldPos();
 
         // create items
-        if( IsKeyPressed(KEY_E) ) EntityMng::spawnItem(Vector2Add(Vector2Subtract(playerWorPos, Tex::halfWinSize), cursorPosition), &knight, &COIN_ITEMDATA);
+        if( IsKeyPressed(KEY_E) ) EntityMng::spawnItem(Vector2Add(Vector2Subtract(playerWorPos, Tex::halfWinSize), cursorPosition), knight, &COIN_ITEMDATA);
 
         // create enemies
-        if( IsKeyPressed(KEY_R) ) EntityMng::spawnEnemy(Vector2Add(Vector2Subtract(playerWorPos, Tex::halfWinSize), cursorPosition), &knight, &MADKNIGHT_ENEMYDATA);
-        if( IsKeyPressed(KEY_T) ) EntityMng::spawnEnemy(Vector2Add(Vector2Subtract(playerWorPos, Tex::halfWinSize), cursorPosition), &knight, &SLIME_ENEMYDATA);
-        if( IsKeyPressed(KEY_Y) ) EntityMng::spawnEnemy(Vector2Add(Vector2Subtract(playerWorPos, Tex::halfWinSize), cursorPosition), &knight, &RED_ENEMYDATA);
+        if( IsKeyPressed(KEY_R) ) EntityMng::spawnEnemy(Vector2Add(Vector2Subtract(playerWorPos, Tex::halfWinSize), cursorPosition), knight, &MADKNIGHT_ENEMYDATA);
+        if( IsKeyPressed(KEY_T) ) EntityMng::spawnEnemy(Vector2Add(Vector2Subtract(playerWorPos, Tex::halfWinSize), cursorPosition), knight, &SLIME_ENEMYDATA);
+        if( IsKeyPressed(KEY_Y) ) EntityMng::spawnEnemy(Vector2Add(Vector2Subtract(playerWorPos, Tex::halfWinSize), cursorPosition), knight, &RED_ENEMYDATA);
 
         // delete hearts
         if( IsKeyPressed(KEY_Q) ) EntityMng::killItem();
@@ -88,52 +89,52 @@ int main(void) {
         if(IsKeyPressed(KEY_P)) pauseGame = !pauseGame;
 
         // entities tick ========================
-        if(!pauseGame) EntityMng::tickEntities(dT, &knight);
+        if(!pauseGame) EntityMng::tickEntities(dT, knight);
 
         if(IsKeyPressed(KEY_N)) EntityMng::logEntityArrayStatus();
 
         // cursor affects player
         if(IsMouseButtonDown(MOUSE_BUTTON_RIGHT)){
             cursorColor = YELLOW;
-            if(CheckCollisionRecs(Rectangle{cursorPosition.x - 5, cursorPosition.y - 5, 5, 5}, knight.getCollisionRec())){
-                knight.addHealth(30.f*dT);
+            if(CheckCollisionRecs(Rectangle{cursorPosition.x - 5, cursorPosition.y - 5, 5, 5}, knight->getCollisionRec())){
+                knight->addHealth(30.f*dT);
             }
         } else if(IsMouseButtonDown(MOUSE_BUTTON_LEFT)){
             cursorColor = YELLOW;
-            if(CheckCollisionRecs(Rectangle{cursorPosition.x - 5, cursorPosition.y - 5, 5, 5}, knight.getCollisionRec())){
-                knight.takeDamage(30.f*dT);
+            if(CheckCollisionRecs(Rectangle{cursorPosition.x - 5, cursorPosition.y - 5, 5, 5}, knight->getCollisionRec())){
+                knight->takeDamage(30.f*dT);
             }
         } else cursorColor = DARKBLUE;
 
-        EntityMng::checkPropCollisions(&knight);
+        EntityMng::checkPropCollisions(knight);
 
         // update map position
-        mapPos = Vector2Scale(Vector2Subtract(knight.getWorldPos(), mapPosCorrection), -1.f);
+        mapPos = Vector2Scale(Vector2Subtract(knight->getWorldPos(), mapPosCorrection), -1.f);
         // draw the map
         DrawTextureEx(Tex::texture_map, mapPos, 0.0, Tex::MAP_SCALE, WHITE);
 
         // reset game with key
         if(IsKeyPressed(KEY_J)){
-            knight.resetState();
+            knight->resetState();
             EntityMng::clearEntityPools();
             EndDrawing();
             continue;
         }
 
         // draw game over text if dead
-        if(!knight.getAlive()){
+        if(!knight->getAlive()){
             DrawText("Game Over! (press J to reset)", 70.f, static_cast<float>((windowDimensions[1]/2)-20), 40, RED);
-            if(IsKeyPressed(KEY_H)) knight.resurrect();
+            if(IsKeyPressed(KEY_H)) knight->resurrect();
             EndDrawing();
             continue;
         }
 
         // ENTITIES RENDER =====================
 
-        EntityMng::renderEntities(&knight);
+        EntityMng::renderEntities(knight);
         
         // draw player stats
-        knight.showStats();
+        knight->showStats();
 
         // draw debug data
         if(IsKeyPressed(KEY_Z)) showDebugData = !showDebugData;
@@ -146,8 +147,8 @@ int main(void) {
 
             // draw map borders
             {
-                Vector2 windowOriginWorPos = Vector2Subtract(knight.getWorldPos(), Tex::halfWinSize);
-                Vector2 knightHalfSize{knight.getWidth()*0.5f, knight.getHeight()*0.5f};
+                Vector2 windowOriginWorPos = Vector2Subtract(knight->getWorldPos(), Tex::halfWinSize);
+                Vector2 knightHalfSize{knight->getWidth()*0.5f, knight->getHeight()*0.5f};
                 Vector2 mapScaledSize{ Tex::texture_map.width * Tex::MAP_SCALE, Tex::texture_map.height * Tex::MAP_SCALE };
 
                 // bound points absolute position (world pos)

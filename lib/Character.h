@@ -7,10 +7,12 @@
 class Character : public BaseCharacter
 {
 public:
+    Character();
     Character(Vector2 pos);
 
     bool tick(float deltaTime) override;
     // Vector2 getWorldPos() override;
+    void setWorldPos(Vector2 pos){ worldPos = pos; }
     Vector2 getScreenPos() override;
     Vector2 getWindowOriginWorPos();
     Vector2 getPrevWorldPos();  // calculate worldPos from previous tick

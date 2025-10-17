@@ -1,6 +1,16 @@
 #include "Character.h"
 #include "raymath.h"
 
+Character::Character() :
+    windowWidth(Tex::winSize[0]),
+    windowHeight(Tex::winSize[1])
+{
+    frameWidth = texture->width / maxFrames;
+    frameHeight = texture->height;
+    scale = 8.0f;
+
+    speed = 10.f;    // default speed
+}
 Character::Character(Vector2 pos) :
     windowWidth(Tex::winSize[0]),
     windowHeight(Tex::winSize[1])
