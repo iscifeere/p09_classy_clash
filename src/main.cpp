@@ -36,14 +36,14 @@ int main(void) {
         static_cast<float>(Tex::winSize[1])*0.5f - Tex::texture_knight_idle.height*Tex::MAP_SCALE*0.5f
     };
 
-    EntityMng::initializePlayerInstance();
+    EntityMng::initializeEntityManager();
     Character* knight{EntityMng::getPlayerPtr()};
     knight->setWorldPos(Tex::halfWinSize);
     Vector2 playerWorPos{knight->getWorldPos()};
 
-    EntityMng::spawnProp(Vector2{1200.f, 800.f}, &ROCK_PROPDATA, knight);
-    EntityMng::spawnProp(Vector2{800.f, 1200.f}, &LOG_PROPDATA, knight);
-    EntityMng::spawnProp(Vector2{1800.f, 1200.f}, &SIGN_PROPDATA, knight);
+    EntityMng::spawnProp(Vector2{1200.f, 800.f}, &ROCK_PROPDATA);
+    EntityMng::spawnProp(Vector2{800.f, 1200.f}, &LOG_PROPDATA);
+    EntityMng::spawnProp(Vector2{1800.f, 1200.f}, &SIGN_PROPDATA);
 
     // finish textures load | change to previous working directory
     ChangeDirectory(prev_dir);
@@ -73,12 +73,12 @@ int main(void) {
         Vector2 playerWorPos = knight->getWorldPos();
 
         // create items
-        if( IsKeyPressed(KEY_E) ) EntityMng::spawnItem(Vector2Add(Vector2Subtract(playerWorPos, Tex::halfWinSize), cursorPosition), knight, &COIN_ITEMDATA);
+        if( IsKeyPressed(KEY_E) ) EntityMng::spawnItem(Vector2Add(Vector2Subtract(playerWorPos, Tex::halfWinSize), cursorPosition), &COIN_ITEMDATA);
 
         // create enemies
-        if( IsKeyPressed(KEY_R) ) EntityMng::spawnEnemy(Vector2Add(Vector2Subtract(playerWorPos, Tex::halfWinSize), cursorPosition), knight, &MADKNIGHT_ENEMYDATA);
-        if( IsKeyPressed(KEY_T) ) EntityMng::spawnEnemy(Vector2Add(Vector2Subtract(playerWorPos, Tex::halfWinSize), cursorPosition), knight, &SLIME_ENEMYDATA);
-        if( IsKeyPressed(KEY_Y) ) EntityMng::spawnEnemy(Vector2Add(Vector2Subtract(playerWorPos, Tex::halfWinSize), cursorPosition), knight, &RED_ENEMYDATA);
+        if( IsKeyPressed(KEY_R) ) EntityMng::spawnEnemy(Vector2Add(Vector2Subtract(playerWorPos, Tex::halfWinSize), cursorPosition), &MADKNIGHT_ENEMYDATA);
+        if( IsKeyPressed(KEY_T) ) EntityMng::spawnEnemy(Vector2Add(Vector2Subtract(playerWorPos, Tex::halfWinSize), cursorPosition), &SLIME_ENEMYDATA);
+        if( IsKeyPressed(KEY_Y) ) EntityMng::spawnEnemy(Vector2Add(Vector2Subtract(playerWorPos, Tex::halfWinSize), cursorPosition), &RED_ENEMYDATA);
 
         // delete hearts
         if( IsKeyPressed(KEY_Q) ) EntityMng::killItem();

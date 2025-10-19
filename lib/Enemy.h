@@ -18,8 +18,8 @@ public:
     Enemy();            // default constructor
     Enemy(Vector2 pos);
     Enemy(Vector2 pos, const enemyData* enemy_data);
-    Enemy(Vector2 pos, Texture2D* idle_texture, Texture2D* run_texture);
 
+    void init();    // initialize necessary variables, called in constructor
     void spawnReset(Vector2 pos, const enemyData* enemy_data);
 
     bool tick(float deltaTime) override;

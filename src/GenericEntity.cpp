@@ -1,18 +1,25 @@
 #include "GenericEntity.h"
 #include "raymath.h"
+#include "EntityManager.h"
+
+void GenEntity::init(){
+    scale = 4.f;
+    frameWidth = texture->width / maxFrames;
+    frameHeight = texture->height;
+}
 
 GenEntity::GenEntity(){
     setAlive(false);
-    scale = 4.f;
+    player = EntityMng::getPlayerPtr();
+    init();
 }
-GenEntity::GenEntity( Vector2 pos, Vector2 direction, Character* playerPtr ) :
+
+GenEntity::GenEntity( Vector2 pos, Vector2 direction) :
     worldPos(pos),
-    velocity(direction),
-    player(playerPtr)
+    velocity(direction)
 {
-    frameWidth = texture->width / maxFrames;
-    frameHeight = texture->height;
-    scale = 4.f;
+    player = EntityMng::getPlayerPtr();
+    init();
 }
 
 bool GenEntity::tick(float deltaTime)
@@ -53,17 +60,12 @@ Rectangle GenEntity::getCollisionRec(){
     };
 }
 
-void GenEntity::spawnReset(Vector2 pos, Vector2 direction, Character* playerPtr){
+void GenEntity::spawnReset(Vector2 pos, Vector2 direction){
     worldPos = pos;
     velocity = direction;
-    player = playerPtr;
-
-    frameWidth = texture->width / maxFrames;
-    frameHeight = texture->height;
-    scale = 4.f;
+    init();
 
     moveTimer = 0.f;
-    
     setAlive(true);
 }
 

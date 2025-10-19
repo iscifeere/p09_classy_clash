@@ -1,52 +1,52 @@
 #include "Item.h"
 #include "raymath.h"
 #include <cmath>
+#include "EntityManager.h"
+#include <iostream>
+
+void Item::init(){
+    std::cout << "[Item init function (" << this << ") ]" << std::endl;
+
+    scale = 4.f;
+
+    texture = data->texture;
+    maxFrames = data->maxFrames;
+    updateTime = data->updateTime;
+    item_effect = data->effect;
+
+    frameWidth = texture->width / maxFrames;
+    frameHeight = texture->height;
+}
 
 Item::Item(){
+    std::cout << "\n[Item default constructor (" << this << ") ]" << std::endl;
     setAlive(false);
-    scale = 4.f;
+    player = EntityMng::getPlayerPtr();
+    data = &HEART_ITEMDATA;
+    init();
 }
 
-Item::Item(Vector2 pos, Character* player_ptr ) :
-    worldPos(pos),
-    player(player_ptr)
+Item::Item(Vector2 pos) :
+    worldPos(pos)
 {
-    frameWidth = texture->width / maxFrames;
-    frameHeight = texture->height;
-    scale = 4.f;
+    player = EntityMng::getPlayerPtr();
+    data = &HEART_ITEMDATA;
+    init();
 }
 
-Item::Item(Vector2 pos, Character* player_ptr, const itemData* item_data ) :
+Item::Item(Vector2 pos, const itemData* item_data ) :
     worldPos(pos),
-    player(player_ptr)
+    data(item_data)
 {
-    data = item_data;
-
-    texture = data->texture;
-    maxFrames = data->maxFrames;
-    updateTime = data->updateTime;
-    item_effect = data->effect;
-
-    frameWidth = texture->width / maxFrames;
-    frameHeight = texture->height;
-    scale = 4.f;
+    player = EntityMng::getPlayerPtr();
+    init();
 }
 
-void Item::spawnReset(Vector2 pos, Character* player_ptr, const itemData* item_data )
+void Item::spawnReset(Vector2 pos, const itemData* item_data )
 {
     worldPos = pos;
-    player = player_ptr;
     data = item_data;
-
-    texture = data->texture;
-    maxFrames = data->maxFrames;
-    updateTime = data->updateTime;
-    item_effect = data->effect;
-
-    frameWidth = texture->width / maxFrames;
-    frameHeight = texture->height;
-    scale = 4.f;
-
+    init();
     setAlive(true);
 }
 

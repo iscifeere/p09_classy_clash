@@ -10,9 +10,10 @@ class GenEntity : public Entity
 {
 public:
     GenEntity();
-    GenEntity( Vector2 pos, Vector2 direction, Character* player );
+    GenEntity( Vector2 pos, Vector2 direction);
 
-    void spawnReset(Vector2 pos, Vector2 direction, Character* playerPtr);
+    void init();    // initialize necessary variables, called in constructor
+    void spawnReset(Vector2 pos, Vector2 direction);
 
     bool tick(float deltaTime);
     Vector2 getWorldPos() { return worldPos; }

@@ -1,35 +1,36 @@
 #include "Prop.h"
 #include "raymath.h"
+#include "EntityManager.h"
 
 Prop::Prop()
 {
     setAlive(false);
+    player = EntityMng::getPlayerPtr();
 }
 
-Prop::Prop(Vector2 pos, Character* player_ptr) :
+Prop::Prop(Vector2 pos) :
     worldPos(pos),
-    player(player_ptr),
+    player(EntityMng::getPlayerPtr()),
     data(&ROCK_PROPDATA)
 {
     
 }
 
-Prop::Prop(Vector2 pos, const propData* prop_data, Character* player_ptr) :
+Prop::Prop(Vector2 pos, const propData* prop_data) :
     worldPos(pos),
     data(prop_data),
     texture(prop_data->texture),
-    player(player_ptr)
+    player(EntityMng::getPlayerPtr())
 {
     frameWidth = texture->width;
     frameHeight = texture->height;
     scale = 8.f;
 }
 
-void Prop::spawnReset(Vector2 pos, const propData* prop_data, Character* player_ptr){
+void Prop::spawnReset(Vector2 pos, const propData* prop_data){
     worldPos = pos;
     data = prop_data;
     texture = prop_data->texture;
-    player = player_ptr;
 
     frameWidth = texture->width;
     frameHeight = texture->height;

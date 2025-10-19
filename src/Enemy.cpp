@@ -4,102 +4,62 @@
 #include "EnemyData.h"
 #include <iostream>
 
-Enemy::Enemy(){
-    setAlive(false);
-    scale = 8.0f;
-    data = &DEFAULT_ENEMYDATA;
-}
-
-Enemy::Enemy(Vector2 pos)
-{
-    worldPos = pos;
-    texture = &Tex::texture_goblin_idle;
-    idle = &Tex::texture_goblin_idle;
-    run = &Tex::texture_goblin_run;
-
-    frameWidth = texture->width / maxFrames;
-    frameHeight = texture->height;
-    scale = 8.0f;
-
-    speed = 5.f;   // default speed
-    health = 60;    // default health
-
-    // action = chaseTarget;
-    data = &DEFAULT_ENEMYDATA;
-}
-
-Enemy::Enemy(Vector2 pos, const enemyData* enemy_data)
-{
-    worldPos = pos;
-    data = enemy_data;
+void Enemy::init(){
+    std::cout << "[Enemy init function (" << this << ") ]" << std::endl;
+    
+    scale = 8.f;
 
     texture = data->texture_idle;
     idle = data->texture_idle;
     run = data->texture_run;
+    
     maxFramesIdle = data->maxFramesIdle;
     maxFramesRun = data->maxFramesRun;
     maxFrames = maxFramesIdle;
     maxFrameRows = data->frameRows;
     ignoreFrameRows = data->ignoreFrameRows;
-    itemDrop = data->item_drop;
 
     frameWidth = texture->width / maxFrames;
-    frameHeight = texture->height / data->frameRows;
-    scale = 8.0f;
-
+    frameHeight = texture->height / maxFrameRows;
+    
     speed = data->speed;
     health = data->health;
     damagePerSec = data->damage;
     chaseRadius = data->chase_radius;
     neutral = data->isNeutral;
-
-    action = data->behave;
+    itemDrop = data->item_drop;
+    action = data->behave;   
 }
 
-Enemy::Enemy(Vector2 pos, Texture2D* idle_texture, Texture2D* run_texture)
+Enemy::Enemy(){
+    std::cout << "\n[Enemy default constructor (" << this << ") ]" << std::endl;
+    setAlive(false);
+    target = EntityMng::getPlayerPtr();
+    data = &DEFAULT_ENEMYDATA;
+    init();
+}
+
+Enemy::Enemy(Vector2 pos)
 {
     worldPos = pos;
-    texture = idle_texture;
-    idle = idle_texture;
-    run = run_texture;
-
-    frameWidth = texture->width / maxFrames;
-    frameHeight = texture->height;
-    scale = 8.0f;
-
-    speed = 5.f;   // default speed
-    health = 60;    // default health
-
-    // action = chaseTarget;
+    target = EntityMng::getPlayerPtr();
     data = &DEFAULT_ENEMYDATA;
+    init();
+}
+
+Enemy::Enemy(Vector2 pos, const enemyData* enemy_data)
+{
+    worldPos = pos;
+    target = EntityMng::getPlayerPtr();
+    data = enemy_data;
+    init();
 }
 
 void Enemy::spawnReset(Vector2 pos, const enemyData* enemy_data)
 {
     worldPos = pos;
     data = enemy_data;
-
-    texture = data->texture_idle;
-    idle = data->texture_idle;
-    run = data->texture_run;
-    maxFramesIdle = data->maxFramesIdle;
-    maxFramesRun = data->maxFramesRun;
-    maxFrames = maxFramesIdle;
-    maxFrameRows = data->frameRows;
-    ignoreFrameRows = data->ignoreFrameRows;
-    itemDrop = data->item_drop;
-
-    frameWidth = texture->width / maxFrames;
-    frameHeight = texture->height / data->frameRows;
-    scale = 8.0f;
-
-    speed = data->speed;
-    health = data->health;
-    damagePerSec = data->damage;
-    chaseRadius = data->chase_radius;
-    neutral = data->isNeutral;
-
-    action = data->behave;
+    init();
 
     // resetting state variables
     drawColor = WHITE;
@@ -197,7 +157,7 @@ void Enemy::takeDamage(float damage){
 
 void Enemy::deathSequence(){
     setAlive(false);
-    EntityMng::spawnItem(worldPos, target, itemDrop);
+    EntityMng::spawnItem(worldPos, itemDrop);
 }
 
 float& Enemy::getRadiusEtc(int choice)

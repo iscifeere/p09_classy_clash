@@ -18,25 +18,27 @@ public:
     EntityMng() = delete;       // no constructor = un-instantiable --> "static class"
 
     static Character player;
-    
-    static void initializePlayerInstance(){ player = Character(); }
     static Character* getPlayerPtr(){ return &player; }
     
-    static void spawnEnemy(Vector2 pos, Character* playerPtr, const enemyData* enemy_data);
+    static void initializeEntityManager(){
+        player.init();   // necessary because textures and window dimensions were not assigned previous to this
+    }
+
+    static void spawnEnemy(Vector2 pos, const enemyData* enemy_data);
     static void killEnemy();
     static void tickEnemies(float deltaTime);
     static void showEnemiesDebugData();
 
-    static void spawnItem(Vector2 pos, Character* playerPtr, const itemData* item_data);
+    static void spawnItem(Vector2 pos, const itemData* item_data);
     static void killItem();
     static void tickItems(float deltaTime);
     static void showItemsDebugData();
 
-    static void spawnProyectile(Vector2 pos, Vector2 direction, Character* playerPtr);
+    static void spawnProyectile(Vector2 pos, Vector2 direction);
     static void tickProyectiles(float deltaTime);
     static void showProyectilesDebugData();
 
-    static void spawnProp(Vector2 pos, const propData* prop_data, Character* playerPtr);
+    static void spawnProp(Vector2 pos, const propData* prop_data);
     static void showPropsDebugData();
     static void checkPropCollisions(Character* playerPtr);
 
@@ -52,8 +54,6 @@ private:
     static const int PROYECTILE_ARR_SIZE{ENEMY_ARR_SIZE};
     static const int PROP_ARR_SIZE{5};
     static const int ENTITY_ARR_SIZE{ITEM_ARR_SIZE+ENEMY_ARR_SIZE+PROYECTILE_ARR_SIZE+PROP_ARR_SIZE};
-
-    // static Character* playerPtr;
 
     // static entity object pools
     static std::array<Enemy, ENEMY_ARR_SIZE> enemyPool;

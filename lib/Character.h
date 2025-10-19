@@ -10,6 +10,8 @@ public:
     Character();
     Character(Vector2 pos);
 
+    void init();    // initialize necessary variables, called in constructor
+
     bool tick(float deltaTime) override;
     // Vector2 getWorldPos() override;
     void setWorldPos(Vector2 pos){ worldPos = pos; }

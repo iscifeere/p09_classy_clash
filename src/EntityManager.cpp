@@ -12,10 +12,10 @@ std::array<Prop, EntityMng::PROP_ARR_SIZE> EntityMng::propPool{};
 std::array<EntityVariant, EntityMng::ENTITY_ARR_SIZE> EntityMng::activeEntities{};
 size_t EntityMng::i_EntitiesEnd{0};
 
-void EntityMng::spawnProyectile(Vector2 pos, Vector2 direction, Character* playerPtr){
+void EntityMng::spawnProyectile(Vector2 pos, Vector2 direction){
     for(auto& proyectile : proyectilePool){
         if(!proyectile.getAlive()){
-            proyectile.spawnReset(pos, direction, playerPtr);
+            proyectile.spawnReset(pos, direction);
             return;
         }}
     std::cout << "[Proyectile pool full!]" << std::endl;
@@ -41,10 +41,10 @@ void EntityMng::showProyectilesDebugData(){
     DrawText(TextFormat("proy: %01i",proyectilesAlive), 55.f, 185.f, 30, WHITE);
 }
 
-void EntityMng::spawnItem(Vector2 pos, Character* playerPtr, const itemData* item_data){
+void EntityMng::spawnItem(Vector2 pos, const itemData* item_data){
     for(auto& item : itemPool){
         if(!item.getAlive()){
-            item.spawnReset(pos, playerPtr, item_data);
+            item.spawnReset(pos, item_data);
             std::cout << "[Item spawned in pool!]" << std::endl;
             return;
         }
@@ -78,11 +78,10 @@ void EntityMng::showItemsDebugData(){
     }
 }
 
-void EntityMng::spawnEnemy(Vector2 pos, Character* playerPtr, const enemyData* enemy_data){
+void EntityMng::spawnEnemy(Vector2 pos, const enemyData* enemy_data){
     for(auto& enemy : enemyPool){
         if(!enemy.getAlive()){
             enemy.spawnReset(pos, enemy_data);
-            enemy.setTarget(playerPtr);
             std::cout << "[Enemy spawned in pool!]" << std::endl;
             return;
         }
@@ -116,10 +115,10 @@ void EntityMng::showEnemiesDebugData(){
     }
 }
 
-void EntityMng::spawnProp(Vector2 pos, const propData* prop_data, Character* playerPtr){
+void EntityMng::spawnProp(Vector2 pos, const propData* prop_data){
     for(auto& prop : propPool){
         if(!prop.getAlive()){
-            prop.spawnReset(pos, prop_data, playerPtr);
+            prop.spawnReset(pos, prop_data);
             std::cout << "[Prop spawned in pool!]" << std::endl;
             return;
         }}

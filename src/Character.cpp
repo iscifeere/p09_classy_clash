@@ -1,26 +1,33 @@
 #include "Character.h"
 #include "raymath.h"
+#include <iostream>
 
-Character::Character() :
-    windowWidth(Tex::winSize[0]),
-    windowHeight(Tex::winSize[1])
-{
+void Character::init(){
+    std::cout << "[Player init function (" << this << ") ]" << std::endl;
+
+    windowWidth = Tex::winSize[0];
+    windowHeight = Tex::winSize[1];
     frameWidth = texture->width / maxFrames;
     frameHeight = texture->height;
-    scale = 8.0f;
 
-    speed = 10.f;    // default speed
+    scale = 8.f;
+    speed = 10.f;
+
+    std::cout << "window width & height: " << windowWidth << ", " << windowHeight << std::endl;
+    std::cout << "frame width & height: " << frameWidth << ", " << frameHeight << std::endl;
+    std::cout << "scale: " << scale << std::endl;
+    std::cout << "speed: " << speed << std::endl;
 }
-Character::Character(Vector2 pos) :
-    windowWidth(Tex::winSize[0]),
-    windowHeight(Tex::winSize[1])
+
+Character::Character()
 {
-    frameWidth = texture->width / maxFrames;
-    frameHeight = texture->height;
-    scale = 8.0f;
+    std::cout << "\n[Player default constructor (" << this << ") ]" << std::endl;
+    init();
+}
 
-    speed = 10.f;    // default speed
-
+Character::Character(Vector2 pos)
+{
+    init();
     worldPos = pos;
 }
 

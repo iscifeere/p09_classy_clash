@@ -9,7 +9,7 @@
 struct propData{
     Texture2D* texture;
     Rectangle collisionBox;     // Location and size of collision box.
-                                // x and y are propotional displacement from sprite screen position,
+                                // x and y are proportional displacement from sprite screen position,
                                 // width and height are scaling proportional to texture.
 };
 
@@ -17,14 +17,14 @@ class Prop : public Entity
 {
 public:
     Prop();
-    Prop(Vector2 pos, Character* player_ptr);
-    Prop(Vector2 pos, const propData* prop_data, Character* player_ptr);
+    Prop(Vector2 pos);
+    Prop(Vector2 pos, const propData* prop_data);
 
-    void spawnReset(Vector2 pos, const propData* prop_data, Character* player_ptr);
+    void spawnReset(Vector2 pos, const propData* prop_data);
 
     bool tick(float deltaTime) {
         if(!getAlive()) return false;
-        else return true;
+        return true;
     }
     void render();
     Rectangle getCollisionRec();            // relative position version
