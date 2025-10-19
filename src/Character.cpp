@@ -1,6 +1,7 @@
 #include "Character.h"
 #include "raymath.h"
 #include <iostream>
+#include "EntityManager.h"
 
 void Character::init(){
     std::cout << "[Player init function (" << this << ") ]" << std::endl;
@@ -147,8 +148,16 @@ bool Character::tick(float deltaTime){
     swordVariables.rotation = {};
 
     // attack & defend
-    if(IsMouseButtonDown(MOUSE_LEFT_BUTTON) || IsKeyDown(KEY_SPACE)) { isAttacking = true; swordVariables.rotation = 35.f; }
-    if(IsMouseButtonDown(MOUSE_RIGHT_BUTTON) || IsKeyDown(KEY_V)) { swordVariables.rotation = -30.f; drawColor = YELLOW; invul = true; }
+    if(IsMouseButtonDown(MOUSE_LEFT_BUTTON) || IsKeyDown(KEY_SPACE)){
+        isAttacking = true;
+        swordVariables.rotation = 35.f;
+    }
+    if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_SPACE)) shootProyectile();
+    if(IsMouseButtonDown(MOUSE_RIGHT_BUTTON) || IsKeyDown(KEY_V)){
+        swordVariables.rotation = -30.f;
+        drawColor = YELLOW;
+        invul = true;
+    }
 
     if(rightLeft > 0.f){
         swordVariables.origin = {0.f, weapon->height * scale};
@@ -262,4 +271,9 @@ void Character::resetState(){
     setWorldPos(Tex::halfWinSize);
     moneyCount = 0;
     resurrect();
+}
+
+void Character::shootProyectile(){
+    Vector2 proyectileDirection{Vector2Subtract( GetMousePosition(), getScreenPos() )};
+    EntityMng::spawnProyectile(worldPos, proyectileDirection, false);
 }

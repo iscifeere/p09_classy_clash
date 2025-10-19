@@ -13,7 +13,7 @@ public:
     GenEntity( Vector2 pos, Vector2 direction);
 
     void init();    // initialize necessary variables, called in constructor
-    void spawnReset(Vector2 pos, Vector2 direction);
+    void spawnReset(Vector2 pos, Vector2 directio, bool p_isEnemy);
 
     bool tick(float deltaTime);
     Vector2 getWorldPos() { return worldPos; }
@@ -23,7 +23,15 @@ public:
     void setAlive( bool isAlive ) { alive = isAlive; }
     void showDebugData();
     void render();
+    void checkPlayerCollision();
 
+    bool getIsEnemy(){ return isEnemy; }
+    void setIsEnemy(bool& p_isEnemy){
+        isEnemy = p_isEnemy;
+        drawColor = isEnemy ? RED : GREEN;
+    }
+    
+private:
     Vector2 worldPos{};
     Character* player{nullptr};
     Texture2D* texture{&Tex::texture_heart};
@@ -40,9 +48,9 @@ public:
     // float scale{4.f};
     Color drawColor{BLUE};
     float moveTimer{0.f};
-    
-private:
+
     bool alive{true};
+    bool isEnemy{true};     // is enemy proyectile
 };
 
 #endif

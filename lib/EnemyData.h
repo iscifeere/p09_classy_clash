@@ -89,7 +89,6 @@ inline void shootTarget(Enemy* enemy, Character* target, const float& deltaTime)
 
     Vector2& velocity = enemy->getVelocity();
     float& attCooldown = enemy->attackTimer;
-    GenEntity*& proyectile = enemy->proyectile;
     float& fleeTimer = enemy->fleeTimer;
     float& chaseTimer = enemy->getRadiusEtc(2);
 
@@ -135,7 +134,7 @@ inline void shootTarget(Enemy* enemy, Character* target, const float& deltaTime)
             if(distance >= 215.f)
             {
                 if(attCooldown == 0.f){     // if cooldown is off -> shoot proyectile
-                    EntityMng::spawnProyectile(enemy->getWorldPos(), velocity);
+                    EntityMng::spawnProyectile(enemy->getWorldPos(), velocity, true);
                     attCooldown += deltaTime;
                 } else if (attCooldown >= 0.8f) attCooldown = 0.f;
                 else attCooldown += deltaTime;

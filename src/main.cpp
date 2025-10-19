@@ -107,6 +107,7 @@ int main(void) {
         } else cursorColor = DARKBLUE;
 
         EntityMng::checkPropCollisions(knight);
+        EntityMng::checkProyectileCollisions();
 
         // update map position
         mapPos = Vector2Scale(Vector2Subtract(knight->getWorldPos(), mapPosCorrection), -1.f);

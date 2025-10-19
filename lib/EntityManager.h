@@ -34,8 +34,9 @@ public:
     static void tickItems(float deltaTime);
     static void showItemsDebugData();
 
-    static void spawnProyectile(Vector2 pos, Vector2 direction);
+    static void spawnProyectile(Vector2 pos, Vector2 direction, bool isEnemy);
     static void tickProyectiles(float deltaTime);
+    static void checkProyectileCollisions();
     static void showProyectilesDebugData();
 
     static void spawnProp(Vector2 pos, const propData* prop_data);
@@ -63,6 +64,10 @@ private:
 
     static std::array<EntityVariant, ENTITY_ARR_SIZE> activeEntities;
     static size_t i_EntitiesEnd;
+    static size_t i_EnemiesStart;
+    static size_t i_EnemiesEnd;
+    static size_t i_ProyectilesStart;
+    static size_t i_ProyectilesEnd;
 };
 
 #endif

@@ -35,6 +35,7 @@ public:
     void render() override;
     void resurrect();
     void resetState();
+    void shootProyectile();
     
 private:
     int windowWidth{};

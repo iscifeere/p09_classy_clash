@@ -30,15 +30,7 @@ bool GenEntity::tick(float deltaTime)
     movement = Vector2Scale(Vector2Normalize(velocity), speed);
     worldPos = Vector2Add(worldPos, movement);
     moveTimer += deltaTime;
-    drawColor = RED;
     if( moveTimer >= 0.7f ) setAlive(false);
-
-    // check collision
-    if( CheckCollisionRecs(getCollisionRec(), player->getHurtRec()) ){
-        player->addHealth(10);
-        // active = false;
-        setAlive(false);
-    }
 
     return true;
 }
@@ -60,10 +52,11 @@ Rectangle GenEntity::getCollisionRec(){
     };
 }
 
-void GenEntity::spawnReset(Vector2 pos, Vector2 direction){
+void GenEntity::spawnReset(Vector2 pos, Vector2 direction, bool isEnemy){
     worldPos = pos;
     velocity = direction;
     init();
+    setIsEnemy(isEnemy);
 
     moveTimer = 0.f;
     setAlive(true);
@@ -77,4 +70,11 @@ void GenEntity::showDebugData(){
 void GenEntity::render(){
     Vector2 renderPos{getRenderPos()};
     DrawTextureEx(*texture, renderPos, 0.f, scale, drawColor);
+}
+
+void GenEntity::checkPlayerCollision(){
+    if( CheckCollisionRecs(getCollisionRec(), player->getHurtRec()) ){
+            player->addHealth(10);
+            setAlive(false);
+        }
 }

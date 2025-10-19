@@ -11,11 +11,15 @@ std::array<GenEntity, EntityMng::PROYECTILE_ARR_SIZE> EntityMng::proyectilePool{
 std::array<Prop, EntityMng::PROP_ARR_SIZE> EntityMng::propPool{};
 std::array<EntityVariant, EntityMng::ENTITY_ARR_SIZE> EntityMng::activeEntities{};
 size_t EntityMng::i_EntitiesEnd{0};
+size_t EntityMng::i_EnemiesStart{0};
+size_t EntityMng::i_EnemiesEnd{0};
+size_t EntityMng::i_ProyectilesStart{0};
+size_t EntityMng::i_ProyectilesEnd{0};
 
-void EntityMng::spawnProyectile(Vector2 pos, Vector2 direction){
+void EntityMng::spawnProyectile(Vector2 pos, Vector2 direction, bool isEnemy){
     for(auto& proyectile : proyectilePool){
         if(!proyectile.getAlive()){
-            proyectile.spawnReset(pos, direction);
+            proyectile.spawnReset(pos, direction, isEnemy);
             return;
         }}
     std::cout << "[Proyectile pool full!]" << std::endl;
@@ -147,6 +151,31 @@ void EntityMng::checkPropCollisions(Character* playerPtr){
             }}}
 }
 
+void EntityMng::checkProyectileCollisions(){
+    if(i_ProyectilesStart != i_ProyectilesEnd){     // if there is alive proyectiles
+        GenEntity* proyectile{nullptr};
+
+        for(size_t i{i_ProyectilesStart} ; i < i_ProyectilesEnd ; ++i){     // loop through proyectiles
+            proyectile = std::get<GenEntity*>(activeEntities[i]);
+
+            if(proyectile->getIsEnemy()) proyectile->checkPlayerCollision();    // if it's an enemy proyectile, affect player
+            else if(i_EnemiesStart != i_EnemiesEnd){    // if not, then, if there is alive enemies
+                Enemy* enemy{nullptr};
+
+                for(size_t k{i_EnemiesStart} ; k < i_EnemiesEnd ; ++k){     // loop through enemies
+                    enemy = std::get<Enemy*>(activeEntities[k]);
+
+                    if(CheckCollisionRecs( proyectile->getCollisionRec(), enemy->getHurtRec() )){   // affect enemy
+                        enemy->takeDamage(20);
+                        proyectile->setAlive(false);
+                        break;
+                    }}
+            }
+
+        }
+    }
+}
+
 void EntityMng::tickEntities(float deltaTime, Character* playerPtr){
     i_EntitiesEnd = 0;
 
@@ -155,6 +184,7 @@ void EntityMng::tickEntities(float deltaTime, Character* playerPtr){
     activeEntities[i_EntitiesEnd] = playerPtr;
     i_EntitiesEnd++;
 
+    i_EnemiesStart = i_EntitiesEnd;
     for(auto& enemy : enemyPool){
         if(enemy.getAlive()){
             enemy.tick(deltaTime);
@@ -163,6 +193,8 @@ void EntityMng::tickEntities(float deltaTime, Character* playerPtr){
             activeEntities[i_EntitiesEnd] = &enemy; // add alive entity to active entities
             i_EntitiesEnd++;
         }}
+    i_EnemiesEnd = i_EntitiesEnd;
+
     for(auto& item : itemPool){
         if(item.getAlive()){
             item.tick(deltaTime);
@@ -171,6 +203,8 @@ void EntityMng::tickEntities(float deltaTime, Character* playerPtr){
             activeEntities[i_EntitiesEnd] = &item;
             i_EntitiesEnd++;
         }}
+
+    i_ProyectilesStart = i_EntitiesEnd;
     for(auto& proyectile : proyectilePool){
         if(proyectile.getAlive()){
             proyectile.tick(deltaTime);
@@ -179,6 +213,8 @@ void EntityMng::tickEntities(float deltaTime, Character* playerPtr){
             activeEntities[i_EntitiesEnd] = &proyectile;
             i_EntitiesEnd++;
         }}
+    i_ProyectilesEnd = i_EntitiesEnd;
+
     for(auto& prop : propPool){
         if(prop.getAlive()){
             prop.tick(deltaTime);

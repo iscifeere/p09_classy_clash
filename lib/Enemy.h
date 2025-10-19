@@ -34,7 +34,6 @@ public:
     void drawHealthBar();
     void render() override;
 
-    GenEntity* proyectile{nullptr};
     float attackTimer{};
     float fleeTimer{};
     bool flee{false};
