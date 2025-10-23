@@ -135,19 +135,19 @@ void EntityMng::showPropsDebugData(){
     }
 }
 
-void EntityMng::checkPropCollisions(Character* playerPtr){
-    Rectangle playerPrevCollisionRec{playerPtr->getPrevCollisionRecWorPos()};
+void EntityMng::checkPropCollisions(){
+    Rectangle playerPrevCollisionRec{player.getPrevCollisionRecWorPos()};
 
     for(auto& prop : propPool){
         if(prop.getAlive()){
             Rectangle propCollisionRec{prop.getCollisionRecWorPos()};
             
-            if( CheckCollisionRecs(propCollisionRec, playerPtr->getCollisionRecWorPos()) ){
+            if( CheckCollisionRecs(propCollisionRec, player.getCollisionRecWorPos()) ){
                 if(
                     playerPrevCollisionRec.x + playerPrevCollisionRec.width < propCollisionRec.x ||
                     playerPrevCollisionRec.x > propCollisionRec.x + propCollisionRec.width
-                ) playerPtr->undoMovementX();
-                else playerPtr->undoMovementY();
+                ) player.undoMovementX();
+                else player.undoMovementY();
             }}}
 }
 
@@ -176,16 +176,16 @@ void EntityMng::checkProyectileCollisions(){
     }
 }
 
-void EntityMng::tickEntities(float deltaTime, Character* playerPtr){
+void EntityMng::tickEntities(float deltaTime){
     i_EntitiesEnd = 0;
     i_EnemiesStart = 0;
     i_EnemiesEnd = 0;
     i_ProyectilesStart = 0;
     i_ProyectilesEnd = 0;
 
-    playerPtr->tick(deltaTime);
+    player.tick(deltaTime);
     // add player to active entities
-    activeEntities[i_EntitiesEnd] = playerPtr;
+    activeEntities[i_EntitiesEnd] = &player;
     i_EntitiesEnd++;
 
     i_EnemiesStart = i_EntitiesEnd;
@@ -245,7 +245,7 @@ void EntityMng::showEntitiesDebugData(){
     DrawText(TextFormat("ent: %01i",entitiesAlive), 55.f, 185.f, 30, WHITE);
 }
 
-void EntityMng::renderEntities(Character* playerPtr){
+void EntityMng::renderEntities(){
 
     // sort active entities by their anchor point positions
     std::sort(activeEntities.begin(), activeEntities.begin() + i_EntitiesEnd,

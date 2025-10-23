@@ -88,8 +88,12 @@ int main(void) {
 
         if(IsKeyPressed(KEY_P)) pauseGame = !pauseGame;
 
-        // entities tick ========================
-        if(!pauseGame) EntityMng::tickEntities(dT, knight);
+        // ENTITIES TICK ========================
+        if(!pauseGame){
+            EntityMng::tickEntities(dT);
+            EntityMng::checkPropCollisions();
+            EntityMng::checkProyectileCollisions();
+        }
 
         if(IsKeyPressed(KEY_N)) EntityMng::logEntityArrayStatus();
 
@@ -106,9 +110,6 @@ int main(void) {
             }
         } else cursorColor = DARKBLUE;
 
-        EntityMng::checkPropCollisions(knight);
-        EntityMng::checkProyectileCollisions();
-
         // update map position
         mapPos = Vector2Scale(Vector2Subtract(knight->getWorldPos(), mapPosCorrection), -1.f);
         // draw the map
@@ -118,7 +119,7 @@ int main(void) {
         if(IsKeyPressed(KEY_J)){
             knight->resetState();
             EntityMng::clearEntityPools();
-            pauseGame = !pauseGame;
+            pauseGame = false;
             EndDrawing();
             continue;
         }
@@ -133,7 +134,7 @@ int main(void) {
 
         // ENTITIES RENDER =====================
 
-        EntityMng::renderEntities(knight);
+        EntityMng::renderEntities();
         
         // draw player stats
         knight->showStats();

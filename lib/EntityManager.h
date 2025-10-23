@@ -41,11 +41,11 @@ public:
 
     static void spawnProp(Vector2 pos, const propData* prop_data);
     static void showPropsDebugData();
-    static void checkPropCollisions(Character* playerPtr);
+    static void checkPropCollisions();
 
-    static void tickEntities(float deltaTime, Character* playerPtr);
+    static void tickEntities(float deltaTime);
     static void showEntitiesDebugData();
-    static void renderEntities(Character* playerPtr);
+    static void renderEntities();
     static void clearEntityPools();
     static void logEntityArrayStatus();
 
