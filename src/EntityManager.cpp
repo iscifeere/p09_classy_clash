@@ -135,6 +135,11 @@ void EntityMng::showPropsDebugData(){
     }
 }
 
+void EntityMng::checkEntityCollisions(){
+    checkPropCollisions();
+    checkProyectileCollisions();
+}
+
 void EntityMng::checkPropCollisions(){
     Rectangle playerPrevCollisionRec{player.getPrevCollisionRecWorPos()};
 

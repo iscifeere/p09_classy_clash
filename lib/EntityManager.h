@@ -44,6 +44,7 @@ public:
     static void checkPropCollisions();
 
     static void tickEntities(float deltaTime);
+    static void checkEntityCollisions();
     static void showEntitiesDebugData();
     static void renderEntities();
     static void clearEntityPools();

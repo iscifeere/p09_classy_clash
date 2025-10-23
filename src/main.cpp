@@ -91,8 +91,7 @@ int main(void) {
         // ENTITIES TICK ========================
         if(!pauseGame){
             EntityMng::tickEntities(dT);
-            EntityMng::checkPropCollisions();
-            EntityMng::checkProyectileCollisions();
+            EntityMng::checkEntityCollisions();
         }
 
         if(IsKeyPressed(KEY_N)) EntityMng::logEntityArrayStatus();
