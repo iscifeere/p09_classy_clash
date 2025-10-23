@@ -157,14 +157,14 @@ void EntityMng::checkPropCollisions(){
 }
 
 void EntityMng::checkProyectileCollisions(){
-    if(i_ProyectilesStart != i_ProyectilesEnd){     // if there is alive proyectiles
+    if(i_ProyectilesStart < i_ProyectilesEnd){     // if there is alive proyectiles
         GenEntity* proyectile{nullptr};
 
         for(size_t i{i_ProyectilesStart} ; i < i_ProyectilesEnd ; ++i){     // loop through proyectiles
             proyectile = std::get<GenEntity*>(activeEntities[i]);
 
             if(proyectile->getIsEnemy()) proyectile->checkPlayerCollision();    // if it's an enemy proyectile, affect player
-            else if(i_EnemiesStart != i_EnemiesEnd){    // if not, then, if there is alive enemies
+            else if(i_EnemiesStart < i_EnemiesEnd){    // if not, then, if there is alive enemies
                 Enemy* enemy{nullptr};
 
                 for(size_t k{i_EnemiesStart} ; k < i_EnemiesEnd ; ++k){     // loop through enemies
