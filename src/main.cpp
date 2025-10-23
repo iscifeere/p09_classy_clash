@@ -118,6 +118,7 @@ int main(void) {
         if(IsKeyPressed(KEY_J)){
             knight->resetState();
             EntityMng::clearEntityPools();
+            pauseGame = !pauseGame;
             EndDrawing();
             continue;
         }

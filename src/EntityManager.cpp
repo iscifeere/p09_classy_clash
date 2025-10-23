@@ -178,6 +178,10 @@ void EntityMng::checkProyectileCollisions(){
 
 void EntityMng::tickEntities(float deltaTime, Character* playerPtr){
     i_EntitiesEnd = 0;
+    i_EnemiesStart = 0;
+    i_EnemiesEnd = 0;
+    i_ProyectilesStart = 0;
+    i_ProyectilesEnd = 0;
 
     playerPtr->tick(deltaTime);
     // add player to active entities
@@ -291,6 +295,12 @@ void EntityMng::clearEntityPools(){
     for(auto& variant : activeEntities){    // resetting array of pointers
         variant.emplace<0>(nullptr);
     }
+
+    i_EntitiesEnd = 0;
+    i_EnemiesStart = 0;
+    i_EnemiesEnd = 0;
+    i_ProyectilesStart = 0;
+    i_ProyectilesEnd = 0;
 
     std::cout << "EntityManager: [Entity pools cleared]" << std::endl;
 }
