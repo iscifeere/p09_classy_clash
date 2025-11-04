@@ -16,6 +16,7 @@ private:
     void titleScreen();
     void gameplayScreen(float deltaTime);
     void gameOverScreen();
+    void victoryScreen();
 
     int gameState{};    // which screen to render
 };

@@ -30,6 +30,9 @@ public:
     void setHealth( float newHealth ){ health = newHealth; }
     int getMoney(){ return moneyCount; }
     void addMoney(int moneyAdd){ moneyCount += moneyAdd; }
+    bool getWinCondition(){ return winCondition; }
+    void checkWinCondition();
+    void incrementKilledEnemies(){ killedEnemies++; checkWinCondition(); }
     void showDebugData() override;
     void showStats();
     void render() override;
@@ -47,6 +50,9 @@ private:
     bool healing{false};
     float healTime{};
     int moneyCount{};
+    int killedEnemies{};
+    bool winCondition{false};
+    
     struct s{
         Vector2 origin{};
         Vector2 offset{};

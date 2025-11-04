@@ -158,6 +158,7 @@ void Enemy::takeDamage(float damage){
 void Enemy::deathSequence(){
     setAlive(false);
     EntityMng::spawnItem(worldPos, itemDrop);
+    target->incrementKilledEnemies();
 }
 
 float& Enemy::getRadiusEtc(int choice)

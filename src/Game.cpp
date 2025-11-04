@@ -5,6 +5,7 @@
 #define TITLE_SCREEN 0
 #define GAME_PLAY 1
 #define GAME_OVER 2
+#define VICTORY_SCREEN 3
 
 void Game::updateFrame(float deltaTime)
 {
@@ -22,6 +23,10 @@ void Game::updateFrame(float deltaTime)
 
     case GAME_OVER:
         gameOverScreen();
+        break;
+
+    case VICTORY_SCREEN:
+        victoryScreen();
         break;
     
     default:
@@ -113,6 +118,14 @@ void Game::gameplayScreen(float deltaTime)
     if(!EntityMng::player.getAlive())
     {
         gameState = GAME_OVER;  // go to game over screen
+        gameOverScreen();
+        return;
+    }
+    else if(EntityMng::player.getWinCondition())
+    {
+        gameState = VICTORY_SCREEN;     // if win condition is true, go to victory screen
+        victoryScreen();
+        return;
     }
 
     // ENTITIES RENDER =====================
@@ -211,8 +224,30 @@ void Game::gameOverScreen()
     DrawText("(press Enter to return to title screen)", 70.f, Tex::halfWinSize.y+140.f, 20, YELLOW);
 }
 
+void Game::victoryScreen()
+{
+    ClearBackground(BLUE);
+
+    if(IsKeyPressed(KEY_J))    // reset game
+    {
+        EntityMng::player.resetState();
+        EntityMng::clearEntityPools();
+        gameState = GAME_PLAY;
+    }
+    else if(IsKeyPressed(KEY_ENTER))    // reset and return to title screen
+    {
+        EntityMng::player.resetState();
+        EntityMng::clearEntityPools();
+        gameState = TITLE_SCREEN;
+    }
+
+    DrawText("You won!", Tex::halfWinSize.x-200.f, Tex::halfWinSize.y-20.f, 60, YELLOW);
+    DrawText("(press J to reset)", 70.f, Tex::halfWinSize.y+110.f, 20, YELLOW);
+    DrawText("(press Enter to return to title screen)", 70.f, Tex::halfWinSize.y+140.f, 20, YELLOW);
+}
+
 void Game::changeScreen()
 {
     gameState++;
-    if(gameState > 2) gameState = 0;
+    if(gameState > 3) gameState = 0;
 }

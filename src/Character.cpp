@@ -197,6 +197,11 @@ void Character::addHealth( float healthAdd ){
     setDrawColor(PINK);
 }
 
+void Character::checkWinCondition()
+{
+    winCondition = killedEnemies >= 5;
+}
+
 void Character::showDebugData(){
     Vector2 screenPos{getScreenPos()};
     Vector2 renderPos{getRenderPos( screenPos )};
@@ -270,6 +275,8 @@ void Character::resurrect(){
 void Character::resetState(){
     setWorldPos(Tex::halfWinSize);
     moneyCount = 0;
+    killedEnemies = 0;
+    winCondition = false;
     resurrect();
 }
 
