@@ -50,6 +50,9 @@ public:
     static void clearEntityPools();
     static void logEntityArrayStatus();
 
+    static void showPlayerScore();
+    static void spawnRandomEnemies();
+
 private:
     static const int ITEM_ARR_SIZE{10};
     static const int ENEMY_ARR_SIZE{10};

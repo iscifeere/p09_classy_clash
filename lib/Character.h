@@ -32,6 +32,7 @@ public:
     void addMoney(int moneyAdd){ moneyCount += moneyAdd; }
     bool getWinCondition(){ return winCondition; }
     void checkWinCondition();
+    int getKilledEnemies(){ return killedEnemies; }
     void incrementKilledEnemies(){ killedEnemies++; checkWinCondition(); }
     void showDebugData() override;
     void showStats();

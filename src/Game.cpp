@@ -6,6 +6,7 @@
 #define GAME_PLAY 1
 #define GAME_OVER 2
 #define VICTORY_SCREEN 3
+#define CHALLENGE_SCREEN 4
 
 void Game::updateFrame(float deltaTime)
 {
@@ -15,6 +16,10 @@ void Game::updateFrame(float deltaTime)
     {
     case TITLE_SCREEN:
         titleScreen();
+        break;
+
+    case CHALLENGE_SCREEN:
+        challengeScreen();
         break;
 
     case GAME_PLAY:
@@ -38,10 +43,24 @@ void Game::titleScreen()
 {
     ClearBackground(SKYBLUE);
 
-    if(IsKeyPressed(KEY_ENTER)) gameState = GAME_PLAY;
+    if(IsKeyPressed(KEY_ENTER)) gameState = CHALLENGE_SCREEN;
 
     DrawText("Classy Clash", static_cast<float>(Tex::winSize[0])*0.33f, static_cast<float>(Tex::winSize[1])*0.33f, 50, WHITE);
     DrawText("(press Enter)", Tex::halfWinSize.x-70.f, Tex::halfWinSize.y+110.f, 30, YELLOW);
+}
+
+void Game::challengeScreen()
+{
+    ClearBackground(BLACK);
+
+    DrawText("Challenge: Kill 5 enemies", static_cast<float>(Tex::winSize[0])*0.15f, static_cast<float>(Tex::winSize[1])*0.45f, 50, RED);
+    DrawText("(press Enter)", static_cast<float>(Tex::winSize[0])*0.33f, static_cast<float>(Tex::winSize[1])*0.7f, 30, YELLOW);
+    
+    if(IsKeyPressed(KEY_ENTER))
+    {
+        gameState = GAME_PLAY;
+        EntityMng::spawnRandomEnemies();
+    }
 }
 
 void Game::gameplayScreen(float deltaTime)
@@ -110,6 +129,7 @@ void Game::gameplayScreen(float deltaTime)
     {
         EntityMng::player.resetState();
         EntityMng::clearEntityPools();
+        EntityMng::spawnRandomEnemies();
         g_PauseGame = false;
         return;
     }
@@ -133,6 +153,7 @@ void Game::gameplayScreen(float deltaTime)
     
     // draw player stats
     EntityMng::player.showStats();
+    EntityMng::showPlayerScore();
 
     // draw debug data
     if(IsKeyPressed(KEY_Z)) g_ShowDebugData = !g_ShowDebugData;
@@ -249,5 +270,5 @@ void Game::victoryScreen()
 void Game::changeScreen()
 {
     gameState++;
-    if(gameState > 3) gameState = 0;
+    if(gameState > 4) gameState = 0;
 }

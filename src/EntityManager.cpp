@@ -333,3 +333,18 @@ void EntityMng::logEntityArrayStatus(){
     std::cout << "Pointers to notAlive entity: " << notAliveEntityPtr << std::endl;
     std::cout << "Total pointers to entity: " << (aliveEntityPtr+notAliveEntityPtr) << std::endl;
 }
+
+void EntityMng::showPlayerScore(){
+    DrawText(TextFormat("points: %01i",player.getKilledEnemies()), static_cast<float>(Tex::winSize[0]) - 150.f, 45.f, 30, WHITE);
+}
+
+void EntityMng::spawnRandomEnemies(){
+    for(int i{} ; i < ENEMY_ARR_SIZE ; i++){
+        Vector2 newEnemyPos{
+            static_cast<float>(GetRandomValue(800,4700)),
+            static_cast<float>(GetRandomValue(800,3700))
+        };
+        const enemyData* data = GetRandomValue(0,1) ? &MADKNIGHT_ENEMYDATA : &SLIME_ENEMYDATA;
+        spawnEnemy(newEnemyPos, data);
+    }
+}

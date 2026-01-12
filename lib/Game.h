@@ -14,6 +14,7 @@ public:
 
 private:
     void titleScreen();
+    void challengeScreen();
     void gameplayScreen(float deltaTime);
     void gameOverScreen();
     void victoryScreen();
