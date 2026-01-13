@@ -74,7 +74,8 @@ void GenEntity::render(){
 
 void GenEntity::checkPlayerCollision(){
     if( CheckCollisionRecs(getCollisionRec(), player->getHurtRec()) ){
-            player->addHealth(10);
+            // player->addHealth(10);
+            player->takeDamage(10);
             setAlive(false);
         }
 }
