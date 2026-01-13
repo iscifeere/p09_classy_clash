@@ -34,6 +34,9 @@ public:
     void drawHealthBar();
     void render() override;
 
+    void idleWandering(float& deltaTime);
+    void setEnemyState(int newState){ enemyState = newState; }
+
     float attackTimer{};
     float fleeTimer{};
     bool flee{false};
@@ -46,6 +49,8 @@ protected:
     float radius{50.f};
     float chaseRadius{400.f};
     float chaseTime{};
+    int enemyState{};
+    Vector2 wanderingPoint{};
     const enemyData* data{nullptr};
     const itemData* itemDrop{&HEART_ITEMDATA};
 

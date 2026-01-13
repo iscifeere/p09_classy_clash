@@ -65,7 +65,7 @@ inline void chaseTarget(Enemy* enemy, Character* target, const float& deltaTime)
 inline void fleeTarget(Enemy* enemy, Character* target, const float& deltaTime)
 {
     Vector2& velocity = enemy->getVelocity();
-    float& out_radius = enemy->getRadiusEtc(1);
+    float& out_radius = enemy->getRadiusEtc(1); // unused
     float& chaseTime = enemy->getRadiusEtc(2);
     
     // get inverted target direction
@@ -73,14 +73,22 @@ inline void fleeTarget(Enemy* enemy, Character* target, const float& deltaTime)
     float distance = Vector2Length(velocity);
 
     // if too far don't flee
-    if(distance > out_radius ){
+    if(distance > 600.f){
       velocity = {};
       chaseTime = 0.f;
+      enemy->setEnemyState(0);  // set state to idle
       return;
     }
 
     chaseTime += deltaTime;
-    if(chaseTime < 0.2f || chaseTime >= 5.f) velocity = {}; // wait a bit to move, and at 5 sec stop
+    
+    if(chaseTime < 0.2f) velocity = {}; // wait a bit to start moving
+    else if (chaseTime >= 5.f){ // after 5 sec return to idle
+        velocity = {};
+        chaseTime = 0.f;
+        enemy->setEnemyState(0);  // set state to idle
+        return;
+    }
 }
 
 inline void shootTarget(Enemy* enemy, Character* target, const float& deltaTime)
@@ -115,6 +123,8 @@ inline void shootTarget(Enemy* enemy, Character* target, const float& deltaTime)
         else if (chaseTimer >= 5.f){                // become neutral after 5 sec chasing
             velocity = {};
             enemy->neutral = true;
+            enemy->setEnemyState(0);    // set state to idle
+            chaseTimer = 0.f;
         }
 
         return;

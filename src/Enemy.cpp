@@ -4,6 +4,9 @@
 #include "EnemyData.h"
 #include <iostream>
 
+#define STATE_IDLE 0
+#define STATE_ACTION 1
+
 void Enemy::init(){
     std::cout << "[Enemy init function (" << this << ") ]" << std::endl;
     
@@ -65,6 +68,8 @@ void Enemy::spawnReset(Vector2 pos, const enemyData* enemy_data)
     drawColor = WHITE;
     hurtTime = 0.f;
     invul = false;
+    wanderingPoint = {};
+    enemyState = STATE_IDLE;
 
     setAlive(true);
 }
@@ -74,9 +79,21 @@ bool Enemy::tick(float deltaTime){
     if (!getAlive()) return false;    // if not alive, do nothing and return false
 
     // ====== MOVEMENT ============
-    velocity = {};          // reset velocity
-
-    action(this, target, deltaTime);
+    switch (enemyState)
+    {
+    case STATE_IDLE:
+        idleWandering(deltaTime);
+        break;
+    
+    case STATE_ACTION:
+        velocity = {};  // reset velocity
+        action(this, target, deltaTime);
+        break;
+    
+    default:
+        idleWandering(deltaTime);
+        break;
+    }
 
     // ====== TICK AND VARIABLE RESETS ============
     BaseCharacter::tick(deltaTime);
@@ -153,6 +170,7 @@ Rectangle Enemy::getHurtRec(){
 void Enemy::takeDamage(float damage){
     BaseCharacter::takeDamage(damage);
     neutral = false;
+    enemyState = STATE_ACTION;
 }
 
 void Enemy::deathSequence(){
@@ -215,4 +233,35 @@ void Enemy::render(){
     BaseCharacter::render();
     drawHealthBar();
     drawColor = WHITE;    // reset color
+}
+
+void Enemy::idleWandering(float& deltaTime)
+{
+    if(Vector2Length(velocity) == 0.f) chaseTime += deltaTime;  // start counting when still
+
+    // once every amount of time decide randomly whether to move or stay still
+    if(chaseTime >= 2.f)
+    {
+        if(GetRandomValue(0,2))
+        {
+            // create random point to wander off to
+            Vector2 randomDirection
+            {
+                static_cast<float>(GetRandomValue(-10,10)),
+                static_cast<float>(GetRandomValue(-10,10))
+            };
+            float randomDistance = static_cast<float>(GetRandomValue(100,600));
+            // float randomDistance = 600.f;
+
+            wanderingPoint = Vector2Add(worldPos, Vector2Scale(Vector2Normalize(randomDirection), randomDistance));
+
+            velocity = Vector2Subtract(wanderingPoint, worldPos);   // get direction to wander point
+        }
+
+        chaseTime = {};
+    }
+    
+    // if too close or far to wander point, stop moving
+    float wanderPointDistance = Vector2Length(Vector2Subtract(wanderingPoint, worldPos));
+    if(wanderPointDistance < 20.f || wanderPointDistance > 610.f) velocity = {};
 }
