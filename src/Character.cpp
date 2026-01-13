@@ -147,13 +147,32 @@ bool Character::tick(float deltaTime){
     isAttacking = false;
     swordVariables.rotation = {};
 
-    // attack & defend
-    if(IsMouseButtonDown(MOUSE_LEFT_BUTTON) || IsKeyDown(KEY_SPACE)){
+    // ==================================================================
+    // ATTACK AND DEFEND
+    // ==================================================================
+
+    // melee attack
+    if(IsMouseButtonDown(MOUSE_LEFT_BUTTON) || IsKeyDown(KEY_SPACE))
+    {
         isAttacking = true;
         swordVariables.rotation = 35.f;
     }
-    if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_SPACE)) shootProyectile();
-    if(IsMouseButtonDown(MOUSE_RIGHT_BUTTON) || IsKeyDown(KEY_V)){
+
+    // shoot projectile
+    if( shootTimer == 0.f )
+    {
+        if( IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_SPACE) )
+        {
+            shootProyectile();
+            shootTimer += deltaTime;
+        }
+    }
+    else if( shootTimer >= 0.33f ) shootTimer = 0.f;
+    else shootTimer += deltaTime;
+
+    // shield
+    if(IsMouseButtonDown(MOUSE_RIGHT_BUTTON) || IsKeyDown(KEY_V))
+    {
         swordVariables.rotation = -30.f;
         drawColor = YELLOW;
         invul = true;
