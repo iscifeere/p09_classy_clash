@@ -339,12 +339,20 @@ void EntityMng::showPlayerScore(){
 }
 
 void EntityMng::spawnRandomEnemies(){
+    const enemyData* data{};
+    int randomEnemy{};
+
     for(int i{} ; i < ENEMY_ARR_SIZE ; i++){
         Vector2 newEnemyPos{
-            static_cast<float>(GetRandomValue(800,4700)),
-            static_cast<float>(GetRandomValue(800,3700))
+            static_cast<float>(GetRandomValue(800,5000)),
+            static_cast<float>(GetRandomValue(800,5000))
         };
-        const enemyData* data = GetRandomValue(0,1) ? &MADKNIGHT_ENEMYDATA : &SLIME_ENEMYDATA;
+
+        randomEnemy = GetRandomValue(0,10);
+        if(randomEnemy < 5) data = &MADKNIGHT_ENEMYDATA;
+        else if(randomEnemy < 10) data = &SLIME_ENEMYDATA;
+        else data = &RED_ENEMYDATA;
+
         spawnEnemy(newEnemyPos, data);
     }
 }
