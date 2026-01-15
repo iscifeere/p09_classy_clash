@@ -342,7 +342,7 @@ void EntityMng::spawnRandomEnemies(){
     const enemyData* data{};
     int randomEnemy{};
 
-    for(int i{} ; i < ENEMY_ARR_SIZE ; i++){
+    for(int i{} ; i < ENEMY_ARR_SIZE-5 ; i++){
         Vector2 newEnemyPos{
             static_cast<float>(GetRandomValue(800,5000)),
             static_cast<float>(GetRandomValue(800,5000))
@@ -355,4 +355,77 @@ void EntityMng::spawnRandomEnemies(){
 
         spawnEnemy(newEnemyPos, data);
     }
+}
+
+Enemy* EntityMng::getNearestEnemy(Enemy* this_enemy){   // returns a pointer to the nearest enemy
+    Enemy* nearestEnemy{nullptr};
+    float distanceToNearestEnemy{};
+    float distanceToCurrentEnemy{};
+
+    for(Enemy& enemy : enemyPool){
+        if(enemy.getAlive() && &enemy != this_enemy){
+            if(nearestEnemy == nullptr) nearestEnemy = &enemy;
+            else {
+                distanceToNearestEnemy = Vector2Length( Vector2Subtract(nearestEnemy->getWorldPos(), this_enemy->getWorldPos()) );
+                distanceToCurrentEnemy = Vector2Length( Vector2Subtract(enemy.getWorldPos(), this_enemy->getWorldPos()) );
+                
+                if(distanceToCurrentEnemy < distanceToNearestEnemy){
+                    nearestEnemy = &enemy;
+                    distanceToNearestEnemy = distanceToCurrentEnemy;
+                }
+
+            }
+        }
+    }
+
+    return nearestEnemy;   // returns nullptr if no enemy is found
+}
+
+Enemy* EntityMng::getNearestEnemyByType(Enemy* this_enemy){     // returns a pointer to the nearest enemy of the same type
+    Enemy* nearestEnemy{nullptr};
+    float distanceToNearestEnemy{};
+    float distanceToCurrentEnemy{};
+    int thisEnemyType = this_enemy->getEnemyType();
+
+    for(Enemy& enemy : enemyPool){
+        if(enemy.getAlive() && enemy.getEnemyType() == thisEnemyType && &enemy != this_enemy){
+            if(nearestEnemy == nullptr) nearestEnemy = &enemy;
+            else {
+                distanceToNearestEnemy = Vector2Length( Vector2Subtract(nearestEnemy->getWorldPos(), this_enemy->getWorldPos()) );
+                distanceToCurrentEnemy = Vector2Length( Vector2Subtract(enemy.getWorldPos(), this_enemy->getWorldPos()) );
+                
+                if(distanceToCurrentEnemy < distanceToNearestEnemy){
+                    nearestEnemy = &enemy;
+                    distanceToNearestEnemy = distanceToCurrentEnemy;
+                }
+
+            }
+        }
+    }
+
+    return nearestEnemy;   // returns nullptr if no enemy is found
+}
+
+Enemy* EntityMng::getNearestEnemyByType(Enemy* this_enemy, int p_EnemyType){    // returns a pointer to the nearest enemy of a specified type
+    Enemy* nearestEnemy{nullptr};
+    float distanceToNearestEnemy{};
+    float distanceToCurrentEnemy{};
+
+    for(Enemy& enemy : enemyPool){
+        if(enemy.getAlive() && enemy.getEnemyType() == p_EnemyType && &enemy != this_enemy){
+            if(nearestEnemy == nullptr) nearestEnemy = &enemy;
+            else {
+                distanceToNearestEnemy = Vector2Length( Vector2Subtract(nearestEnemy->getWorldPos(), this_enemy->getWorldPos()) );
+                distanceToCurrentEnemy = Vector2Length( Vector2Subtract(enemy.getWorldPos(), this_enemy->getWorldPos()) );
+                
+                if(distanceToCurrentEnemy < distanceToNearestEnemy){
+                    nearestEnemy = &enemy;
+                    distanceToNearestEnemy = distanceToCurrentEnemy;
+                }
+
+            }
+        }
+    }
+
+    return nearestEnemy;   // returns nullptr if no enemy is found
 }

@@ -30,6 +30,7 @@ public:
     virtual void takeDamage(float damage) override;
     virtual void deathSequence() override;
     float& getRadiusEtc(int choice);
+    int getEnemyType();
     virtual void showDebugData() override;
     void drawHealthBar();
     void render() override;
@@ -39,9 +40,12 @@ public:
 
     float attackTimer{};
     float fleeTimer{};
+    float freeUseTimer1{};
     bool flee{false};
     bool chase{false};
     bool neutral{false};
+
+    Enemy* nearestEnemy{nullptr};
     
 protected:
     Character* target{nullptr};

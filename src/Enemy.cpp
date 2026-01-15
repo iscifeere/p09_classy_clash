@@ -265,3 +265,8 @@ void Enemy::idleWandering(float& deltaTime)
     float wanderPointDistance = Vector2Length(Vector2Subtract(wanderingPoint, worldPos));
     if(wanderPointDistance < 20.f || wanderPointDistance > 610.f) velocity = {};
 }
+
+int Enemy::getEnemyType()
+{
+    return data->enemyType;
+}
