@@ -114,13 +114,6 @@ bool Enemy::tick(float deltaTime){
         }
     }
 
-    // KILL WITH CURSOR
-    if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
-        if(CheckCollisionRecs(Rectangle{GetMousePosition().x - 5, GetMousePosition().y - 5, 5, 5}, getHurtRec())){
-            setAlive(false);
-        }
-    }
-
     return true;
 }
 
@@ -210,6 +203,16 @@ void Enemy::showDebugData()     // draw debug data
     DrawText(TextFormat("%01.01f",worldPos.x), collisionRec.x + 5, collisionRec.y + collisionRec.height - 20, 10, WHITE);
     DrawText(TextFormat("%01.01f",worldPos.y), collisionRec.x + 5, collisionRec.y + collisionRec.height - 10, 10, WHITE);
     DrawText(TextFormat("%01.01f",chaseTime), collisionRec.x + 5, collisionRec.y + collisionRec.height, 10, WHITE);
+
+    // KILL WITH CURSOR
+    if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
+    {
+        if(CheckCollisionRecs(Rectangle{GetMousePosition().x - 5, GetMousePosition().y - 5, 5, 5}, getHurtRec()))
+        {
+            setAlive(false);
+        }
+    }
+    
 }
 
 void Enemy::drawHealthBar()

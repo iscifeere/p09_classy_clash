@@ -76,20 +76,6 @@ void Game::gameplayScreen(float deltaTime)
 
     // GAME LOGIC BEGINS ==========================
 
-    // create items
-    if(IsKeyPressed(KEY_E)) EntityMng::spawnItem(Vector2Add(EntityMng::player.getWindowOriginWorPos(), cursorPosition), &COIN_ITEMDATA);
-
-    // create enemies
-    if(IsKeyPressed(KEY_R)) EntityMng::spawnEnemy(Vector2Add(EntityMng::player.getWindowOriginWorPos(), cursorPosition), &MADKNIGHT_ENEMYDATA);
-    if(IsKeyPressed(KEY_T)) EntityMng::spawnEnemy(Vector2Add(EntityMng::player.getWindowOriginWorPos(), cursorPosition), &SLIME_ENEMYDATA);
-    if(IsKeyPressed(KEY_Y)) EntityMng::spawnEnemy(Vector2Add(EntityMng::player.getWindowOriginWorPos(), cursorPosition), &RED_ENEMYDATA);
-
-    // delete items
-    if(IsKeyPressed(KEY_Q)) EntityMng::killItem();
-
-    // delete enemies
-    if(IsKeyPressed(KEY_F)) EntityMng::killEnemy();
-
     if(IsKeyPressed(KEY_P)) g_PauseGame = !g_PauseGame;
 
     // ENTITIES TICK ========================
@@ -204,6 +190,20 @@ void Game::gameplayScreen(float deltaTime)
             // right vertical
             DrawLine(topRightBoundScreenPos.x, topRightBoundScreenPos.y, bottomRightBoundScreenPos.x, bottomRightBoundScreenPos.y, YELLOW);
         }
+
+        // create items
+        if(IsKeyPressed(KEY_E)) EntityMng::spawnItem(Vector2Add(EntityMng::player.getWindowOriginWorPos(), cursorPosition), &COIN_ITEMDATA);
+
+        // create enemies
+        if(IsKeyPressed(KEY_R)) EntityMng::spawnEnemy(Vector2Add(EntityMng::player.getWindowOriginWorPos(), cursorPosition), &MADKNIGHT_ENEMYDATA);
+        if(IsKeyPressed(KEY_T)) EntityMng::spawnEnemy(Vector2Add(EntityMng::player.getWindowOriginWorPos(), cursorPosition), &SLIME_ENEMYDATA);
+        if(IsKeyPressed(KEY_Y)) EntityMng::spawnEnemy(Vector2Add(EntityMng::player.getWindowOriginWorPos(), cursorPosition), &RED_ENEMYDATA);
+
+        // delete items
+        if(IsKeyPressed(KEY_Q)) EntityMng::killItem();
+
+        // delete enemies
+        if(IsKeyPressed(KEY_F)) EntityMng::killEnemy();
     }
 
     if(g_PauseGame)
