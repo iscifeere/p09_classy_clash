@@ -87,25 +87,6 @@ void Game::gameplayScreen(float deltaTime)
 
     if(IsKeyPressed(KEY_N)) EntityMng::logEntityArrayStatus();
 
-    // cursor affects player
-    if(IsMouseButtonDown(MOUSE_BUTTON_RIGHT))
-    {
-        cursorColor = YELLOW;
-        if(CheckCollisionRecs(Rectangle{cursorPosition.x - 5.f, cursorPosition.y - 5.f, 10, 10}, EntityMng::player.getCollisionRec()))
-        {
-            EntityMng::player.addHealth(30.f*deltaTime);
-        }
-    }
-    else if(IsMouseButtonDown(MOUSE_BUTTON_LEFT))
-    {
-        cursorColor = YELLOW;
-        if(CheckCollisionRecs(Rectangle{cursorPosition.x - 5.f, cursorPosition.y - 5.f, 10, 10}, EntityMng::player.getCollisionRec()))
-        {
-            EntityMng::player.takeDamage(30.f*deltaTime);
-        }
-    }
-    else cursorColor = DARKBLUE;
-
     // update map position
     Vector2 mapPos = Vector2Scale(Vector2Subtract(EntityMng::player.getWorldPos(), g_MapPosCorrection), -1.f);
     // draw the map
@@ -204,6 +185,25 @@ void Game::gameplayScreen(float deltaTime)
 
         // delete enemies
         if(IsKeyPressed(KEY_F)) EntityMng::killEnemy();
+
+        // cursor affects player
+        if(IsMouseButtonDown(MOUSE_BUTTON_RIGHT))
+        {
+            cursorColor = YELLOW;
+            if(CheckCollisionRecs(Rectangle{cursorPosition.x - 5.f, cursorPosition.y - 5.f, 10, 10}, EntityMng::player.getCollisionRec()))
+            {
+                EntityMng::player.addHealth(30.f*deltaTime);
+            }
+        }
+        else if(IsMouseButtonDown(MOUSE_BUTTON_LEFT))
+        {
+            cursorColor = YELLOW;
+            if(CheckCollisionRecs(Rectangle{cursorPosition.x - 5.f, cursorPosition.y - 5.f, 10, 10}, EntityMng::player.getCollisionRec()))
+            {
+                EntityMng::player.takeDamage(30.f*deltaTime);
+            }
+        }
+        
     }
 
     if(g_PauseGame)
