@@ -17,7 +17,7 @@ struct enemyData{
     float damage{};
     float chase_radius{};
     int enemyType{};
-    bool isNeutral{false};
+    bool isNeutral{false};  // unused
 
     // Location and size of collisionBox & hurtBox.
     // x and y are propotional displacement from sprite screen position,
@@ -50,8 +50,15 @@ inline void chaseTarget(Enemy* enemy, Character* target, const float& deltaTime)
     float& chaseTime = enemy->getRadiusEtc(2);
 
     // get to target
-    velocity = Vector2Subtract(target->getScreenPos(), enemy->getScreenPos());
+    velocity = Vector2Subtract(target->getWorldPos(), enemy->getWorldPos());
     float distance = Vector2Length(velocity);
+
+    // damage player on contact
+    if(CheckCollisionRecs(target->getHurtRec(),enemy->getHurtRec()))
+    {
+        target->takeDamage(enemy->getDamage() * deltaTime);
+    }
+
     // if too close / too far -> don't chase
     if(distance < in_radius || distance > out_radius ){
         velocity = {};
@@ -70,7 +77,7 @@ inline void fleeTarget(Enemy* enemy, Character* target, const float& deltaTime)
     float& chaseTime = enemy->getRadiusEtc(2);
     
     // get inverted target direction
-    velocity = Vector2Subtract(enemy->getScreenPos(), target->getScreenPos());
+    velocity = Vector2Subtract(enemy->getWorldPos(), target->getWorldPos());
     float distance = Vector2Length(velocity);
 
     // if too far don't flee
@@ -94,8 +101,6 @@ inline void fleeTarget(Enemy* enemy, Character* target, const float& deltaTime)
 
 inline void shootTarget(Enemy* this_enemy, Character* target, const float& deltaTime)
 {
-    if(this_enemy->neutral) return;
-
     Vector2& velocity = this_enemy->getVelocity();
     float& attCooldown = this_enemy->attackTimer;
     float& fleeTimer = this_enemy->fleeTimer;
@@ -109,11 +114,8 @@ inline void shootTarget(Enemy* this_enemy, Character* target, const float& delta
     velocity = vecToPlayer;
     
     // get direction of nearest enemy of same type
-    // Enemy* nearestEnemy{nullptr};
     Vector2 vecAwayFromNearestEnemy{};
     float distanceToNearestEnemy{};
-
-    // nearestEnemy = EntityMng::getNearestEnemyByType(this_enemy);
 
     if(askNearestEnemyTimer == 0.f)
     {
@@ -125,7 +127,7 @@ inline void shootTarget(Enemy* this_enemy, Character* target, const float& delta
 
     if(nearestEnemy != nullptr)
     {
-        vecAwayFromNearestEnemy = Vector2Subtract(this_enemy->getScreenPos(), nearestEnemy->getScreenPos());
+        vecAwayFromNearestEnemy = Vector2Subtract(this_enemy->getWorldPos(), nearestEnemy->getWorldPos());
         distanceToNearestEnemy = Vector2Length(vecAwayFromNearestEnemy);
     }
 
@@ -153,7 +155,7 @@ inline void shootTarget(Enemy* this_enemy, Character* target, const float& delta
         
         chaseTimer += deltaTime;
         if(chaseTimer < 0.2f) velocity = {};        // wait a bit before chasing
-        else if (chaseTimer >= 5.f){                // become neutral after 5 sec chasing
+        else if (chaseTimer >= 7.f){                // become neutral after 5 sec chasing
             velocity = {};
             this_enemy->neutral = true;
             this_enemy->setEnemyState(0);    // set state to idle

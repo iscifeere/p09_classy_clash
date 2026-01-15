@@ -54,7 +54,7 @@ void Game::challengeScreen()
     ClearBackground(BLACK);
 
     DrawText("LEVEL 1", static_cast<float>(Tex::winSize[0])*0.33f, static_cast<float>(Tex::winSize[1])*0.25f, 50, WHITE);
-    DrawText("Challenge: Kill 5 enemies", static_cast<float>(Tex::winSize[0])*0.15f, static_cast<float>(Tex::winSize[1])*0.45f, 50, RED);
+    DrawText("Challenge: Kill 7 enemies", static_cast<float>(Tex::winSize[0])*0.15f, static_cast<float>(Tex::winSize[1])*0.45f, 50, RED);
     DrawText("(press Enter)", static_cast<float>(Tex::winSize[0])*0.33f, static_cast<float>(Tex::winSize[1])*0.7f, 30, YELLOW);
     
     if(IsKeyPressed(KEY_ENTER))

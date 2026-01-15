@@ -148,27 +148,11 @@ bool Character::tick(float deltaTime){
     swordVariables.rotation = {};
 
     // ==================================================================
-    // ATTACK AND DEFEND
+    // ATTACK AND SHIELD
     // ==================================================================
 
-    // melee attack
-    if(IsMouseButtonDown(MOUSE_LEFT_BUTTON) || IsKeyDown(KEY_SPACE))
-    {
-        isAttacking = true;
-        swordVariables.rotation = 35.f;
-    }
-
-    // shoot projectile
-    if( shootTimer == 0.f )
-    {
-        if( IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_SPACE) )
-        {
-            shootProyectile();
-            shootTimer += deltaTime;
-        }
-    }
-    else if( shootTimer >= 0.33f ) shootTimer = 0.f;
-    else shootTimer += deltaTime;
+    if( attackTimer >= 0.40f ) attackTimer = 0.f;
+    else if(attackTimer > 0.f) attackTimer += deltaTime;
 
     // shield
     if(IsMouseButtonDown(MOUSE_RIGHT_BUTTON) || IsKeyDown(KEY_V))
@@ -176,6 +160,26 @@ bool Character::tick(float deltaTime){
         swordVariables.rotation = -30.f;
         drawColor = YELLOW;
         invul = true;
+    }
+    else
+    {   
+        // sword animation and shoot projectile
+        if(IsMouseButtonDown(MOUSE_LEFT_BUTTON) || IsKeyDown(KEY_SPACE))
+        {
+            swordVariables.rotation = 35.f;
+            
+            if(attackTimer == 0.f)
+            {
+                shootProyectile();
+                attackTimer += deltaTime;
+
+                // melee attack
+                if( IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_SPACE) )
+                {
+                    isAttacking = true;
+                }
+            }
+        }
     }
 
     if(rightLeft > 0.f){
@@ -218,7 +222,7 @@ void Character::addHealth( float healthAdd ){
 
 void Character::checkWinCondition()
 {
-    winCondition = killedEnemies >= 5;
+    winCondition = killedEnemies >= 7;
 }
 
 void Character::showDebugData(){

@@ -50,7 +50,7 @@ private:
     bool isAttacking{false};
     bool healing{false};
     float healTime{};
-    float shootTimer{};
+    float attackTimer{};
     int moneyCount{};
     int killedEnemies{};
     bool winCondition{false};

@@ -27,9 +27,9 @@ void Enemy::init(){
     
     speed = data->speed;
     health = data->health;
-    damagePerSec = data->damage;
+    // damagePerSec = data->damage;
     chaseRadius = data->chase_radius;
-    neutral = data->isNeutral;
+    // neutral = data->isNeutral;
     itemDrop = data->item_drop;
     action = data->behave;   
 }
@@ -105,13 +105,6 @@ bool Enemy::tick(float deltaTime){
             invul = false;
             drawColor = WHITE;
         } else drawColor = RED;
-    }
-
-    // ====== DAMAGE TARGET ON CONTACT ============
-    if(!neutral){
-        if(CheckCollisionRecs(target->getHurtRec(),getHurtRec())){
-            target->takeDamage(damagePerSec * deltaTime);
-        }
     }
 
     // ====== TAKE DAMAGE ============      (MAKE IT A FUNCTION!!!)
@@ -269,4 +262,9 @@ void Enemy::idleWandering(float& deltaTime)
 int Enemy::getEnemyType()
 {
     return data->enemyType;
+}
+
+float Enemy::getDamage()
+{
+    return data->damage;
 }
