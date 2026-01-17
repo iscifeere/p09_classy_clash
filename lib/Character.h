@@ -54,6 +54,13 @@ private:
     int moneyCount{};
     int killedEnemies{};
     bool winCondition{false};
+
+    // player upgrades
+    bool canRun{false};                 // pending
+    bool canShoot{false};               // pending
+    bool canOverHeal{false};            // pending
+    bool canAutoShoot{false};           // pending
+    bool canMoveWhileShield{false};     // pending
     
     struct s{
         Vector2 origin{};
