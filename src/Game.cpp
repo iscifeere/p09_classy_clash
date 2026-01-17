@@ -92,16 +92,6 @@ void Game::gameplayScreen(float deltaTime)
     // draw the map
     DrawTextureEx(Tex::texture_map, mapPos, 0.0, Tex::MAP_SCALE, WHITE);
 
-    // reset game with key
-    if(IsKeyPressed(KEY_J))
-    {
-        EntityMng::player.resetState();
-        EntityMng::clearEntityPools();
-        EntityMng::spawnRandomEnemies();
-        g_PauseGame = false;
-        return;
-    }
-
     // game over if dead
     if(!EntityMng::player.getAlive())
     {
@@ -202,6 +192,17 @@ void Game::gameplayScreen(float deltaTime)
             {
                 EntityMng::player.takeDamage(30.f*deltaTime);
             }
+        }
+
+        // reset game with key
+        if(IsKeyPressed(KEY_J))
+        {
+            EntityMng::player.resetState();
+            EntityMng::clearEntityPools();
+            EntityMng::spawnRandomEnemies();
+            g_PauseGame = false;
+            g_ShowDebugData = false;
+            return;
         }
         
     }
