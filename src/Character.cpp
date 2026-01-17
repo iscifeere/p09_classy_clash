@@ -241,6 +241,9 @@ void Character::showDebugData(){
 }
 
 void Character::showStats(){
+
+    Vector2 playerScreenPos{getScreenPos()};
+
     // draw health bar
     Rectangle healthBar{50.f, 45.f, 4.f * health, 40.f};
     if(health <= 100.f)
@@ -270,6 +273,10 @@ void Character::showStats(){
 
         DrawRectangle(healthBar.x, healthBar.y, 400.f, healthBar.height, healthBarColor);
     }
+
+    // draw attack cooldown bar
+    Rectangle attackCooldownBar{playerScreenPos.x, playerScreenPos.y, 100.f * attackTimer, 10.f};
+    DrawRectangle(attackCooldownBar.x - getWidth()*0.5f, attackCooldownBar.y + getHeight()*0.5f, attackCooldownBar.width, attackCooldownBar.height, LIGHTGRAY);
 
     DrawText(TextFormat("Health: %01.01f",health), 55.f, 45.f, 40, WHITE);
     DrawText(TextFormat("Money: %i",moneyCount), 55.f, 80.f, 40, WHITE);
