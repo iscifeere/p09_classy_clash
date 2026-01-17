@@ -275,8 +275,7 @@ void Character::showStats(){
     }
 
     // draw attack cooldown bar
-    Rectangle attackCooldownBar{playerScreenPos.x, playerScreenPos.y, 100.f * attackTimer, 10.f};
-    DrawRectangle(attackCooldownBar.x - getWidth()*0.5f, attackCooldownBar.y + getHeight()*0.5f, attackCooldownBar.width, attackCooldownBar.height, LIGHTGRAY);
+    DrawRectangle(playerScreenPos.x - getWidth()*0.5f, playerScreenPos.y + getHeight()*0.5f, 100.f * attackTimer, 10.f, LIGHTGRAY);
 
     DrawText(TextFormat("Health: %01.01f",health), 55.f, 45.f, 40, WHITE);
     DrawText(TextFormat("Money: %i",moneyCount), 55.f, 80.f, 40, WHITE);
