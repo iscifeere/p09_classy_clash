@@ -55,6 +55,7 @@ public:
     static Enemy* getNearestEnemy(Enemy* this_enemy);
     static Enemy* getNearestEnemyByType(Enemy* this_enemy);
     static Enemy* getNearestEnemyByType(Enemy* this_enemy, int p_EnemyType);
+    static Enemy* getNearestChasingEnemyByType(Enemy* this_enemy);
 
 private:
     static const int ITEM_ARR_SIZE{10};

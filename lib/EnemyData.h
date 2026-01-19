@@ -119,7 +119,7 @@ inline void shootTarget(Enemy* this_enemy, Character* target, const float& delta
 
     if(askNearestEnemyTimer == 0.f)
     {
-        nearestEnemy = EntityMng::getNearestEnemyByType(this_enemy);    // expensive function, shouldn't be done every frame
+        nearestEnemy = EntityMng::getNearestChasingEnemyByType(this_enemy);    // expensive function, shouldn't be done every frame
         askNearestEnemyTimer += deltaTime;
     }
     else if(askNearestEnemyTimer >= 0.7f) askNearestEnemyTimer = 0.f;

@@ -4,6 +4,8 @@
 
 #define DEBUG // for console logging when debugging
 
+#define STATE_ACTION 1
+
 Character EntityMng::player{};
 std::array<Enemy, EntityMng::ENEMY_ARR_SIZE> EntityMng::enemyPool{};
 std::array<Item, EntityMng::ITEM_ARR_SIZE> EntityMng::itemPool{};
@@ -415,6 +417,31 @@ Enemy* EntityMng::getNearestEnemyByType(Enemy* this_enemy, int p_EnemyType){    
 
     for(Enemy& enemy : enemyPool){
         if(enemy.getAlive() && enemy.getEnemyType() == p_EnemyType && &enemy != this_enemy){
+            if(nearestEnemy == nullptr) nearestEnemy = &enemy;
+            else {
+                distanceToNearestEnemy = Vector2Length( Vector2Subtract(nearestEnemy->getWorldPos(), this_enemy->getWorldPos()) );
+                distanceToCurrentEnemy = Vector2Length( Vector2Subtract(enemy.getWorldPos(), this_enemy->getWorldPos()) );
+                
+                if(distanceToCurrentEnemy < distanceToNearestEnemy){
+                    nearestEnemy = &enemy;
+                    distanceToNearestEnemy = distanceToCurrentEnemy;
+                }
+
+            }
+        }
+    }
+
+    return nearestEnemy;   // returns nullptr if no enemy is found
+}
+
+Enemy* EntityMng::getNearestChasingEnemyByType(Enemy* this_enemy){     // returns a pointer to the nearest enemy that's chasing the player of the same type
+    Enemy* nearestEnemy{nullptr};
+    float distanceToNearestEnemy{};
+    float distanceToCurrentEnemy{};
+    int thisEnemyType = this_enemy->getEnemyType();
+
+    for(Enemy& enemy : enemyPool){
+        if(enemy.getAlive() && enemy.getEnemyType() == thisEnemyType && enemy.getEnemyState() == STATE_ACTION && &enemy != this_enemy){
             if(nearestEnemy == nullptr) nearestEnemy = &enemy;
             else {
                 distanceToNearestEnemy = Vector2Length( Vector2Subtract(nearestEnemy->getWorldPos(), this_enemy->getWorldPos()) );

@@ -37,6 +37,7 @@ public:
     void render() override;
 
     void idleWandering(float& deltaTime);
+    int getEnemyState(){ return enemyState; }
     void setEnemyState(int newState){ enemyState = newState; }
 
     float attackTimer{};
