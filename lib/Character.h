@@ -40,6 +40,8 @@ public:
     void resurrect();
     void resetState();
     void shootProyectile();
+    void cheatGetAllUpgrades();
+    void cheatGetUpgrade(int p_UpgradeChoice);
     
 private:
     int windowWidth{};

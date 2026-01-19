@@ -8,6 +8,14 @@
 #define VICTORY_SCREEN 3
 #define CHALLENGE_SCREEN 4
 
+#define DEV_BUILD
+
+#define CAN_RUN_UPGRADE 0
+#define CAN_SHOOT_UPGRADE 1
+#define CAN_OVERHEAL_UPGRADE 2
+#define CAN_AUTOSHOOT_UPGRADE 3
+#define CAN_MOVE_WHILE_SHIELD_UPGRADE 4
+
 void Game::updateFrame(float deltaTime)
 {
     // if(IsKeyPressed(KEY_SPACE)) changeScreen();
@@ -113,8 +121,11 @@ void Game::gameplayScreen(float deltaTime)
     EntityMng::player.showStats();
     EntityMng::showPlayerScore();
 
-    // draw debug data
+    #ifdef DEV_BUILD
     if(IsKeyPressed(KEY_Z)) g_ShowDebugData = !g_ShowDebugData;
+    #endif
+    
+    // draw debug data
     if(g_ShowDebugData)
     {
         EntityMng::showEntitiesDebugData();
@@ -176,6 +187,16 @@ void Game::gameplayScreen(float deltaTime)
         // delete enemies
         if(IsKeyPressed(KEY_F)) EntityMng::killEnemy();
 
+        // get all player upgrades
+        if(IsKeyPressed(KEY_ZERO)) EntityMng::player.cheatGetAllUpgrades();
+        
+        // get one upgrade
+        if(IsKeyPressed(KEY_ONE)) EntityMng::player.cheatGetUpgrade(CAN_RUN_UPGRADE);
+        if(IsKeyPressed(KEY_TWO)) EntityMng::player.cheatGetUpgrade(CAN_SHOOT_UPGRADE);
+        if(IsKeyPressed(KEY_THREE)) EntityMng::player.cheatGetUpgrade(CAN_OVERHEAL_UPGRADE);
+        if(IsKeyPressed(KEY_FOUR)) EntityMng::player.cheatGetUpgrade(CAN_AUTOSHOOT_UPGRADE);
+        if(IsKeyPressed(KEY_FIVE)) EntityMng::player.cheatGetUpgrade(CAN_MOVE_WHILE_SHIELD_UPGRADE);
+
         // cursor affects player
         if(IsMouseButtonDown(MOUSE_BUTTON_RIGHT))
         {
@@ -207,6 +228,7 @@ void Game::gameplayScreen(float deltaTime)
         
     }
 
+    // draw transparent black square and game paused text when game is paused
     if(g_PauseGame)
     {
         DrawRectangle(0, 0, Tex::winSize[0], Tex::winSize[1], Color{0,0,0,125});

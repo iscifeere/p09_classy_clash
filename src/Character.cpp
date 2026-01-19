@@ -3,6 +3,12 @@
 #include <iostream>
 #include "EntityManager.h"
 
+#define CAN_RUN_UPGRADE 0
+#define CAN_SHOOT_UPGRADE 1
+#define CAN_OVERHEAL_UPGRADE 2
+#define CAN_AUTOSHOOT_UPGRADE 3
+#define CAN_MOVE_WHILE_SHIELD_UPGRADE 4
+
 void Character::init(){
     std::cout << "[Player init function (" << this << ") ]" << std::endl;
 
@@ -127,8 +133,8 @@ bool Character::tick(float deltaTime){
     if(IsKeyDown(KEY_W)) velocity.y -= 1.0;
     if(IsKeyDown(KEY_S)) velocity.y += 1.0;
 
-    // run with SHIFT key
-    if(IsKeyDown(KEY_LEFT_SHIFT) && Vector2Length(velocity) != 0.f){
+    // run with SHIFT key if have run upgrade
+    if(IsKeyDown(KEY_LEFT_SHIFT) && canRun && Vector2Length(velocity) != 0.f){
         updateTime = 1.f/24.f;  // when SHIFT -> faster animation
         speed = 14.f;
     } else {
@@ -136,6 +142,8 @@ bool Character::tick(float deltaTime){
         speed = 10.f;
     }
 
+    // if no run-while-shield upgrade don't move while shielded
+    if( ( IsMouseButtonDown(MOUSE_RIGHT_BUTTON) || IsKeyDown(KEY_V) ) && !canMoveWhileShield) velocity = {};
 
     // ====== TICK AND VARIABLE RESETS ============
     BaseCharacter::tick(deltaTime);
@@ -170,13 +178,21 @@ bool Character::tick(float deltaTime){
             
             if(attackTimer == 0.f)
             {
-                shootProyectile();
-                attackTimer += deltaTime;
+                if(canAutoShoot)
+                {
+                    shootProyectile();     // if have autoshoot upgrade
+                    attackTimer += deltaTime;
+                }
 
                 // melee attack
                 if( IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_SPACE) )
                 {
                     isAttacking = true;
+                    if(!canAutoShoot)
+                    {
+                        if(canShoot) shootProyectile();    // if no autoshoot but can shoot
+                        attackTimer += deltaTime;
+                    }
                 }
             }
         }
@@ -216,7 +232,8 @@ void Character::deathSequence(){
 }
 
 void Character::addHealth( float healthAdd ){
-    BaseCharacter::addHealth( healthAdd );
+    if(health + healthAdd < 100.f || canOverHeal) BaseCharacter::addHealth( healthAdd );
+    else health = 100.f;
     setDrawColor(PINK);
 }
 
@@ -306,10 +323,55 @@ void Character::resetState(){
     moneyCount = 0;
     killedEnemies = 0;
     winCondition = false;
+
+    canRun = false;
+    canShoot = false;
+    canOverHeal = false;
+    canAutoShoot = false;
+    canMoveWhileShield = false;
+
     resurrect();
 }
 
 void Character::shootProyectile(){
     Vector2 proyectileDirection{Vector2Subtract( GetMousePosition(), getScreenPos() )};
     EntityMng::spawnProyectile(worldPos, proyectileDirection, false);
+}
+
+void Character::cheatGetAllUpgrades()
+{
+    canRun = true;
+    canShoot = true;
+    canOverHeal = true;
+    canAutoShoot = true;
+    canMoveWhileShield = true;
+}
+
+void Character::cheatGetUpgrade(int p_UpgradeChoice)
+{
+    switch (p_UpgradeChoice)
+    {
+    case CAN_RUN_UPGRADE:
+        canRun = true;
+        break;
+
+    case CAN_SHOOT_UPGRADE:
+        canShoot = true;
+        break;
+
+    case CAN_OVERHEAL_UPGRADE:
+        canOverHeal = true;
+        break;
+
+    case CAN_AUTOSHOOT_UPGRADE:
+        canAutoShoot = true;
+        break;
+
+    case CAN_MOVE_WHILE_SHIELD_UPGRADE:
+        canMoveWhileShield = true;
+        break;
+    
+    default:
+        break;
+    }
 }
