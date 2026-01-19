@@ -58,7 +58,7 @@ public:
 
 private:
     static const int ITEM_ARR_SIZE{10};
-    static const int ENEMY_ARR_SIZE{20};
+    static const int ENEMY_ARR_SIZE{30};
     static const int PROYECTILE_ARR_SIZE{ENEMY_ARR_SIZE};
     static const int PROP_ARR_SIZE{5};
     static const int ENTITY_ARR_SIZE{ITEM_ARR_SIZE+ENEMY_ARR_SIZE+PROYECTILE_ARR_SIZE+PROP_ARR_SIZE};
