@@ -11,10 +11,11 @@
 #define DEV_BUILD
 
 #define CAN_RUN_UPGRADE 0
-#define CAN_SHOOT_UPGRADE 1
-#define CAN_OVERHEAL_UPGRADE 2
-#define CAN_AUTOSHOOT_UPGRADE 3
-#define CAN_MOVE_WHILE_SHIELD_UPGRADE 4
+#define CAN_SHIELD_UPGRADE 1
+#define CAN_SHOOT_UPGRADE 2
+#define CAN_OVERHEAL_UPGRADE 3
+#define CAN_AUTOSHOOT_UPGRADE 4
+#define CAN_MOVE_WHILE_SHIELD_UPGRADE 5
 
 void Game::updateFrame(float deltaTime)
 {
@@ -192,10 +193,11 @@ void Game::gameplayScreen(float deltaTime)
         
         // get one upgrade
         if(IsKeyPressed(KEY_ONE)) EntityMng::player.cheatGetUpgrade(CAN_RUN_UPGRADE);
-        if(IsKeyPressed(KEY_TWO)) EntityMng::player.cheatGetUpgrade(CAN_SHOOT_UPGRADE);
-        if(IsKeyPressed(KEY_THREE)) EntityMng::player.cheatGetUpgrade(CAN_OVERHEAL_UPGRADE);
-        if(IsKeyPressed(KEY_FOUR)) EntityMng::player.cheatGetUpgrade(CAN_AUTOSHOOT_UPGRADE);
-        if(IsKeyPressed(KEY_FIVE)) EntityMng::player.cheatGetUpgrade(CAN_MOVE_WHILE_SHIELD_UPGRADE);
+        if(IsKeyPressed(KEY_TWO)) EntityMng::player.cheatGetUpgrade(CAN_SHIELD_UPGRADE);
+        if(IsKeyPressed(KEY_THREE)) EntityMng::player.cheatGetUpgrade(CAN_SHOOT_UPGRADE);
+        if(IsKeyPressed(KEY_FOUR)) EntityMng::player.cheatGetUpgrade(CAN_OVERHEAL_UPGRADE);
+        if(IsKeyPressed(KEY_FIVE)) EntityMng::player.cheatGetUpgrade(CAN_AUTOSHOOT_UPGRADE);
+        if(IsKeyPressed(KEY_SIX)) EntityMng::player.cheatGetUpgrade(CAN_MOVE_WHILE_SHIELD_UPGRADE);
 
         // cursor affects player
         if(IsMouseButtonDown(MOUSE_BUTTON_RIGHT))

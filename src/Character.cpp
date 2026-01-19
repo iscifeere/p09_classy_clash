@@ -4,10 +4,11 @@
 #include "EntityManager.h"
 
 #define CAN_RUN_UPGRADE 0
-#define CAN_SHOOT_UPGRADE 1
-#define CAN_OVERHEAL_UPGRADE 2
-#define CAN_AUTOSHOOT_UPGRADE 3
-#define CAN_MOVE_WHILE_SHIELD_UPGRADE 4
+#define CAN_SHIELD_UPGRADE 1
+#define CAN_SHOOT_UPGRADE 2
+#define CAN_OVERHEAL_UPGRADE 3
+#define CAN_AUTOSHOOT_UPGRADE 4
+#define CAN_MOVE_WHILE_SHIELD_UPGRADE 5
 
 void Character::init(){
     std::cout << "[Player init function (" << this << ") ]" << std::endl;
@@ -143,7 +144,7 @@ bool Character::tick(float deltaTime){
     }
 
     // if no run-while-shield upgrade don't move while shielded
-    if( ( IsMouseButtonDown(MOUSE_RIGHT_BUTTON) || IsKeyDown(KEY_V) ) && !canMoveWhileShield) velocity = {};
+    if( isShielding && !canMoveWhileShield) velocity = {};
 
     // ====== TICK AND VARIABLE RESETS ============
     BaseCharacter::tick(deltaTime);
@@ -153,6 +154,7 @@ bool Character::tick(float deltaTime){
     swordVariables.origin = {};
     swordVariables.offset = {};
     isAttacking = false;
+    isShielding = false;
     swordVariables.rotation = {};
 
     // ==================================================================
@@ -163,11 +165,12 @@ bool Character::tick(float deltaTime){
     else if(attackTimer > 0.f) attackTimer += deltaTime;
 
     // shield
-    if(IsMouseButtonDown(MOUSE_RIGHT_BUTTON) || IsKeyDown(KEY_V))
+    if( (IsMouseButtonDown(MOUSE_RIGHT_BUTTON) || IsKeyDown(KEY_V)) && canShield )
     {
         swordVariables.rotation = -30.f;
         drawColor = YELLOW;
         invul = true;
+        isShielding = true;
     }
     else
     {   
@@ -325,6 +328,7 @@ void Character::resetState(){
     winCondition = false;
 
     canRun = false;
+    canShield = false;
     canShoot = false;
     canOverHeal = false;
     canAutoShoot = false;
@@ -341,6 +345,7 @@ void Character::shootProyectile(){
 void Character::cheatGetAllUpgrades()
 {
     canRun = true;
+    canShield = true;
     canShoot = true;
     canOverHeal = true;
     canAutoShoot = true;
@@ -353,6 +358,10 @@ void Character::cheatGetUpgrade(int p_UpgradeChoice)
     {
     case CAN_RUN_UPGRADE:
         canRun = true;
+        break;
+
+    case CAN_SHIELD_UPGRADE:
+        canShield = true;
         break;
 
     case CAN_SHOOT_UPGRADE:

@@ -50,6 +50,7 @@ private:
     Rectangle weaponCollisionRec{};
     float damagePerHit{20.f};
     bool isAttacking{false};
+    bool isShielding{false};
     bool healing{false};
     float healTime{};
     float attackTimer{};
@@ -58,11 +59,12 @@ private:
     bool winCondition{false};
 
     // player upgrades
-    bool canRun{false};                 // pending
-    bool canShoot{false};               // pending
-    bool canOverHeal{false};            // pending
-    bool canAutoShoot{false};           // pending
-    bool canMoveWhileShield{false};     // pending
+    bool canRun{false};
+    bool canShield{false};
+    bool canShoot{false};
+    bool canOverHeal{false};
+    bool canAutoShoot{false};
+    bool canMoveWhileShield{false};
     
     struct s{
         Vector2 origin{};
