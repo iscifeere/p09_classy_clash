@@ -52,7 +52,11 @@ void Game::titleScreen()
 {
     ClearBackground(SKYBLUE);
 
-    if(IsKeyPressed(KEY_ENTER)) gameState = CHALLENGE_SCREEN;
+    if(IsKeyPressed(KEY_ENTER))
+    {
+        gameState = CHALLENGE_SCREEN;
+        m_currentGameLevel = 1;
+    }
 
     DrawText("Classy Clash", static_cast<float>(Tex::winSize[0])*0.33f, static_cast<float>(Tex::winSize[1])*0.33f, 50, WHITE);
     DrawText("(press Enter)", Tex::halfWinSize.x-70.f, Tex::halfWinSize.y+110.f, 30, YELLOW);
@@ -62,14 +66,17 @@ void Game::challengeScreen()
 {
     ClearBackground(BLACK);
 
-    DrawText("LEVEL 1", static_cast<float>(Tex::winSize[0])*0.33f, static_cast<float>(Tex::winSize[1])*0.25f, 50, WHITE);
+    DrawText(TextFormat("LEVEL %i",m_currentGameLevel), static_cast<float>(Tex::winSize[0])*0.33f, static_cast<float>(Tex::winSize[1])*0.25f, 50, WHITE);
     DrawText("Challenge: Kill 7 enemies", static_cast<float>(Tex::winSize[0])*0.15f, static_cast<float>(Tex::winSize[1])*0.45f, 50, RED);
     DrawText("(press Enter)", static_cast<float>(Tex::winSize[0])*0.33f, static_cast<float>(Tex::winSize[1])*0.7f, 30, YELLOW);
     
     if(IsKeyPressed(KEY_ENTER))
     {
         gameState = GAME_PLAY;
+        EntityMng::player.resetState();
+        EntityMng::clearEntityPools();
         EntityMng::spawnRandomEnemies();
+        g_PauseGame = false;
     }
 }
 
@@ -110,8 +117,19 @@ void Game::gameplayScreen(float deltaTime)
     }
     else if(EntityMng::player.getWinCondition())
     {
-        gameState = VICTORY_SCREEN;     // if win condition is true, go to victory screen
-        victoryScreen();
+        m_currentGameLevel++;
+
+        if(m_currentGameLevel >= 4)
+        {
+            gameState = VICTORY_SCREEN;
+            victoryScreen();
+        }
+        else
+        {
+            gameState = CHALLENGE_SCREEN;
+            challengeScreen();
+        }
+
         return;
     }
 
@@ -199,6 +217,10 @@ void Game::gameplayScreen(float deltaTime)
         if(IsKeyPressed(KEY_FIVE)) EntityMng::player.cheatGetUpgrade(CAN_AUTOSHOOT_UPGRADE);
         if(IsKeyPressed(KEY_SIX)) EntityMng::player.cheatGetUpgrade(CAN_MOVE_WHILE_SHIELD_UPGRADE);
 
+        // win or die
+        if(IsKeyPressed(KEY_K)) EntityMng::player.cheatActivateWinCondition();
+        if(IsKeyPressed(KEY_H)) EntityMng::player.cheatKillPlayer();
+
         // cursor affects player
         if(IsMouseButtonDown(MOUSE_BUTTON_RIGHT))
         {
@@ -253,21 +275,20 @@ void Game::gameOverScreen()
         EntityMng::player.resurrect();
         gameState = GAME_PLAY;
     }
-    else if(IsKeyPressed(KEY_J))    // reset game
+    else if(IsKeyPressed(KEY_J))    // reset level
     {
-        EntityMng::player.resetState();
-        EntityMng::clearEntityPools();
-        gameState = GAME_PLAY;
+        gameState = CHALLENGE_SCREEN;
     }
     else if(IsKeyPressed(KEY_ENTER))    // reset and return to title screen
     {
         EntityMng::player.resetState();
         EntityMng::clearEntityPools();
+        m_currentGameLevel = 0;
         gameState = TITLE_SCREEN;
     }
 
     DrawText("Game Over!", Tex::halfWinSize.x-200.f, Tex::halfWinSize.y-20.f, 60, WHITE);
-    DrawText("(press J to reset)", 70.f, Tex::halfWinSize.y+110.f, 20, YELLOW);
+    DrawText("(press J to try again)", 70.f, Tex::halfWinSize.y+110.f, 20, YELLOW);
     DrawText("(press Enter to return to title screen)", 70.f, Tex::halfWinSize.y+140.f, 20, YELLOW);
 }
 
@@ -275,21 +296,21 @@ void Game::victoryScreen()
 {
     ClearBackground(BLUE);
 
-    if(IsKeyPressed(KEY_J))    // reset game
+    if(IsKeyPressed(KEY_J))    // reset level
     {
-        EntityMng::player.resetState();
-        EntityMng::clearEntityPools();
-        gameState = GAME_PLAY;
+        m_currentGameLevel--;
+        gameState = CHALLENGE_SCREEN;
     }
     else if(IsKeyPressed(KEY_ENTER))    // reset and return to title screen
     {
         EntityMng::player.resetState();
         EntityMng::clearEntityPools();
+        m_currentGameLevel = 0;
         gameState = TITLE_SCREEN;
     }
 
     DrawText("You won!", Tex::halfWinSize.x-200.f, Tex::halfWinSize.y-20.f, 60, YELLOW);
-    DrawText("(press J to reset)", 70.f, Tex::halfWinSize.y+110.f, 20, YELLOW);
+    DrawText("(press J to reset the level)", 70.f, Tex::halfWinSize.y+110.f, 20, YELLOW);
     DrawText("(press Enter to return to title screen)", 70.f, Tex::halfWinSize.y+140.f, 20, YELLOW);
 }
 

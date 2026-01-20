@@ -40,8 +40,11 @@ public:
     void resurrect();
     void resetState();
     void shootProyectile();
+
     void cheatGetAllUpgrades();
     void cheatGetUpgrade(int p_UpgradeChoice);
+    void cheatActivateWinCondition(){ winCondition = true; }
+    void cheatKillPlayer(){ setAlive(false); }
     
 private:
     int windowWidth{};

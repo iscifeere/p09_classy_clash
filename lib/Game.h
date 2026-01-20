@@ -20,6 +20,7 @@ private:
     void victoryScreen();
 
     int gameState{};    // which screen to render
+    int m_currentGameLevel{};
 };
 
 inline bool g_PauseGame{false};
