@@ -7,6 +7,7 @@
 #include "Enemy.h"
 #include "GenericEntity.h"
 #include "Prop.h"
+#include "Knockback.h"
 #include <array>
 #include <variant>
 
@@ -43,6 +44,8 @@ public:
     static void showPropsDebugData();
     static void checkPropCollisions();
 
+    static void createKnockbackForce(Vector2 direction, float magnitude, Enemy* targetEnemy);
+
     static void tickEntities(float deltaTime);
     static void checkEntityCollisions();
     static void showEntitiesDebugData();
@@ -76,6 +79,8 @@ private:
     static size_t i_EnemiesEnd;
     static size_t i_ProyectilesStart;
     static size_t i_ProyectilesEnd;
+
+    static KnockbackForce m_knockback;    // single knockback force to test
 };
 
 #endif

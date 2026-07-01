@@ -8,6 +8,7 @@
 #include "Mobs.h"
 #include "Item.h"
 #include "GenericEntity.h"
+#include "Knockback.h"
 #include "EntityManager.h"
 #include <string>
 #include <cmath>

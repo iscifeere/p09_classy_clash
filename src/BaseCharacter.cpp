@@ -80,3 +80,7 @@ void BaseCharacter::checkMapBoundsCollision(){  // necesita optimización/reestr
         undoMovementY();
     }
 }
+
+void BaseCharacter::applyMovementForce(Vector2 direction, float magnitude){
+    worldPos = Vector2Add(worldPos, Vector2Scale(direction, magnitude));
+}

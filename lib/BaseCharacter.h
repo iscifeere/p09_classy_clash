@@ -30,6 +30,8 @@ public:
     virtual void showDebugData() = 0;
     void setWorldPos( Vector2 newPos ){ worldPos = newPos; }
     void checkMapBoundsCollision();
+
+    void applyMovementForce(Vector2 direction, float magnitude);
     
 protected:
     Texture2D* texture{&Tex::texture_knight_idle};

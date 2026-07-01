@@ -111,6 +111,8 @@ bool Enemy::tick(float deltaTime){
     if(target->getIsAttack()) {
         if(CheckCollisionRecs( getHurtRec(), target->getWeaponCollisionRec() )) {
             takeDamage(target->getDamage());
+            // receive knockback away from player
+            EntityMng::createKnockbackForce(Vector2Normalize(Vector2Subtract(worldPos, target->getWorldPos())), 20.f, this);
         }
     }
 
