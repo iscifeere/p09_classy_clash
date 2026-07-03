@@ -17,11 +17,14 @@ size_t EntityMng::i_EnemiesStart{0};
 size_t EntityMng::i_EnemiesEnd{0};
 size_t EntityMng::i_ProyectilesStart{0};
 size_t EntityMng::i_ProyectilesEnd{0};
-KnockbackForce EntityMng::m_knockback{};
+std::array<KnockbackForce, EntityMng::KNOCKBACK_ARR_SIZE> EntityMng::m_knockbackPool{};
 
 void EntityMng::createKnockbackForce(Vector2 direction, float magnitude, Enemy* targetEnemy){
-    std::cout << "entitymng calling knockback reset" << std::endl;
-    m_knockback.reset(direction, magnitude, targetEnemy);
+    for(auto& knockback : m_knockbackPool){
+        if(!knockback.isActive()){
+            knockback.reset(direction, magnitude, targetEnemy);
+            return;
+        }}
 }
 
 void EntityMng::spawnProyectile(Vector2 pos, Vector2 direction, bool isEnemy){
@@ -196,7 +199,11 @@ void EntityMng::tickEntities(float deltaTime){
     i_ProyectilesStart = 0;
     i_ProyectilesEnd = 0;
 
-    m_knockback.tick(deltaTime);
+    for(auto& knockback : m_knockbackPool){
+        if(knockback.isActive()){
+            knockback.tick(deltaTime);
+        }
+    }
 
     player.tick(deltaTime);
     // add player to active entities

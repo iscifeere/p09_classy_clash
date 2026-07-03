@@ -15,6 +15,7 @@ public:
     void reset(Vector2 p_direction, float p_magnitude);
 
     void tick(float deltaTime);
+    bool isActive(){ return active; }
 
     Enemy* getOwnerEnemy(){ return targetEnemy; }
     Vector2 getDirection(){ return direction; }

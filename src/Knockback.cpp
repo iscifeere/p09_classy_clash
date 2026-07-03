@@ -23,12 +23,12 @@ void KnockbackForce::tick(float deltaTime)
 {
     if(!active) return;
 
-    std::cout << "executing knockforce tick" << std::endl;
+    // std::cout << "executing knockforce tick" << std::endl;
 
     // affect enemy
     targetEnemy->applyMovementForce(direction, magnitude);
 
-    // decrease force until deactivating
+    // decrease time until deactivating
     timer -= deltaTime;
     if(timer < 0.f)
     {

@@ -66,6 +66,7 @@ private:
     static const int PROYECTILE_ARR_SIZE{ENEMY_ARR_SIZE};
     static const int PROP_ARR_SIZE{5};
     static const int ENTITY_ARR_SIZE{ITEM_ARR_SIZE+ENEMY_ARR_SIZE+PROYECTILE_ARR_SIZE+PROP_ARR_SIZE};
+    static const int KNOCKBACK_ARR_SIZE{10};
 
     // static entity object pools
     static std::array<Enemy, ENEMY_ARR_SIZE> enemyPool;
@@ -80,7 +81,7 @@ private:
     static size_t i_ProyectilesStart;
     static size_t i_ProyectilesEnd;
 
-    static KnockbackForce m_knockback;    // single knockback force to test
+    static std::array<KnockbackForce, KNOCKBACK_ARR_SIZE> m_knockbackPool;  // knockback force pool for testing
 };
 
 #endif
