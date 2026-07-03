@@ -57,6 +57,7 @@ inline void chaseTarget(Enemy* enemy, Character* target, const float& deltaTime)
     if(CheckCollisionRecs(target->getHurtRec(),enemy->getHurtRec()))
     {
         target->takeDamage(enemy->getDamage() * deltaTime);
+        EntityMng::createKnockbackForce(Vector2Normalize(velocity), 15.f, target); // TO DO testing
     }
 
     // if too close / too far -> don't chase

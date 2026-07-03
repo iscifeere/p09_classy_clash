@@ -44,7 +44,7 @@ public:
     static void showPropsDebugData();
     static void checkPropCollisions();
 
-    static void createKnockbackForce(Vector2 direction, float magnitude, Enemy* targetEnemy);
+    static void createKnockbackForce(Vector2 direction, float magnitude, BaseCharacter* targetCharacter);
 
     static void tickEntities(float deltaTime);
     static void checkEntityCollisions();

@@ -19,10 +19,10 @@ size_t EntityMng::i_ProyectilesStart{0};
 size_t EntityMng::i_ProyectilesEnd{0};
 std::array<KnockbackForce, EntityMng::KNOCKBACK_ARR_SIZE> EntityMng::m_knockbackPool{};
 
-void EntityMng::createKnockbackForce(Vector2 direction, float magnitude, Enemy* targetEnemy){
+void EntityMng::createKnockbackForce(Vector2 direction, float magnitude, BaseCharacter* targetCharacter){
     for(auto& knockback : m_knockbackPool){
         if(!knockback.isActive()){
-            knockback.reset(direction, magnitude, targetEnemy);
+            knockback.reset(direction, magnitude, targetCharacter);
             return;
         }}
 }
