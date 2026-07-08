@@ -238,6 +238,10 @@ void Game::gameplayScreen(float deltaTime)
                 EntityMng::player.takeDamage(30.f*deltaTime);
             }
         }
+        
+        // draw cursor coordinates
+        DrawText(TextFormat("mX: %01.01f",cursorPosition.x), 55.f, 215.f, 30, WHITE);
+        DrawText(TextFormat("mY: %01.01f",cursorPosition.y), 55.f, 245.f, 30, WHITE);
 
         // reset game with key
         if(IsKeyPressed(KEY_J))
