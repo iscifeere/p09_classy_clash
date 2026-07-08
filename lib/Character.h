@@ -74,6 +74,8 @@ private:
         Vector2 offset{};
         float rotation{};
     } swordVariables{};
+    bool selectedWeaponSlot{false};
+    
     Color healthBarColor{WHITE};
     Rectangle collisionBox{
         .x = 0.2f,

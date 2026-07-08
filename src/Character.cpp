@@ -164,6 +164,8 @@ bool Character::tick(float deltaTime){
     if( attackTimer >= 0.40f ) attackTimer = 0.f;
     else if(attackTimer > 0.f) attackTimer += deltaTime;
 
+    if(IsKeyPressed(KEY_C)) selectedWeaponSlot = !selectedWeaponSlot;
+
     // shield
     if( (IsMouseButtonDown(MOUSE_RIGHT_BUTTON) || IsKeyDown(KEY_V)) && canShield )
     {
@@ -181,20 +183,28 @@ bool Character::tick(float deltaTime){
             
             if(attackTimer == 0.f)
             {
-                if(canAutoShoot)
+                if(!selectedWeaponSlot)     // 1st weapon selected, melee attack
                 {
-                    shootProyectile();     // if have autoshoot upgrade
-                    attackTimer += deltaTime;
-                }
-
-                // melee attack
-                if( IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_SPACE) )
-                {
-                    isAttacking = true;
-                    if(!canAutoShoot)
+                    if( IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_SPACE) )
                     {
-                        if(canShoot) shootProyectile();    // if no autoshoot but can shoot
+                        isAttacking = true;
                         attackTimer += deltaTime;
+                    }
+                }
+                else    // 2nd weapon, shooting attack
+                {
+                    if(canAutoShoot)
+                    {
+                        shootProyectile();
+                        attackTimer += deltaTime;
+                    }
+                    else
+                    {
+                        if( IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_SPACE) && canShoot )
+                        {
+                            shootProyectile();      // if no autoshoot but can shoot
+                            attackTimer += deltaTime;
+                        }
                     }
                 }
             }
@@ -294,6 +304,18 @@ void Character::showStats(){
         DrawRectangle(healthBar.x, healthBar.y, 400.f, healthBar.height, healthBarColor);
     }
 
+    // draw weapon select slot
+    if(!selectedWeaponSlot)
+    {
+        DrawRectangle(480, 45, 50, 50, YELLOW);
+        DrawRectangle(540, 45, 50, 50, DARKBLUE);
+    }
+    else
+    {
+        DrawRectangle(480, 45, 50, 50, DARKBLUE);
+        DrawRectangle(540, 45, 50, 50, YELLOW);
+    }
+
     // draw attack cooldown bar
     DrawRectangle(playerScreenPos.x - getWidth()*0.5f, playerScreenPos.y + getHeight()*0.5f, 100.f * attackTimer, 10.f, LIGHTGRAY);
 
@@ -309,7 +331,10 @@ void Character::render(){
     // draw the sword
     Rectangle source{0.f, 0.f, static_cast<float>(weapon->width) * rightLeft, static_cast<float>(weapon->height)};
     Rectangle dest{renderPos.x + swordVariables.offset.x, renderPos.y + swordVariables.offset.y, weapon->width * scale, weapon->height * scale};
-    DrawTexturePro(*weapon, source, dest, swordVariables.origin, swordVariables.rotation, drawColor);
+    if(!selectedWeaponSlot)     // only draw sword if melee attack selected
+    {
+        DrawTexturePro(*weapon, source, dest, swordVariables.origin, swordVariables.rotation, drawColor);
+    }
 
     healthBarColor = drawColor;
     drawColor = WHITE;  // reset draw color
