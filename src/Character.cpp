@@ -316,6 +316,10 @@ void Character::showStats(){
         DrawRectangle(540, 45, 50, 50, YELLOW);
     }
 
+    // draw weapons in select slot
+    DrawTextureEx(*weapon, Vector2{490.f, 55.f}, 0.f, 2.f, WHITE);
+    DrawTextureEx(Tex::texture_bow, Vector2{550.f, 55.f}, 0.f, 2.f, WHITE);
+
     // draw attack cooldown bar
     DrawRectangle(playerScreenPos.x - getWidth()*0.5f, playerScreenPos.y + getHeight()*0.5f, 100.f * attackTimer, 10.f, LIGHTGRAY);
 

@@ -13,6 +13,7 @@ public:
     static Texture2D texture_coin;
     static Texture2D texture_gem_green;
     static Texture2D texture_sword;
+    static Texture2D texture_bow;
 
     // prop textures
     static Texture2D texture_prop_rock;

@@ -9,6 +9,7 @@ Texture2D Tex::texture_heart{};
 Texture2D Tex::texture_coin{};
 Texture2D Tex::texture_gem_green{};
 Texture2D Tex::texture_sword{};
+Texture2D Tex::texture_bow{};
 
 // prop textures
 Texture2D Tex::texture_prop_rock{};
@@ -31,6 +32,7 @@ Texture2D* Tex::ptrArray_textures[]{        // array w/ every texture's ptr
     &texture_coin,
     &texture_gem_green,
     &texture_sword,
+    &texture_bow,
 
     // prop textures
     &texture_prop_rock,
@@ -54,6 +56,7 @@ const char* Tex::pathArray_textures[]{      // array w/ every texture's path to 
     "../assets/characters/MonedaD.png",
     "../assets/characters/gem_green.png",
     "../assets/characters/weapon_sword.png",
+    "../assets/characters/weapon_bow.png",
 
     // prop textures
     "../assets/nature_tileset/Rock.png",
