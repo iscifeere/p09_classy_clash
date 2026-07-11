@@ -200,7 +200,7 @@ bool Character::tick(float deltaTime){
                     }
                     else
                     {
-                        if( IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_SPACE) && canShoot )
+                        if( ( IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_SPACE) ) && canShoot )
                         {
                             shootProyectile();      // if no autoshoot but can shoot
                             attackTimer += deltaTime;
