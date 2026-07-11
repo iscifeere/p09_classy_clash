@@ -1,3 +1,5 @@
 .DS_Store
-assets/.DS_Store
+._.DS_Store
+**/.DS_Store
+**/._.DS_Store
 bin/build_osx
