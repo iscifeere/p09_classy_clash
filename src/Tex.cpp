@@ -27,6 +27,8 @@ Texture2D Tex::texture_goblin_idle{};
 Texture2D Tex::texture_goblin_run{};
 Texture2D Tex::texture_slime_idle{};
 Texture2D Tex::texture_slime_run{};
+Texture2D Tex::texture_slime_blue_idle{};
+Texture2D Tex::texture_slime_blue_run{};
 Texture2D Tex::texture_red_idle{};
 Texture2D Tex::texture_red_run{};
 
@@ -54,6 +56,8 @@ Texture2D* Tex::ptrArray_textures[]{        // array w/ every texture's ptr
     &texture_goblin_run,
     &texture_slime_idle,
     &texture_slime_run,
+    &texture_slime_blue_idle,
+    &texture_slime_blue_run,
     &texture_red_idle,
     &texture_red_run
 };
@@ -82,6 +86,8 @@ const char* Tex::pathArray_textures[]{      // array w/ every texture's path to 
     "../assets/characters/goblin_run_spritesheet.png",
     "../assets/characters/slime_idle_spritesheet.png",
     "../assets/characters/slime_run_spritesheet.png",
+    "../assets/characters/slime_blue_idle_spritesheet.png",
+    "../assets/characters/slime_blue_run_spritesheet.png",
     "../assets/characters/Red_Idle-sheet.png",
     "../assets/characters/Red_Run-sheet.png"
 };

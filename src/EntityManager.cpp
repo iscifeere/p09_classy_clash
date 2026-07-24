@@ -369,7 +369,8 @@ void EntityMng::spawnRandomEnemies(){
         
         // spawn ratios of each enemy type
         if(randomEnemy < 6) data = &MADKNIGHT_ENEMYDATA;
-        else if(randomEnemy < 10) data = &SLIME_ENEMYDATA;
+        else if(randomEnemy < 9) data = &SLIME_ENEMYDATA;
+        else if(randomEnemy < 10) data = &SLIME_BLUE_ENEMYDATA;
         else if(randomEnemy < 11) data = &RED_ENEMYDATA;
         else data = &GOBLIN_ENEMYDATA;
 

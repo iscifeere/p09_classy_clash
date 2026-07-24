@@ -218,6 +218,20 @@ const enemyData SLIME_ENEMYDATA{
     .item_drop = &HEART_2_ITEMDATA,
     .behave = fleeTarget
 };
+const enemyData SLIME_BLUE_ENEMYDATA{
+    .texture_idle = &Tex::texture_slime_blue_idle,
+    .texture_run = &Tex::texture_slime_blue_run,
+    .maxFramesIdle = 6,
+    .maxFramesRun = 6,
+    .frameRows = 1,
+    .speed = 4.f,
+    .health = 80.f,
+    .damage = 10.f,
+    .chase_radius = 400.f,
+    .enemyType = 0,
+    .item_drop = &HEART_3_ITEMDATA,
+    .behave = chaseTarget
+};
 const enemyData MADKNIGHT_ENEMYDATA{
     .texture_idle = &Tex::texture_madknight_idle,
     .texture_run = &Tex::texture_madknight_run,
@@ -282,6 +296,7 @@ const enemyData GOBLIN_ENEMYDATA{
 };
 const enemyData* ENEMYDATA_ARR[]{
     &SLIME_ENEMYDATA,
+    &SLIME_BLUE_ENEMYDATA,
     &MADKNIGHT_ENEMYDATA,
     &RED_ENEMYDATA,
     &GOBLIN_ENEMYDATA

@@ -31,6 +31,8 @@ public:
     static Texture2D texture_goblin_run;
     static Texture2D texture_slime_idle;
     static Texture2D texture_slime_run;
+    static Texture2D texture_slime_blue_idle;
+    static Texture2D texture_slime_blue_run;
     static Texture2D texture_red_idle;
     static Texture2D texture_red_run;
 
