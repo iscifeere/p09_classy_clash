@@ -34,7 +34,7 @@ public:
 private:
     Vector2 worldPos{};
     Character* player{nullptr};
-    Texture2D* texture{&Tex::texture_heart};
+    Texture2D* texture{&Tex::texture_red_sphere};
     Vector2 velocity{};
     Vector2 movement{};
     Vector2 screenPos{};

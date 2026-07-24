@@ -10,8 +10,10 @@ public:
 
     static Texture2D texture_map;
     static Texture2D texture_heart;
+    static Texture2D texture_heart_2;
     static Texture2D texture_coin;
     static Texture2D texture_gem_green;
+    static Texture2D texture_red_sphere;
     static Texture2D texture_sword;
     static Texture2D texture_bow;
 
@@ -23,6 +25,8 @@ public:
     // character textures
     static Texture2D texture_knight_idle;
     static Texture2D texture_knight_run;
+    static Texture2D texture_madknight_idle;
+    static Texture2D texture_madknight_run;
     static Texture2D texture_goblin_idle;
     static Texture2D texture_goblin_run;
     static Texture2D texture_slime_idle;

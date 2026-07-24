@@ -6,8 +6,10 @@ Vector2 Tex::halfWinSize{};
 
 Texture2D Tex::texture_map{};
 Texture2D Tex::texture_heart{};
+Texture2D Tex::texture_heart_2{};
 Texture2D Tex::texture_coin{};
 Texture2D Tex::texture_gem_green{};
+Texture2D Tex::texture_red_sphere{};
 Texture2D Tex::texture_sword{};
 Texture2D Tex::texture_bow{};
 
@@ -19,6 +21,8 @@ Texture2D Tex::texture_prop_sign{};
 // character textures
 Texture2D Tex::texture_knight_idle{};
 Texture2D Tex::texture_knight_run{};
+Texture2D Tex::texture_madknight_idle{};
+Texture2D Tex::texture_madknight_run{};
 Texture2D Tex::texture_goblin_idle{};
 Texture2D Tex::texture_goblin_run{};
 Texture2D Tex::texture_slime_idle{};
@@ -29,8 +33,10 @@ Texture2D Tex::texture_red_run{};
 Texture2D* Tex::ptrArray_textures[]{        // array w/ every texture's ptr
     &texture_map,
     &texture_heart,
+    &texture_heart_2,
     &texture_coin,
     &texture_gem_green,
+    &texture_red_sphere,
     &texture_sword,
     &texture_bow,
 
@@ -42,6 +48,8 @@ Texture2D* Tex::ptrArray_textures[]{        // array w/ every texture's ptr
     // character textures
     &texture_knight_idle,
     &texture_knight_run,
+    &texture_madknight_idle,
+    &texture_madknight_run,
     &texture_goblin_idle,
     &texture_goblin_run,
     &texture_slime_idle,
@@ -53,8 +61,10 @@ Texture2D* Tex::ptrArray_textures[]{        // array w/ every texture's ptr
 const char* Tex::pathArray_textures[]{      // array w/ every texture's path to file
     "../assets/nature_tileset/mapaMundo.png",
     "../assets/characters/heart.png",
+    "../assets/characters/heart-2-sprite-sheet.png",
     "../assets/characters/MonedaD.png",
     "../assets/characters/gem_green.png",
+    "../assets/characters/red-sphere.png",
     "../assets/characters/weapon_sword.png",
     "../assets/characters/weapon_bow.png",
 
@@ -66,6 +76,8 @@ const char* Tex::pathArray_textures[]{      // array w/ every texture's path to 
     // character textures
     "../assets/characters/knight_idle_spritesheet.png",
     "../assets/characters/knight_run_spritesheet.png",
+    "../assets/characters/madknight_idle_spritesheet.png",
+    "../assets/characters/madknight_run_spritesheet.png",
     "../assets/characters/goblin_idle_spritesheet.png",
     "../assets/characters/goblin_run_spritesheet.png",
     "../assets/characters/slime_idle_spritesheet.png",

@@ -215,12 +215,12 @@ const enemyData SLIME_ENEMYDATA{
     .damage = 5.f,
     .chase_radius = 300.f,
     .enemyType = 0,
-    .item_drop = &HEART_ITEMDATA,
+    .item_drop = &HEART_2_ITEMDATA,
     .behave = fleeTarget
 };
 const enemyData MADKNIGHT_ENEMYDATA{
-    .texture_idle = &Tex::texture_knight_idle,
-    .texture_run = &Tex::texture_knight_run,
+    .texture_idle = &Tex::texture_madknight_idle,
+    .texture_run = &Tex::texture_madknight_run,
     .maxFramesIdle = 6,
     .maxFramesRun = 6,
     .frameRows = 1,

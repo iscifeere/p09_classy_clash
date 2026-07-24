@@ -68,6 +68,14 @@ inline const itemData HEART_ITEMDATA{
         player->addHealth(20.f);
     }
 };
+inline const itemData HEART_2_ITEMDATA{
+    &Tex::texture_heart_2,
+    6,
+    (1.f/12.f),
+    [](Character* player){
+        player->addHealth(20.f);
+    }
+};
 inline const itemData COIN_ITEMDATA{
     &Tex::texture_coin,
     5,
@@ -87,6 +95,7 @@ inline const itemData GEM_ITEMDATA{
 
 inline const itemData* ITEMDATA_ARR[]{
     &HEART_ITEMDATA,
+    &HEART_2_ITEMDATA,
     &COIN_ITEMDATA,
     &GEM_ITEMDATA
 };
