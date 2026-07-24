@@ -44,6 +44,9 @@ int main(void) {
     EntityMng::spawnProp(Vector2{1584.f, 1184.f}, &ROCK_PROPDATA);
     EntityMng::spawnProp(Vector2{1184.f, 1584.f}, &LOG_PROPDATA);
     EntityMng::spawnProp(Vector2{2184.f, 1584.f}, &SIGN_PROPDATA);
+    EntityMng::spawnProp(Vector2{4049.f, 1757.f}, &SIGN_PROPDATA);
+    EntityMng::spawnProp(Vector2{4048.f, 3293.f}, &SIGN_PROPDATA);
+    EntityMng::spawnProp(Vector2{3048.f, 2293.f}, &TREE_PROPDATA);
 
     // finish textures load | change to previous working directory
     ChangeDirectory(prev_dir);

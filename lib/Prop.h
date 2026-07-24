@@ -72,5 +72,14 @@ const propData SIGN_PROPDATA{
         .height = 0.25f
     }
 };
+const propData TREE_PROPDATA{
+    .texture = &Tex::texture_prop_tree,
+    .collisionBox = Rectangle{
+        .x = 0.27f,
+        .y = 0.78f,
+        .width = 0.45f,
+        .height = 0.20f
+    }
+};
 
 #endif // PROP_H

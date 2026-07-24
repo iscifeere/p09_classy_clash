@@ -21,6 +21,7 @@ public:
     static Texture2D texture_prop_rock;
     static Texture2D texture_prop_log;
     static Texture2D texture_prop_sign;
+    static Texture2D texture_prop_tree;
 
     // character textures
     static Texture2D texture_knight_idle;

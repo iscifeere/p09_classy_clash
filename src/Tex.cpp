@@ -18,6 +18,7 @@ Texture2D Tex::texture_bow{};
 Texture2D Tex::texture_prop_rock{};
 Texture2D Tex::texture_prop_log{};
 Texture2D Tex::texture_prop_sign{};
+Texture2D Tex::texture_prop_tree{};
 
 // character textures
 Texture2D Tex::texture_knight_idle{};
@@ -47,6 +48,7 @@ Texture2D* Tex::ptrArray_textures[]{        // array w/ every texture's ptr
     &texture_prop_rock,
     &texture_prop_log,
     &texture_prop_sign,
+    &texture_prop_tree,
 
     // character textures
     &texture_knight_idle,
@@ -77,6 +79,7 @@ const char* Tex::pathArray_textures[]{      // array w/ every texture's path to 
     "../assets/nature_tileset/Rock.png",
     "../assets/nature_tileset/Log.png",
     "../assets/nature_tileset/Sign.png",
+    "../assets/nature_tileset/Tree.png",
 
     // character textures
     "../assets/characters/knight_idle_spritesheet.png",
