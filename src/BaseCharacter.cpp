@@ -68,14 +68,14 @@ void BaseCharacter::checkMapBoundsCollision(){  // necesita optimización/reestr
     float entityHeight{getHeight()};
 
     if(
-        worldPos.x + entityWidth * 0.2f < Tex::halfWinSize.x ||
-        worldPos.x + entityWidth * 0.2f + entityWidth * 0.6f > static_cast<float>(Tex::texture_map.width) * Tex::MAP_SCALE - Tex::halfWinSize.x )
+        worldPos.x + entityWidth * 0.2f < Tex::winSize[0] ||
+        worldPos.x + entityWidth * 0.2f + entityWidth * 0.6f > static_cast<float>(Tex::texture_map.width) * Tex::MAP_SCALE - Tex::winSize[0] )
     {
         undoMovementX();
     }
     if(
-        worldPos.y + entityHeight * 0.75f < Tex::halfWinSize.y ||
-        worldPos.y + entityHeight * 0.75f + entityHeight * 0.25f > static_cast<float>(Tex::texture_map.height) * Tex::MAP_SCALE - Tex::halfWinSize.y )
+        worldPos.y + entityHeight * 0.75f < Tex::winSize[1] ||
+        worldPos.y + entityHeight * 0.75f + entityHeight * 0.25f > static_cast<float>(Tex::texture_map.height) * Tex::MAP_SCALE - Tex::winSize[1] )
     {
         undoMovementY();
     }

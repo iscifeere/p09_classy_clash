@@ -3,6 +3,7 @@
 
 int Tex::winSize[2]{};
 Vector2 Tex::halfWinSize{};
+Vector2 Tex::fullWinSize{};
 
 Texture2D Tex::texture_map{};
 Texture2D Tex::texture_heart{};
@@ -63,7 +64,7 @@ Texture2D* Tex::ptrArray_textures[]{        // array w/ every texture's ptr
 };
 
 const char* Tex::pathArray_textures[]{      // array w/ every texture's path to file
-    "../assets/nature_tileset/mapaMundo.png",
+    "../assets/nature_tileset/mapaMundo-1.png",
     "../assets/characters/heart.png",
     "../assets/characters/heart-2-sprite-sheet.png",
     "../assets/characters/MonedaD.png",

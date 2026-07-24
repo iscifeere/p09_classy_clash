@@ -361,8 +361,8 @@ void EntityMng::spawnRandomEnemies(){
 
     for(int i{} ; i < 20 ; i++){
         Vector2 newEnemyPos{
-            static_cast<float>(GetRandomValue(800,5000)),
-            static_cast<float>(GetRandomValue(800,5000))
+            static_cast<float>(GetRandomValue(1500,5350)),
+            static_cast<float>(GetRandomValue(1500,5350))
         };
 
         randomEnemy = GetRandomValue(0,14);

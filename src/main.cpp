@@ -23,6 +23,7 @@ int main(void) {
     Tex::winSize[0] = windowDimensions[0];
     Tex::winSize[1] = windowDimensions[1];
     Tex::halfWinSize = Vector2{static_cast<float>(Tex::winSize[0])*0.5f,static_cast<float>(Tex::winSize[1])*0.5f};
+    Tex::fullWinSize = Vector2{static_cast<float>(windowDimensions[0]), static_cast<float>(windowDimensions[1])};
     
     InitWindow(windowDimensions[0], windowDimensions[1], "ClassyClash");
 
@@ -38,11 +39,11 @@ int main(void) {
     };
 
     EntityMng::initializeEntityManager();
-    EntityMng::player.setWorldPos(Tex::halfWinSize);
+    EntityMng::player.setWorldPos(Vector2Scale(Tex::halfWinSize, 2.f));
 
-    EntityMng::spawnProp(Vector2{1200.f, 800.f}, &ROCK_PROPDATA);
-    EntityMng::spawnProp(Vector2{800.f, 1200.f}, &LOG_PROPDATA);
-    EntityMng::spawnProp(Vector2{1800.f, 1200.f}, &SIGN_PROPDATA);
+    EntityMng::spawnProp(Vector2{1584.f, 1184.f}, &ROCK_PROPDATA);
+    EntityMng::spawnProp(Vector2{1184.f, 1584.f}, &LOG_PROPDATA);
+    EntityMng::spawnProp(Vector2{2184.f, 1584.f}, &SIGN_PROPDATA);
 
     // finish textures load | change to previous working directory
     ChangeDirectory(prev_dir);

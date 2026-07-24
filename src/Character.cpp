@@ -351,7 +351,7 @@ void Character::resurrect(){
 }
 
 void Character::resetState(){
-    setWorldPos(Tex::halfWinSize);
+    setWorldPos(Vector2Scale(Tex::halfWinSize, 2.f));
     moneyCount = 0;
     killedEnemies = 0;
     winCondition = false;

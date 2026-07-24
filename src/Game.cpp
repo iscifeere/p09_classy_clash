@@ -159,21 +159,21 @@ void Game::gameplayScreen(float deltaTime)
             Vector2 mapScaledSize{ Tex::texture_map.width * Tex::MAP_SCALE, Tex::texture_map.height * Tex::MAP_SCALE };
 
             // bound points absolute position (world pos)
-            Vector2 topLeftBoundWorPos = Vector2Subtract(Tex::halfWinSize, knightHalfSize);
+            Vector2 topLeftBoundWorPos = Vector2Subtract(Tex::fullWinSize, knightHalfSize);
             Vector2 topRightBoundWorPos
             {
-                (mapScaledSize.x - Tex::halfWinSize.x) - knightHalfSize.x,
-                Tex::halfWinSize.y - knightHalfSize.y
+                (mapScaledSize.x - Tex::fullWinSize.x) - knightHalfSize.x,
+                Tex::fullWinSize.y - knightHalfSize.y
             };
             Vector2 bottomLeftBoundWorPos
             {
-                Tex::halfWinSize.x - knightHalfSize.x,
-                (mapScaledSize.y - Tex::halfWinSize.y) - knightHalfSize.y
+                Tex::fullWinSize.x - knightHalfSize.x,
+                (mapScaledSize.y - Tex::fullWinSize.y) - knightHalfSize.y
             };
             Vector2 bottomRightBoundWorPos
             {
-                (mapScaledSize.x - Tex::halfWinSize.x) - knightHalfSize.x,
-                (mapScaledSize.y - Tex::halfWinSize.y) - knightHalfSize.y
+                (mapScaledSize.x - Tex::fullWinSize.x) - knightHalfSize.x,
+                (mapScaledSize.y - Tex::fullWinSize.y) - knightHalfSize.y
             };
             
             // bound points relative position (screen pos)

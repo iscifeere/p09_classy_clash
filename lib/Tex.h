@@ -44,6 +44,7 @@ public:
     constexpr static const float MAP_SCALE{8.f};      // scaling of the map
     static int winSize[2];                            // window dimensions
     static Vector2 halfWinSize;
+    static Vector2 fullWinSize;
 
 private:
     static const char* pathArray_textures[];
