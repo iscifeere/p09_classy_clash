@@ -260,10 +260,32 @@ const enemyData RED_ENEMYDATA{
     .item_drop = &GEM_ITEMDATA,
     .behave = chaseTarget
 };
+const enemyData GOBLIN_ENEMYDATA{
+    .texture_idle = &Tex::texture_goblin_idle,
+    .texture_run = &Tex::texture_goblin_run,
+    .maxFramesIdle = 6,
+    .maxFramesRun = 6,
+    .frameRows = 1,
+    .speed = 9.f,
+    .health = 80.f,
+    .damage = 10.f,
+    .chase_radius = 400.f,
+    .enemyType = 3,
+    .isNeutral = true,
+    .collisionBox = {
+        .x = 0.2f,
+        .y = 0.75f,
+        .width = 0.6f,
+        .height = 0.25f
+    },
+    .item_drop = &COIN_ITEMDATA,
+    .behave = chaseTarget
+};
 const enemyData* ENEMYDATA_ARR[]{
     &SLIME_ENEMYDATA,
     &MADKNIGHT_ENEMYDATA,
-    &RED_ENEMYDATA
+    &RED_ENEMYDATA,
+    &GOBLIN_ENEMYDATA
 };
 
 #endif

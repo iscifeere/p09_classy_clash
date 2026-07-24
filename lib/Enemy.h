@@ -70,6 +70,7 @@ protected:
 extern const enemyData SLIME_ENEMYDATA;
 extern const enemyData MADKNIGHT_ENEMYDATA;
 extern const enemyData RED_ENEMYDATA;
+extern const enemyData GOBLIN_ENEMYDATA;
 
 extern const enemyData* ENEMYDATA_ARR[];
 

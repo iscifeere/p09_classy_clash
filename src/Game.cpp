@@ -199,6 +199,7 @@ void Game::gameplayScreen(float deltaTime)
         if(IsKeyPressed(KEY_R)) EntityMng::spawnEnemy(Vector2Add(EntityMng::player.getWindowOriginWorPos(), cursorPosition), &MADKNIGHT_ENEMYDATA);
         if(IsKeyPressed(KEY_T)) EntityMng::spawnEnemy(Vector2Add(EntityMng::player.getWindowOriginWorPos(), cursorPosition), &SLIME_ENEMYDATA);
         if(IsKeyPressed(KEY_Y)) EntityMng::spawnEnemy(Vector2Add(EntityMng::player.getWindowOriginWorPos(), cursorPosition), &RED_ENEMYDATA);
+        if(IsKeyPressed(KEY_U)) EntityMng::spawnEnemy(Vector2Add(EntityMng::player.getWindowOriginWorPos(), cursorPosition), &GOBLIN_ENEMYDATA);
 
         // delete items
         if(IsKeyPressed(KEY_Q)) EntityMng::killItem();

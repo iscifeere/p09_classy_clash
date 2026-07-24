@@ -359,18 +359,19 @@ void EntityMng::spawnRandomEnemies(){
     const enemyData* data{};
     int randomEnemy{};
 
-    for(int i{} ; i < 15 ; i++){
+    for(int i{} ; i < 20 ; i++){
         Vector2 newEnemyPos{
             static_cast<float>(GetRandomValue(800,5000)),
             static_cast<float>(GetRandomValue(800,5000))
         };
 
-        randomEnemy = GetRandomValue(0,10);
+        randomEnemy = GetRandomValue(0,14);
         
         // spawn ratios of each enemy type
         if(randomEnemy < 6) data = &MADKNIGHT_ENEMYDATA;
         else if(randomEnemy < 10) data = &SLIME_ENEMYDATA;
-        else data = &RED_ENEMYDATA;
+        else if(randomEnemy < 11) data = &RED_ENEMYDATA;
+        else data = &GOBLIN_ENEMYDATA;
 
         spawnEnemy(newEnemyPos, data);
     }
