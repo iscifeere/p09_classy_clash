@@ -82,8 +82,8 @@ const char* Tex::pathArray_textures[]{      // array w/ every texture's path to 
     "../assets/characters/goblin_run_spritesheet.png",
     "../assets/characters/slime_idle_spritesheet.png",
     "../assets/characters/slime_run_spritesheet.png",
-    "../assets/characters/Red_Idle.png",
-    "../assets/characters/Red_Run.png"
+    "../assets/characters/Red_Idle-sheet.png",
+    "../assets/characters/Red_Run-sheet.png"
 };
 
 // void Tex::loadTextures(){       // unused
