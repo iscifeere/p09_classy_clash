@@ -3,7 +3,7 @@
 #include "EntityManager.h"
 
 void GenEntity::init(){
-    scale = 4.f;
+    scale = 3.5f;
     frameWidth = texture->width / maxFrames;
     frameHeight = texture->height;
 }

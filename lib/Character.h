@@ -84,10 +84,10 @@ private:
         .height = 0.25f
     };
     Rectangle hurtBox{
-        .x = 0.2f,
-        .y = 0.2f,
-        .width = 0.6f,
-        .height = 0.8f
+        .x = 0.31f,
+        .y = 0.3f,
+        .width = 0.39f,
+        .height = 0.57f
     };
 };
 
