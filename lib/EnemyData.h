@@ -48,16 +48,29 @@ inline void chaseTarget(Enemy* enemy, Character* target, const float& deltaTime)
     float& in_radius = enemy->getRadiusEtc(0);
     float& out_radius = enemy->getRadiusEtc(1);
     float& chaseTime = enemy->getRadiusEtc(2);
+    float& attCooldown = enemy->attackTimer;
 
     // get to target
     velocity = Vector2Subtract(target->getWorldPos(), enemy->getWorldPos());
     float distance = Vector2Length(velocity);
 
-    // damage player on contact
-    if(CheckCollisionRecs(target->getHurtRec(),enemy->getHurtRec()))
+    if(attCooldown == 0.f)      // if attack cooldown is off
     {
-        target->takeDamage(enemy->getDamage() * deltaTime);
-        EntityMng::createKnockbackForce(Vector2Normalize(velocity), 15.f, target); // TO DO testing
+        // damage player on contact
+        if(CheckCollisionRecs(target->getHurtRec(),enemy->getHurtRec()))
+        {
+            target->takeDamage(enemy->getDamage());
+            EntityMng::createKnockbackForce(Vector2Normalize(velocity), 25.f, target); // TO DO testing
+            attCooldown += deltaTime;
+        }
+    }
+    else if(attCooldown >= 1.f)
+    {
+        attCooldown = 0.f;
+    }
+    else
+    {
+        attCooldown += deltaTime;
     }
 
     // if too close / too far -> don't chase

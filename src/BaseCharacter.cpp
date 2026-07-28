@@ -33,6 +33,16 @@ bool BaseCharacter::tick(float deltaTime){
 
     } else {texture = idle; maxFrames = maxFramesIdle;}
 
+    // update invulnerability
+    if(invul){
+        hurtTime += deltaTime;
+        if(hurtTime >= 0.5f){
+            hurtTime = 0.f;
+            invul = false;
+            drawColor = WHITE;
+        } else drawColor = RED;
+    }
+
     return true;
 }
 

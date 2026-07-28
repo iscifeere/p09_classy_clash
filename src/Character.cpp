@@ -149,8 +149,6 @@ bool Character::tick(float deltaTime){
     // ====== TICK AND VARIABLE RESETS ============
     BaseCharacter::tick(deltaTime);
 
-    invul = false;  // reset invulnerability
-
     swordVariables.origin = {};
     swordVariables.offset = {};
     isAttacking = false;

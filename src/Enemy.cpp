@@ -97,22 +97,13 @@ bool Enemy::tick(float deltaTime){
 
     // ====== TICK AND VARIABLE RESETS ============
     BaseCharacter::tick(deltaTime);
-    
-    if(invul){
-        hurtTime += deltaTime;
-        if(hurtTime >= 0.5f){
-            hurtTime = 0.f;
-            invul = false;
-            drawColor = WHITE;
-        } else drawColor = RED;
-    }
 
     // ====== TAKE DAMAGE ============      (MAKE IT A FUNCTION!!!)
     if(target->getIsAttack()) {
         if(CheckCollisionRecs( getHurtRec(), target->getWeaponCollisionRec() )) {
             takeDamage(target->getDamage());
             // receive knockback away from player
-            EntityMng::createKnockbackForce(Vector2Normalize(Vector2Subtract(worldPos, target->getWorldPos())), 20.f, this);
+            EntityMng::createKnockbackForce(Vector2Normalize(Vector2Subtract(worldPos, target->getWorldPos())), 25.f, this);
         }
     }
 
