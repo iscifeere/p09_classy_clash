@@ -11,6 +11,7 @@ std::array<Enemy, EntityMng::ENEMY_ARR_SIZE> EntityMng::enemyPool{};
 std::array<Item, EntityMng::ITEM_ARR_SIZE> EntityMng::itemPool{};
 std::array<GenEntity, EntityMng::PROYECTILE_ARR_SIZE> EntityMng::proyectilePool{};
 std::array<Prop, EntityMng::PROP_ARR_SIZE> EntityMng::propPool{};
+std::array<SwordSlash, EntityMng::ATTACK_ENTITY_ARR_SIZE> EntityMng::attackEntityPool{};
 std::array<EntityVariant, EntityMng::ENTITY_ARR_SIZE> EntityMng::activeEntities{};
 size_t EntityMng::i_EntitiesEnd{0};
 size_t EntityMng::i_EnemiesStart{0};
@@ -144,6 +145,17 @@ void EntityMng::showPropsDebugData(){
     for(auto& prop : propPool){
         if(prop.getAlive()) prop.showDebugData();
     }
+}
+
+void EntityMng::spawnSwordSlash(Vector2 pos, float damage){
+    for(auto& attack : attackEntityPool){
+        if(!attack.getAlive()){
+            attack.spawnReset(pos, damage);
+            std::cout << "[Attack entity spawned in pool!]" << std::endl;
+            return;
+        }
+    }
+    std::cout << "[Attack entity pool full!]" << std::endl;
 }
 
 void EntityMng::checkEntityCollisions(){

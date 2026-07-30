@@ -186,6 +186,8 @@ bool Character::tick(float deltaTime){
                     if( IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_SPACE) )
                     {
                         isAttacking = true;
+                        // TO DO generate sword slash attack entity
+                        // EntityMng::spawnSwordSlash(position, damage);
                         attackTimer += deltaTime;
                     }
                 }

@@ -8,6 +8,7 @@
 #include "GenericEntity.h"
 #include "Prop.h"
 #include "Knockback.h"
+#include "Attacks.h"
 #include <array>
 #include <variant>
 
@@ -44,6 +45,8 @@ public:
     static void showPropsDebugData();
     static void checkPropCollisions();
 
+    static void spawnSwordSlash(Vector2 pos, float damage);
+
     static void createKnockbackForce(Vector2 direction, float magnitude, BaseCharacter* targetCharacter);
 
     static void tickEntities(float deltaTime);
@@ -65,7 +68,8 @@ private:
     static const int ENEMY_ARR_SIZE{30};
     static const int PROYECTILE_ARR_SIZE{ENEMY_ARR_SIZE};
     static const int PROP_ARR_SIZE{10};
-    static const int ENTITY_ARR_SIZE{ITEM_ARR_SIZE+ENEMY_ARR_SIZE+PROYECTILE_ARR_SIZE+PROP_ARR_SIZE};
+    static const int ATTACK_ENTITY_ARR_SIZE{1};
+    static const int ENTITY_ARR_SIZE{ITEM_ARR_SIZE+ENEMY_ARR_SIZE+PROYECTILE_ARR_SIZE+PROP_ARR_SIZE+ATTACK_ENTITY_ARR_SIZE};
     static const int KNOCKBACK_ARR_SIZE{10};
 
     // static entity object pools
@@ -73,6 +77,7 @@ private:
     static std::array<Item, ITEM_ARR_SIZE> itemPool;
     static std::array<GenEntity, PROYECTILE_ARR_SIZE> proyectilePool;
     static std::array<Prop, PROP_ARR_SIZE> propPool;
+    static std::array<SwordSlash, ATTACK_ENTITY_ARR_SIZE> attackEntityPool;
 
     static std::array<EntityVariant, ENTITY_ARR_SIZE> activeEntities;
     static size_t i_EntitiesEnd;
