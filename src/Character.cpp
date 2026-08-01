@@ -186,8 +186,7 @@ bool Character::tick(float deltaTime){
                     if( IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_SPACE) )
                     {
                         isAttacking = true;
-                        // TO DO generate sword slash attack entity
-                        // EntityMng::spawnSwordSlash(position, damage);
+                        attackMelee();
                         attackTimer += deltaTime;
                     }
                 }
@@ -364,6 +363,13 @@ void Character::resetState(){
     canMoveWhileShield = false;
 
     resurrect();
+}
+
+void Character::attackMelee()
+{
+    Vector2 direction = Vector2Normalize(Vector2Subtract( GetMousePosition(), getScreenPos() ));
+    Vector2 position = Vector2Add(worldPos, Vector2Scale(direction, 100.f));
+    EntityMng::spawnAttack(position, damagePerHit);
 }
 
 void Character::shootProyectile(){

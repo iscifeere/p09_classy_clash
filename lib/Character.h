@@ -39,6 +39,7 @@ public:
     void render() override;
     void resurrect();
     void resetState();
+    void attackMelee();
     void shootProyectile();
 
     void cheatGetAllUpgrades();

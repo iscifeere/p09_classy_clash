@@ -147,10 +147,10 @@ void EntityMng::showPropsDebugData(){
     }
 }
 
-void EntityMng::spawnSwordSlash(Vector2 pos, float damage){
-    for(auto& attack : attackEntityPool){
-        if(!attack.getAlive()){
-            attack.spawnReset(pos, damage);
+void EntityMng::spawnAttack(Vector2 pos, float damage){
+    for(auto& attackEntity : attackEntityPool){
+        if(!attackEntity.getAlive()){
+            attackEntity.spawnReset(pos, damage);
             std::cout << "[Attack entity spawned in pool!]" << std::endl;
             return;
         }
@@ -221,6 +221,14 @@ void EntityMng::tickEntities(float deltaTime){
     // add player to active entities
     activeEntities[i_EntitiesEnd] = &player;
     i_EntitiesEnd++;
+
+    for(auto& attackEntity : attackEntityPool){
+        if(attackEntity.getAlive()){
+            attackEntity.tick(deltaTime);
+            activeEntities[i_EntitiesEnd] = &attackEntity;
+            i_EntitiesEnd++;
+        }
+    }
 
     i_EnemiesStart = i_EntitiesEnd;
     for(auto& enemy : enemyPool){

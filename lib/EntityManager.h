@@ -12,7 +12,7 @@
 #include <array>
 #include <variant>
 
-using EntityVariant = std::variant<Character*, Enemy*, Item*, GenEntity*, Prop*>;
+using EntityVariant = std::variant<Character*, Enemy*, Item*, GenEntity*, Prop*, SwordSlash*>;
 
 class EntityMng
 {
@@ -45,7 +45,7 @@ public:
     static void showPropsDebugData();
     static void checkPropCollisions();
 
-    static void spawnSwordSlash(Vector2 pos, float damage);
+    static void spawnAttack(Vector2 pos, float damage);
 
     static void createKnockbackForce(Vector2 direction, float magnitude, BaseCharacter* targetCharacter);
 
