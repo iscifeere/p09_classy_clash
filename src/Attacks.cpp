@@ -6,7 +6,7 @@ void SwordSlash::spawnReset(Vector2 position, float damage)
 {
     m_Position = position;
     m_Damage = damage;
-    m_Lifetime = 1.f;
+    m_Lifetime = 0.1f;
     m_Alive = true;
 }
 
@@ -36,6 +36,18 @@ Vector2 SwordSlash::getRenderPos(Vector2 screenPos)
     return Vector2{
         screenPos.x - (m_HitBox.width * 0.5f),
         screenPos.y - (m_HitBox.height * 0.5f)
+    };
+}
+
+Rectangle SwordSlash::getHitBox()
+{
+    Vector2 renderPos = getRenderPos();
+
+    return Rectangle{
+        renderPos.x,
+        renderPos.y,
+        m_HitBox.width,
+        m_HitBox.height
     };
 }
 

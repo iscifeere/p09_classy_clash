@@ -99,13 +99,13 @@ bool Enemy::tick(float deltaTime){
     BaseCharacter::tick(deltaTime);
 
     // ====== TAKE DAMAGE ============      (MAKE IT A FUNCTION!!!)
-    if(target->getIsAttack()) {
-        if(CheckCollisionRecs( getHurtRec(), target->getWeaponCollisionRec() )) {
-            takeDamage(target->getDamage());
-            // receive knockback away from player
-            EntityMng::createKnockbackForce(Vector2Normalize(Vector2Subtract(worldPos, target->getWorldPos())), 25.f, this);
-        }
-    }
+    // if(target->getIsAttack()) {
+    //     if(CheckCollisionRecs( getHurtRec(), target->getWeaponCollisionRec() )) {
+    //         takeDamage(target->getDamage());
+    //         // receive knockback away from player
+    //         EntityMng::createKnockbackForce(Vector2Normalize(Vector2Subtract(worldPos, target->getWorldPos())), 25.f, this);
+    //     }
+    // }
 
     return true;
 }

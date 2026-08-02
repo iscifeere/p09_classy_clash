@@ -40,12 +40,13 @@ public:
     static void tickProyectiles(float deltaTime);
     static void checkProyectileCollisions();
     static void showProyectilesDebugData();
-
+    
     static void spawnProp(Vector2 pos, const propData* prop_data);
     static void showPropsDebugData();
     static void checkPropCollisions();
-
+    
     static void spawnAttack(Vector2 pos, float damage);
+    static void checkAttackCollisions();
 
     static void createKnockbackForce(Vector2 direction, float magnitude, BaseCharacter* targetCharacter);
 
@@ -68,7 +69,7 @@ private:
     static const int ENEMY_ARR_SIZE{30};
     static const int PROYECTILE_ARR_SIZE{ENEMY_ARR_SIZE};
     static const int PROP_ARR_SIZE{10};
-    static const int ATTACK_ENTITY_ARR_SIZE{1};
+    static const int ATTACK_ENTITY_ARR_SIZE{5};
     static const int ENTITY_ARR_SIZE{ITEM_ARR_SIZE+ENEMY_ARR_SIZE+PROYECTILE_ARR_SIZE+PROP_ARR_SIZE+ATTACK_ENTITY_ARR_SIZE};
     static const int KNOCKBACK_ARR_SIZE{10};
 
@@ -85,6 +86,8 @@ private:
     static size_t i_EnemiesEnd;
     static size_t i_ProyectilesStart;
     static size_t i_ProyectilesEnd;
+    static size_t i_AttacksStart;
+    static size_t i_AttacksEnd;
 
     static std::array<KnockbackForce, KNOCKBACK_ARR_SIZE> m_knockbackPool;  // knockback force pool for testing
 };

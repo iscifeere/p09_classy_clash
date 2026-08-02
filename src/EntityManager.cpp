@@ -18,6 +18,8 @@ size_t EntityMng::i_EnemiesStart{0};
 size_t EntityMng::i_EnemiesEnd{0};
 size_t EntityMng::i_ProyectilesStart{0};
 size_t EntityMng::i_ProyectilesEnd{0};
+size_t EntityMng::i_AttacksStart{0};
+size_t EntityMng::i_AttacksEnd{0};
 std::array<KnockbackForce, EntityMng::KNOCKBACK_ARR_SIZE> EntityMng::m_knockbackPool{};
 
 void EntityMng::createKnockbackForce(Vector2 direction, float magnitude, BaseCharacter* targetCharacter){
@@ -161,6 +163,7 @@ void EntityMng::spawnAttack(Vector2 pos, float damage){
 void EntityMng::checkEntityCollisions(){
     checkPropCollisions();
     checkProyectileCollisions();
+    checkAttackCollisions();
 }
 
 void EntityMng::checkPropCollisions(){
@@ -180,26 +183,54 @@ void EntityMng::checkPropCollisions(){
 }
 
 void EntityMng::checkProyectileCollisions(){
-    if(i_ProyectilesStart < i_ProyectilesEnd){     // if there is alive proyectiles
+    if(i_ProyectilesStart < i_ProyectilesEnd){     // if there are alive projectiles
         GenEntity* proyectile{nullptr};
+        Enemy* enemy{nullptr};
 
-        for(size_t i{i_ProyectilesStart} ; i < i_ProyectilesEnd ; ++i){     // loop through proyectiles
-            proyectile = std::get<GenEntity*>(activeEntities[i]);
-
-            if(proyectile->getIsEnemy()) proyectile->checkPlayerCollision();    // if it's an enemy proyectile, affect player
-            else if(i_EnemiesStart < i_EnemiesEnd){    // if not, then, if there is alive enemies
-                Enemy* enemy{nullptr};
-
-                for(size_t k{i_EnemiesStart} ; k < i_EnemiesEnd ; ++k){     // loop through enemies
-                    enemy = std::get<Enemy*>(activeEntities[k]);
-
-                    if(CheckCollisionRecs( proyectile->getCollisionRec(), enemy->getHurtRec() )){   // affect enemy
-                        enemy->takeDamage(20);
-                        proyectile->setAlive(false);
-                        break;
-                    }}
+        if(i_EnemiesStart < i_EnemiesEnd){      // if there are alive enemies
+            
+            for(size_t i{i_ProyectilesStart} ; i < i_ProyectilesEnd ; ++i){     // loop through projectiles
+                proyectile = std::get<GenEntity*>(activeEntities[i]);
+    
+                if(proyectile->getIsEnemy()) proyectile->checkPlayerCollision();    // if it's an enemy projectile, affect player
+                else{
+                    for(size_t k{i_EnemiesStart} ; k < i_EnemiesEnd ; ++k){     // if not, loop through enemies
+                        enemy = std::get<Enemy*>(activeEntities[k]);
+    
+                        if(CheckCollisionRecs( proyectile->getCollisionRec(), enemy->getHurtRec() )){   // affect one enemy
+                            enemy->takeDamage(20);      // (if enemy dies, it's still in active entities...)
+                            proyectile->setAlive(false);    // (still in active entities)
+                            break;
+                        }
+                    }
+                }
             }
+        }
+        else{       // if there aren't alive enemies
+            for(size_t i{i_ProyectilesStart} ; i < i_ProyectilesEnd ; ++i){     // loop through projectiles
+                proyectile = std::get<GenEntity*>(activeEntities[i]);
+                if(proyectile->getIsEnemy()) proyectile->checkPlayerCollision();    // if it's an enemy projectile, affect player
+            }
+        }
+    }
+}
 
+void EntityMng::checkAttackCollisions(){
+    if(i_AttacksStart < i_AttacksEnd && i_EnemiesStart < i_EnemiesEnd){     // if there are alive attacks and enemies
+        SwordSlash* attack{nullptr};
+        Enemy* enemy{nullptr};
+
+        for(size_t i{i_AttacksStart} ; i < i_AttacksEnd ; ++i){     // loop through attacks
+            attack = std::get<SwordSlash*>(activeEntities[i]);
+
+            for(size_t k{i_EnemiesStart} ; k < i_EnemiesEnd ; ++k){     // loop through enemies
+                enemy = std::get<Enemy*>(activeEntities[k]);
+
+                if(CheckCollisionRecs( attack->getHitBox(), enemy->getHurtRec() )){   // affect enemies
+                    enemy->takeDamage(attack->getDamage());
+                    // TO DO apply knockback to enemy
+                }
+            }
         }
     }
 }
@@ -210,6 +241,8 @@ void EntityMng::tickEntities(float deltaTime){
     i_EnemiesEnd = 0;
     i_ProyectilesStart = 0;
     i_ProyectilesEnd = 0;
+    i_AttacksStart = 0;
+    i_AttacksEnd = 0;
 
     for(auto& knockback : m_knockbackPool){
         if(knockback.isActive()){
@@ -222,20 +255,24 @@ void EntityMng::tickEntities(float deltaTime){
     activeEntities[i_EntitiesEnd] = &player;
     i_EntitiesEnd++;
 
+    i_AttacksStart = i_EntitiesEnd;
     for(auto& attackEntity : attackEntityPool){
         if(attackEntity.getAlive()){
             attackEntity.tick(deltaTime);
+
+            if(!attackEntity.getAlive()) continue;
             activeEntities[i_EntitiesEnd] = &attackEntity;
             i_EntitiesEnd++;
         }
     }
+    i_AttacksEnd = i_EntitiesEnd;
 
     i_EnemiesStart = i_EntitiesEnd;
     for(auto& enemy : enemyPool){
         if(enemy.getAlive()){
             enemy.tick(deltaTime);
 
-            // if(!enemy.getAlive()) break;    // filter out entities who died inside tick logic
+            if(!enemy.getAlive()) continue;    // filter out entities who died inside tick logic
             activeEntities[i_EntitiesEnd] = &enemy; // add alive entity to active entities
             i_EntitiesEnd++;
         }}
@@ -245,7 +282,7 @@ void EntityMng::tickEntities(float deltaTime){
         if(item.getAlive()){
             item.tick(deltaTime);
 
-            // if(!item.getAlive()) break;
+            if(!item.getAlive()) continue;
             activeEntities[i_EntitiesEnd] = &item;
             i_EntitiesEnd++;
         }}
@@ -255,7 +292,7 @@ void EntityMng::tickEntities(float deltaTime){
         if(proyectile.getAlive()){
             proyectile.tick(deltaTime);
 
-            // if(!proyectile.getAlive()) break;       // filtering out after tick glitches them, for some reason
+            if(!proyectile.getAlive()) continue;
             activeEntities[i_EntitiesEnd] = &proyectile;
             i_EntitiesEnd++;
         }}
@@ -265,7 +302,7 @@ void EntityMng::tickEntities(float deltaTime){
         if(prop.getAlive()){
             prop.tick(deltaTime);
 
-            // if(!prop.getAlive()) break;
+            if(!prop.getAlive()) continue;
             activeEntities[i_EntitiesEnd] = &prop;
             i_EntitiesEnd++;
         }}

@@ -14,7 +14,7 @@ public:
     void render(){};
     void showDebugData();
     
-    Rectangle getHitBox(){ return m_HitBox; }
+    Rectangle getHitBox();
     float getDamage(){ return m_Damage; }
     bool getAlive(){ return m_Alive; }
     Vector2 getScreenPos();
@@ -24,7 +24,7 @@ public:
     
 private:
     Vector2 m_Position{};
-    Rectangle m_HitBox{
+    Rectangle m_HitBox{     // x and y are unused
         .width = 90.f,
         .height = 90.f
     };
