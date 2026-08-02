@@ -198,7 +198,7 @@ void EntityMng::checkProyectileCollisions(){
                         enemy = std::get<Enemy*>(activeEntities[k]);
     
                         if(CheckCollisionRecs( proyectile->getCollisionRec(), enemy->getHurtRec() )){   // affect one enemy
-                            enemy->takeDamage(20);      // (if enemy dies, it's still in active entities...)
+                            enemy->takeDamage(20);      // (if enemy dies, it's still in active entities for that frame...)
                             proyectile->setAlive(false);    // (still in active entities)
                             break;
                         }
@@ -228,7 +228,8 @@ void EntityMng::checkAttackCollisions(){
 
                 if(CheckCollisionRecs( attack->getHitBox(), enemy->getHurtRec() )){   // affect enemies
                     enemy->takeDamage(attack->getDamage());
-                    // TO DO apply knockback to enemy
+                    createKnockbackForce( Vector2Normalize(Vector2Subtract(enemy->getWorldPos(), player.getWorldPos())), 25.f, enemy );
+                    attack->setAlive(false);
                 }
             }
         }

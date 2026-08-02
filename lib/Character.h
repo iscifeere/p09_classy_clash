@@ -25,7 +25,6 @@ public:
     Rectangle getHurtRec();
     float getDamage(){ return damagePerHit; }
     void deathSequence() override;
-    bool getIsAttack() { return isAttacking; }
     void addHealth( float healthAdd ) override;
     void setHealth( float newHealth ){ health = newHealth; }
     int getMoney(){ return moneyCount; }
