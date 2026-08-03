@@ -370,6 +370,7 @@ void Character::attackMelee()
     Vector2 direction = Vector2Normalize(Vector2Subtract( GetMousePosition(), getScreenPos() ));
     Vector2 position = Vector2Add(worldPos, Vector2Scale(direction, 100.f));
     EntityMng::spawnAttack(position, damagePerHit);
+    direction.x < 0.f ? rightLeft = -1.f : rightLeft = 1.f;     // face towards the attack direction
 }
 
 void Character::shootProyectile(){
