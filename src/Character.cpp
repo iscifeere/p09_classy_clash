@@ -143,8 +143,19 @@ bool Character::tick(float deltaTime){
         speed = 10.f;
     }
 
-    // if no run-while-shield upgrade don't move while shielded
-    if( isShielding && !canMoveWhileShield) velocity = {};
+    if(isShielding)
+    {
+        // don't move with shield without said upgrade. If using bow then don't move
+        if(!canMoveWhileShield || selectedWeaponSlot)
+        {
+            velocity = {};
+        }
+        else if(!selectedWeaponSlot)    // if using sword and shield then move slow
+        {
+            updateTime = 1.f/7.f;
+            speed = 6.f;
+        }
+    }
 
     // ====== TICK AND VARIABLE RESETS ============
     BaseCharacter::tick(deltaTime);
