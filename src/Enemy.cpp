@@ -6,6 +6,7 @@
 
 #define STATE_IDLE 0
 #define STATE_ACTION 1
+#define STATE_PLAYER_SPOTTED 2
 
 void Enemy::init(){
     std::cout << "[Enemy init function (" << this << ") ]" << std::endl;
@@ -83,6 +84,10 @@ bool Enemy::tick(float deltaTime){
     {
     case STATE_IDLE:
         idleWandering(deltaTime);
+        break;
+
+    case STATE_PLAYER_SPOTTED:
+        playerSpottedSequence(deltaTime);
         break;
     
     case STATE_ACTION:
@@ -211,12 +216,37 @@ void Enemy::drawHealthBar()
 
 void Enemy::render(){
     BaseCharacter::render();
-    drawHealthBar();
+
+    Vector2 screenPos{ getScreenPos() };
+    switch (enemyState)
+    {
+    case STATE_PLAYER_SPOTTED:
+        DrawText("!", static_cast<int>(screenPos.x), static_cast<int>(screenPos.y) - 90, 45, WHITE);
+        break;
+
+    case STATE_ACTION:
+        drawHealthBar();
+        break;
+    
+    default:
+        break;
+    }
+
     drawColor = WHITE;    // reset color
 }
 
 void Enemy::idleWandering(float& deltaTime)
 {
+    float distanceToPlayer{ Vector2Length(Vector2Subtract(target->getWorldPos(), worldPos)) };
+    if(distanceToPlayer < 400.f)
+    {
+        chaseTime = {};
+        velocity = {};
+        enemyState = STATE_PLAYER_SPOTTED;
+        playerSpottedSequence(deltaTime);
+        return;
+    }
+
     if(Vector2Length(velocity) == 0.f) chaseTime += deltaTime;  // start counting when still
 
     // once every amount of time decide randomly whether to move or stay still
@@ -244,6 +274,18 @@ void Enemy::idleWandering(float& deltaTime)
     // if too close or far to wander point, stop moving
     float wanderPointDistance = Vector2Length(Vector2Subtract(wanderingPoint, worldPos));
     if(wanderPointDistance < 20.f || wanderPointDistance > 610.f) velocity = {};
+}
+
+void Enemy::playerSpottedSequence(float deltaTime)
+{
+    chaseTime += deltaTime;
+    if(chaseTime >= 0.5f)
+    {
+        chaseTime = {};
+        enemyState = STATE_ACTION;
+        action(this, target, deltaTime);
+        return;
+    }
 }
 
 int Enemy::getEnemyType()

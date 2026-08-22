@@ -74,9 +74,16 @@ inline void chaseTarget(Enemy* enemy, Character* target, const float& deltaTime)
     }
 
     // if too close / too far -> don't chase
-    if(distance < in_radius || distance > out_radius ){
+    if(distance < in_radius){
         velocity = {};
         chaseTime = 0.f;
+        return;
+    }
+    else if(distance > out_radius)
+    {
+        velocity = {};
+        chaseTime = 0.f;
+        enemy->setEnemyState(0);
         return;
     }
 
