@@ -9,6 +9,12 @@
 #include "GenericEntity.h"
 
 struct enemyData;
+enum class EnemyState
+{
+    IDLE,
+    PLAYER_SPOTTED,
+    ACTION
+};
 
 //============================
 
@@ -37,10 +43,10 @@ public:
     void render() override;
 
     void playerSpottedSequence(float deltaTime);
-    int getEnemyState(){ return enemyState; }
-    void setEnemyState(int newState){ enemyState = newState; }
+    EnemyState getEnemyState(){ return state; }
+    void setEnemyState(EnemyState newState){ state = newState; }
     const Vector2& getRefWanderingPoint(){ return wanderingPoint; }
-    void setWanderingPoint(Vector2 v){ wanderingPoint = v; }
+    void setWanderingPoint(Vector2 newWanderingPoint){ wanderingPoint = newWanderingPoint; }
 
     float attackTimer{};
     float fleeTimer{};
@@ -57,7 +63,7 @@ protected:
     float radius{50.f};
     float chaseRadius{400.f};
     float chaseTime{};
-    int enemyState{};
+    EnemyState state{EnemyState::IDLE};
     Vector2 wanderingPoint{};
     const enemyData* data{nullptr};
     const itemData* itemDrop{&HEART_ITEMDATA};

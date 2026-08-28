@@ -4,10 +4,6 @@
 #include "EnemyData.h"
 #include <iostream>
 
-#define STATE_IDLE 0
-#define STATE_ACTION 1
-#define STATE_PLAYER_SPOTTED 2
-
 void Enemy::init(){
     std::cout << "[Enemy init function (" << this << ") ]" << std::endl;
     
@@ -71,7 +67,7 @@ void Enemy::spawnReset(Vector2 pos, const enemyData* enemy_data)
     hurtTime = 0.f;
     invul = false;
     wanderingPoint = {};
-    enemyState = STATE_IDLE;
+    state = EnemyState::IDLE;
 
     setAlive(true);
 }
@@ -81,18 +77,18 @@ bool Enemy::tick(float deltaTime){
     if (!getAlive()) return false;    // if not alive, do nothing and return false
 
     // ====== MOVEMENT ============
-    switch (enemyState)
+    switch (state)
     {
-    case STATE_IDLE:
+    case EnemyState::IDLE:
         idleBehave(this, target, deltaTime);
         break;
 
-    case STATE_PLAYER_SPOTTED:
+    case EnemyState::PLAYER_SPOTTED:
         playerSpottedSequence(deltaTime);
         break;
     
-    case STATE_ACTION:
-        velocity = {};  // reset velocity
+    case EnemyState::ACTION:
+        velocity = {};
         action(this, target, deltaTime);
         break;
     
@@ -145,7 +141,7 @@ Rectangle Enemy::getHurtRec(){
 void Enemy::takeDamage(float damage){
     BaseCharacter::takeDamage(damage);
     neutral = false;
-    enemyState = STATE_ACTION;
+    state = EnemyState::ACTION;
 }
 
 void Enemy::deathSequence(){
@@ -218,13 +214,13 @@ void Enemy::render(){
     BaseCharacter::render();
 
     Vector2 screenPos{ getScreenPos() };
-    switch (enemyState)
+    switch (state)
     {
-    case STATE_PLAYER_SPOTTED:
+    case EnemyState::PLAYER_SPOTTED:
         DrawText("!", static_cast<int>(screenPos.x), static_cast<int>(screenPos.y) - 90, 45, WHITE);
         break;
 
-    case STATE_ACTION:
+    case EnemyState::ACTION:
         drawHealthBar();
         break;
     
@@ -241,7 +237,7 @@ void Enemy::playerSpottedSequence(float deltaTime)
     if(chaseTime >= 0.5f)
     {
         chaseTime = {};
-        enemyState = STATE_ACTION;
+        state = EnemyState::ACTION;
         action(this, target, deltaTime);
         return;
     }

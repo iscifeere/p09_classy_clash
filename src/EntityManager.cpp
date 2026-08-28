@@ -516,7 +516,7 @@ Enemy* EntityMng::getNearestChasingEnemyByType(Enemy* this_enemy){     // return
     int thisEnemyType = this_enemy->getEnemyType();
 
     for(Enemy& enemy : enemyPool){
-        if(enemy.getAlive() && enemy.getEnemyType() == thisEnemyType && enemy.getEnemyState() == STATE_ACTION && &enemy != this_enemy){
+        if(enemy.getAlive() && enemy.getEnemyType() == thisEnemyType && enemy.getEnemyState() == EnemyState::ACTION && &enemy != this_enemy){
             if(nearestEnemy == nullptr) nearestEnemy = &enemy;
             else {
                 distanceToNearestEnemy = Vector2Length( Vector2Subtract(nearestEnemy->getWorldPos(), this_enemy->getWorldPos()) );

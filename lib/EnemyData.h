@@ -96,7 +96,7 @@ inline void idleWanderingAlert(Enemy* enemy, Character* player, const float& del
     {
         chaseTime = {};
         velocity = {};
-        enemy->setEnemyState(2);
+        enemy->setEnemyState(EnemyState::PLAYER_SPOTTED);
         enemy->playerSpottedSequence(deltaTime);
         return;
     }
@@ -175,7 +175,7 @@ inline void chaseTarget(Enemy* enemy, Character* target, const float& deltaTime)
     {
         velocity = {};
         chaseTime = 0.f;
-        enemy->setEnemyState(0);
+        enemy->setEnemyState(EnemyState::IDLE);
         return;
     }
 
@@ -197,7 +197,7 @@ inline void fleeTarget(Enemy* enemy, Character* target, const float& deltaTime)
     if(distance > 600.f){
       velocity = {};
       chaseTime = 0.f;
-      enemy->setEnemyState(0);  // set state to idle
+      enemy->setEnemyState(EnemyState::IDLE);
       return;
     }
 
@@ -207,7 +207,7 @@ inline void fleeTarget(Enemy* enemy, Character* target, const float& deltaTime)
     else if (chaseTime >= 5.f){ // after 5 sec return to idle
         velocity = {};
         chaseTime = 0.f;
-        enemy->setEnemyState(0);  // set state to idle
+        enemy->setEnemyState(EnemyState::IDLE);
         return;
     }
 }
@@ -271,7 +271,7 @@ inline void shootTarget(Enemy* this_enemy, Character* target, const float& delta
         else if (chaseTimer >= 7.f){                // become neutral after 5 sec chasing
             velocity = {};
             this_enemy->neutral = true;
-            this_enemy->setEnemyState(0);    // set state to idle
+            this_enemy->setEnemyState(EnemyState::IDLE);
             chaseTimer = 0.f;
         }
 
