@@ -36,11 +36,103 @@ struct enemyData{
     };
 
     const itemData* item_drop{&HEART_ITEMDATA};
+
+    // behaviour functions
+    void(*idle)(Enemy* enemy, Character* player, const float& deltaTime);
     void(*behave)(Enemy* enemy, Character* player, const float& deltaTime);
 };
 
 
-// ========= ENEMY BEHAVE FUNCTIONS =========================
+// ========= ENEMY BEHAVIOUR FUNCTIONS ==================================
+
+// IDLE LOGIC
+// =========================================================
+
+inline void idleWandering(Enemy* enemy, Character* player, const float& deltaTime)
+{
+    Vector2& velocity = enemy->getVelocity();
+    float& chaseTime = enemy->getRadiusEtc(2);
+    const Vector2& wanderingPoint = enemy->getRefWanderingPoint();
+    const Vector2& worldPos = enemy->getRefWorldPos();
+
+    if(Vector2Length(velocity) == 0.f) chaseTime += deltaTime;  // start counting when still
+
+    // once every amount of time decide randomly whether to move or stay still
+    if(chaseTime >= 2.f)
+    {
+        if(GetRandomValue(0,2))
+        {
+            // create random point to wander off to
+            Vector2 randomDirection
+            {
+                static_cast<float>(GetRandomValue(-10,10)),
+                static_cast<float>(GetRandomValue(-10,10))
+            };
+            float randomDistance = static_cast<float>(GetRandomValue(100,600));
+            // float randomDistance = 600.f;
+
+            enemy->setWanderingPoint( Vector2Add(worldPos, Vector2Scale(Vector2Normalize(randomDirection), randomDistance)) );
+
+            velocity = Vector2Subtract(wanderingPoint, worldPos);   // get direction to wander point
+        }
+
+        chaseTime = {};
+    }
+    
+    // if too close or far to wander point, stop moving
+    float wanderPointDistance = Vector2Length(Vector2Subtract(wanderingPoint, worldPos));
+    if(wanderPointDistance < 20.f || wanderPointDistance > 610.f) velocity = {};
+}
+
+inline void idleWanderingAlert(Enemy* enemy, Character* player, const float& deltaTime)
+{
+    Vector2& velocity = enemy->getVelocity();
+    float& chaseTime = enemy->getRadiusEtc(2);
+    const Vector2& wanderingPoint = enemy->getRefWanderingPoint();
+    const Vector2& worldPos = enemy->getRefWorldPos();
+
+    float distanceToPlayer{ Vector2Length( Vector2Subtract(player->getWorldPos(), worldPos) ) };
+    if(distanceToPlayer < 400.f)
+    {
+        chaseTime = {};
+        velocity = {};
+        enemy->setEnemyState(2);
+        enemy->playerSpottedSequence(deltaTime);
+        return;
+    }
+
+    if(Vector2Length(velocity) == 0.f) chaseTime += deltaTime;  // start counting when still
+
+    // once every amount of time decide randomly whether to move or stay still
+    if(chaseTime >= 2.f)
+    {
+        if(GetRandomValue(0,2))
+        {
+            // create random point to wander off to
+            Vector2 randomDirection
+            {
+                static_cast<float>(GetRandomValue(-10,10)),
+                static_cast<float>(GetRandomValue(-10,10))
+            };
+            float randomDistance = static_cast<float>(GetRandomValue(100,600));
+            // float randomDistance = 600.f;
+
+            enemy->setWanderingPoint( Vector2Add(worldPos, Vector2Scale(Vector2Normalize(randomDirection), randomDistance)) );
+
+            velocity = Vector2Subtract(wanderingPoint, worldPos);   // get direction to wander point
+        }
+
+        chaseTime = {};
+    }
+    
+    // if too close or far to wander point, stop moving
+    float wanderPointDistance = Vector2Length(Vector2Subtract(wanderingPoint, worldPos));
+    if(wanderPointDistance < 20.f || wanderPointDistance > 610.f) velocity = {};
+}
+
+
+// CONFRONTATION LOGIC
+// =========================================================
 
 inline void chaseTarget(Enemy* enemy, Character* target, const float& deltaTime)
 {
@@ -222,6 +314,7 @@ inline void shootTarget(Enemy* this_enemy, Character* target, const float& delta
 // ========= ENEMY DATA STRUCTS ============================
 
 const enemyData DEFAULT_ENEMYDATA{
+    .idle = idleWandering,
     .behave = chaseTarget
 };
 const enemyData SLIME_ENEMYDATA{
@@ -236,6 +329,7 @@ const enemyData SLIME_ENEMYDATA{
     .chase_radius = 300.f,
     .enemyType = 0,
     .item_drop = &HEART_2_ITEMDATA,
+    .idle = idleWandering,
     .behave = fleeTarget
 };
 const enemyData SLIME_BLUE_ENEMYDATA{
@@ -250,6 +344,7 @@ const enemyData SLIME_BLUE_ENEMYDATA{
     .chase_radius = 400.f,
     .enemyType = 0,
     .item_drop = &HEART_3_ITEMDATA,
+    .idle = idleWandering,
     .behave = chaseTarget
 };
 const enemyData MADKNIGHT_ENEMYDATA{
@@ -271,6 +366,7 @@ const enemyData MADKNIGHT_ENEMYDATA{
         .height = 0.25f
     },
     .item_drop = &COIN_ITEMDATA,
+    .idle = idleWandering,
     .behave = shootTarget
 };
 const enemyData RED_ENEMYDATA{
@@ -291,6 +387,7 @@ const enemyData RED_ENEMYDATA{
         .height = 0.5f
     },
     .item_drop = &GEM_ITEMDATA,
+    .idle = idleWanderingAlert,
     .behave = chaseTarget
 };
 const enemyData GOBLIN_ENEMYDATA{
@@ -312,6 +409,7 @@ const enemyData GOBLIN_ENEMYDATA{
         .height = 0.25f
     },
     .item_drop = &COIN_ITEMDATA,
+    .idle = idleWanderingAlert,
     .behave = chaseTarget
 };
 const enemyData* ENEMYDATA_ARR[]{

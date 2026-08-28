@@ -32,6 +32,7 @@ void Enemy::init(){
     chaseRadius = data->chase_radius;
     // neutral = data->isNeutral;
     itemDrop = data->item_drop;
+    idleBehave = data->idle;
     action = data->behave;   
 }
 
@@ -83,7 +84,7 @@ bool Enemy::tick(float deltaTime){
     switch (enemyState)
     {
     case STATE_IDLE:
-        idleWandering(deltaTime);
+        idleBehave(this, target, deltaTime);
         break;
 
     case STATE_PLAYER_SPOTTED:
@@ -96,7 +97,6 @@ bool Enemy::tick(float deltaTime){
         break;
     
     default:
-        idleWandering(deltaTime);
         break;
     }
 
@@ -233,47 +233,6 @@ void Enemy::render(){
     }
 
     drawColor = WHITE;    // reset color
-}
-
-void Enemy::idleWandering(float& deltaTime)
-{
-    float distanceToPlayer{ Vector2Length(Vector2Subtract(target->getWorldPos(), worldPos)) };
-    if(distanceToPlayer < 400.f)
-    {
-        chaseTime = {};
-        velocity = {};
-        enemyState = STATE_PLAYER_SPOTTED;
-        playerSpottedSequence(deltaTime);
-        return;
-    }
-
-    if(Vector2Length(velocity) == 0.f) chaseTime += deltaTime;  // start counting when still
-
-    // once every amount of time decide randomly whether to move or stay still
-    if(chaseTime >= 2.f)
-    {
-        if(GetRandomValue(0,2))
-        {
-            // create random point to wander off to
-            Vector2 randomDirection
-            {
-                static_cast<float>(GetRandomValue(-10,10)),
-                static_cast<float>(GetRandomValue(-10,10))
-            };
-            float randomDistance = static_cast<float>(GetRandomValue(100,600));
-            // float randomDistance = 600.f;
-
-            wanderingPoint = Vector2Add(worldPos, Vector2Scale(Vector2Normalize(randomDirection), randomDistance));
-
-            velocity = Vector2Subtract(wanderingPoint, worldPos);   // get direction to wander point
-        }
-
-        chaseTime = {};
-    }
-    
-    // if too close or far to wander point, stop moving
-    float wanderPointDistance = Vector2Length(Vector2Subtract(wanderingPoint, worldPos));
-    if(wanderPointDistance < 20.f || wanderPointDistance > 610.f) velocity = {};
 }
 
 void Enemy::playerSpottedSequence(float deltaTime)

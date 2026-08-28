@@ -12,6 +12,7 @@ public:
     
     // Vector2 getWorldPos(){ return worldPos; }
     Vector2 getWorldPos(){ return worldPos; }
+    const Vector2& getRefWorldPos(){ return worldPos; }
     void undoMovementX();
     void undoMovementY();
     virtual bool tick(float deltaTime);

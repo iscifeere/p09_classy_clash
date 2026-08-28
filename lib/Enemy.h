@@ -36,10 +36,11 @@ public:
     void drawHealthBar();
     void render() override;
 
-    void idleWandering(float& deltaTime);
     void playerSpottedSequence(float deltaTime);
     int getEnemyState(){ return enemyState; }
     void setEnemyState(int newState){ enemyState = newState; }
+    const Vector2& getRefWanderingPoint(){ return wanderingPoint; }
+    void setWanderingPoint(Vector2 v){ wanderingPoint = v; }
 
     float attackTimer{};
     float fleeTimer{};
@@ -60,7 +61,8 @@ protected:
     Vector2 wanderingPoint{};
     const enemyData* data{nullptr};
     const itemData* itemDrop{&HEART_ITEMDATA};
-
+    
+    void(*idleBehave)(Enemy* this_enemy, Character* player, const float& deltaTime) = [](Enemy* enemy, Character* player, const float& deltaTime){};
     void(*action)(Enemy* this_enemy, Character* player, const float& deltaTime) = [](Enemy* enemy, Character* player, const float& deltaTime){
         // default dummy function...
     };
