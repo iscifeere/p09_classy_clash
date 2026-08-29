@@ -24,12 +24,12 @@ void Enemy::init(){
     
     speed = data->speed;
     health = data->health;
-    // damagePerSec = data->damage;
     chaseRadius = data->chase_radius;
-    // neutral = data->isNeutral;
     itemDrop = data->item_drop;
-    idleBehave = data->idle;
-    action = data->behave;   
+    idleLogic = data->idleLogic;
+    transitionLogic = data->transitionLogic;
+    actionLogic = data->actionLogic;
+    currentStateLogic = idleLogic;
 }
 
 Enemy::Enemy(){
@@ -77,24 +77,7 @@ bool Enemy::tick(float deltaTime){
     if (!getAlive()) return false;    // if not alive, do nothing and return false
 
     // ====== MOVEMENT ============
-    switch (state)
-    {
-    case EnemyState::IDLE:
-        idleBehave(this, target, deltaTime);
-        break;
-
-    case EnemyState::PLAYER_SPOTTED:
-        playerSpottedSequence(deltaTime);
-        break;
-    
-    case EnemyState::ACTION:
-        velocity = {};
-        action(this, target, deltaTime);
-        break;
-    
-    default:
-        break;
-    }
+    currentStateLogic(this, target, deltaTime);
 
     // ====== TICK AND VARIABLE RESETS ============
     BaseCharacter::tick(deltaTime);
@@ -140,36 +123,13 @@ Rectangle Enemy::getHurtRec(){
 
 void Enemy::takeDamage(float damage){
     BaseCharacter::takeDamage(damage);
-    neutral = false;
-    state = EnemyState::ACTION;
+    setEnemyState(EnemyState::ACTION);
 }
 
 void Enemy::deathSequence(){
     setAlive(false);
     EntityMng::spawnItem(worldPos, itemDrop);
     target->incrementKilledEnemies();
-}
-
-float& Enemy::getRadiusEtc(int choice)
-{
-    switch (choice)
-    {
-    case 0:
-        return radius;
-        break;
-
-    case 1:
-        return chaseRadius;
-        break;
-
-    case 2:
-        return chaseTime;
-        break;
-    
-    default:
-        return radius;
-        break;
-    }
 }
 
 void Enemy::showDebugData()     // draw debug data
@@ -231,18 +191,6 @@ void Enemy::render(){
     drawColor = WHITE;    // reset color
 }
 
-void Enemy::playerSpottedSequence(float deltaTime)
-{
-    chaseTime += deltaTime;
-    if(chaseTime >= 0.5f)
-    {
-        chaseTime = {};
-        state = EnemyState::ACTION;
-        action(this, target, deltaTime);
-        return;
-    }
-}
-
 int Enemy::getEnemyType()
 {
     return data->enemyType;
@@ -251,4 +199,26 @@ int Enemy::getEnemyType()
 float Enemy::getDamage()
 {
     return data->damage;
+}
+
+void Enemy::setEnemyState(EnemyState newState)
+{
+    state = newState;
+    switch (newState)
+    {
+    case EnemyState::IDLE:
+        currentStateLogic = idleLogic;
+        break;
+
+    case EnemyState::PLAYER_SPOTTED:
+        currentStateLogic = transitionLogic;
+        break;
+
+    case EnemyState::ACTION:
+        currentStateLogic = actionLogic;
+        break;
+    
+    default:
+        break;
+    }
 }

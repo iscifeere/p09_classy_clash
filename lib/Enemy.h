@@ -35,41 +35,45 @@ public:
     Rectangle getHurtRec();
     virtual void takeDamage(float damage) override;
     virtual void deathSequence() override;
-    float& getRadiusEtc(int choice);
+    float& getRefchaseTime(){ return chaseTime; }
     int getEnemyType();
     float getDamage();
     virtual void showDebugData() override;
     void drawHealthBar();
     void render() override;
 
-    void playerSpottedSequence(float deltaTime);
+    auto getIdleLogic(){ return idleLogic; }
+    auto getTransitionLogic(){ return transitionLogic; }
+    auto getActionLogic(){ return actionLogic; }
     EnemyState getEnemyState(){ return state; }
-    void setEnemyState(EnemyState newState){ state = newState; }
-    const Vector2& getRefWanderingPoint(){ return wanderingPoint; }
+    void setEnemyState(EnemyState newState);
+    const Vector2& getConstRefWanderingPoint(){ return wanderingPoint; }
     void setWanderingPoint(Vector2 newWanderingPoint){ wanderingPoint = newWanderingPoint; }
 
     float attackTimer{};
     float fleeTimer{};
     float freeUseTimer1{};
+    float radius{50.f};
+    float chaseRadius{400.f};
     bool flee{false};
     bool chase{false};
-    bool neutral{false};    // unused
 
     Enemy* nearestEnemy{nullptr};
     
 protected:
     Character* target{nullptr};
-    float damagePerSec{10.f};   // unused
-    float radius{50.f};
-    float chaseRadius{400.f};
     float chaseTime{};
+
     EnemyState state{EnemyState::IDLE};
+    void(*currentStateLogic)(Enemy* this_enemy, Character* player, const float& deltaTime) = [](Enemy* enemy, Character* player, const float& deltaTime){};
+    
     Vector2 wanderingPoint{};
     const enemyData* data{nullptr};
     const itemData* itemDrop{&HEART_ITEMDATA};
     
-    void(*idleBehave)(Enemy* this_enemy, Character* player, const float& deltaTime) = [](Enemy* enemy, Character* player, const float& deltaTime){};
-    void(*action)(Enemy* this_enemy, Character* player, const float& deltaTime) = [](Enemy* enemy, Character* player, const float& deltaTime){
+    void(*idleLogic)(Enemy* this_enemy, Character* player, const float& deltaTime) = [](Enemy* enemy, Character* player, const float& deltaTime){};
+    void(*transitionLogic)(Enemy* this_enemy, Character* player, const float& deltaTime) = [](Enemy* enemy, Character* player, const float& deltaTime){};
+    void(*actionLogic)(Enemy* this_enemy, Character* player, const float& deltaTime) = [](Enemy* enemy, Character* player, const float& deltaTime){
         // default dummy function...
     };
 };

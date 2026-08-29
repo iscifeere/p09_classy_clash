@@ -15,7 +15,6 @@ SlimeMob::SlimeMob(Vector2 pos, Character* playerPtr)
 
     speed = 4.f;
     health = 40.f;
-    damagePerSec = 5.f;
     chaseRadius = 300.f;
 }
 

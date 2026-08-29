@@ -4,45 +4,6 @@
 #include "Enemy.h"
 #include "EntityManager.h"
 
-struct enemyData{
-    Texture2D* texture_idle{&Tex::texture_goblin_idle};
-    Texture2D* texture_run{&Tex::texture_goblin_run};
-    int maxFramesIdle{6};
-    int maxFramesRun{6};
-    int frameRows{1};
-    bool ignoreFrameRows{false};
-
-    float speed{};
-    float health{};
-    float damage{};
-    float chase_radius{};
-    int enemyType{};
-    bool isNeutral{false};  // unused
-
-    // Location and size of collisionBox & hurtBox.
-    // x and y are propotional displacement from sprite screen position,
-    // width and height are scaling proportional to texture.
-    Rectangle collisionBox{
-        .x = 0.f,
-        .y = 0.f,
-        .width = 1.f,
-        .height = 1.f,
-    };
-    Rectangle hurtBox{
-        .x = 0.f,
-        .y = 0.f,
-        .width = 1.f,
-        .height = 1.f,
-    };
-
-    const itemData* item_drop{&HEART_ITEMDATA};
-
-    // behaviour functions
-    void(*idle)(Enemy* enemy, Character* player, const float& deltaTime);
-    void(*behave)(Enemy* enemy, Character* player, const float& deltaTime);
-};
-
-
 // ========= ENEMY BEHAVIOUR FUNCTIONS ==================================
 
 // IDLE LOGIC
@@ -51,8 +12,8 @@ struct enemyData{
 inline void idleWandering(Enemy* enemy, Character* player, const float& deltaTime)
 {
     Vector2& velocity = enemy->getVelocity();
-    float& chaseTime = enemy->getRadiusEtc(2);
-    const Vector2& wanderingPoint = enemy->getRefWanderingPoint();
+    float& chaseTime = enemy->getRefchaseTime();
+    const Vector2& wanderingPoint = enemy->getConstRefWanderingPoint();
     const Vector2& worldPos = enemy->getRefWorldPos();
 
     if(Vector2Length(velocity) == 0.f) chaseTime += deltaTime;  // start counting when still
@@ -87,8 +48,8 @@ inline void idleWandering(Enemy* enemy, Character* player, const float& deltaTim
 inline void idleWanderingAlert(Enemy* enemy, Character* player, const float& deltaTime)
 {
     Vector2& velocity = enemy->getVelocity();
-    float& chaseTime = enemy->getRadiusEtc(2);
-    const Vector2& wanderingPoint = enemy->getRefWanderingPoint();
+    float& chaseTime = enemy->getRefchaseTime();
+    const Vector2& wanderingPoint = enemy->getConstRefWanderingPoint();
     const Vector2& worldPos = enemy->getRefWorldPos();
 
     float distanceToPlayer{ Vector2Length( Vector2Subtract(player->getWorldPos(), worldPos) ) };
@@ -97,7 +58,7 @@ inline void idleWanderingAlert(Enemy* enemy, Character* player, const float& del
         chaseTime = {};
         velocity = {};
         enemy->setEnemyState(EnemyState::PLAYER_SPOTTED);
-        enemy->playerSpottedSequence(deltaTime);
+        enemy->getTransitionLogic()(enemy, player, deltaTime);
         return;
     }
 
@@ -131,15 +92,33 @@ inline void idleWanderingAlert(Enemy* enemy, Character* player, const float& del
 }
 
 
+// TRANSITION LOGIC
+// =========================================================
+
+void playerSpottedSequence(Enemy* enemy, Character* player, const float& deltaTime)
+{
+    float& chaseTime = enemy->getRefchaseTime();
+
+    chaseTime += deltaTime;
+    if(chaseTime >= 0.5f)
+    {
+        chaseTime = {};
+        enemy->setEnemyState(EnemyState::ACTION);
+        enemy->getActionLogic()(enemy, player, deltaTime);
+        return;
+    }
+}
+
+
 // CONFRONTATION LOGIC
 // =========================================================
 
 inline void chaseTarget(Enemy* enemy, Character* target, const float& deltaTime)
 {
     Vector2& velocity = enemy->getVelocity();
-    float& in_radius = enemy->getRadiusEtc(0);
-    float& out_radius = enemy->getRadiusEtc(1);
-    float& chaseTime = enemy->getRadiusEtc(2);
+    float& in_radius = enemy->radius;
+    float& out_radius = enemy->chaseRadius;
+    float& chaseTime = enemy->getRefchaseTime();
     float& attCooldown = enemy->attackTimer;
 
     // get to target
@@ -186,8 +165,8 @@ inline void chaseTarget(Enemy* enemy, Character* target, const float& deltaTime)
 inline void fleeTarget(Enemy* enemy, Character* target, const float& deltaTime)
 {
     Vector2& velocity = enemy->getVelocity();
-    float& out_radius = enemy->getRadiusEtc(1); // unused
-    float& chaseTime = enemy->getRadiusEtc(2);
+    float& out_radius = enemy->chaseRadius; // unused
+    float& chaseTime = enemy->getRefchaseTime();
     
     // get inverted target direction
     velocity = Vector2Subtract(enemy->getWorldPos(), target->getWorldPos());
@@ -217,7 +196,7 @@ inline void shootTarget(Enemy* this_enemy, Character* target, const float& delta
     Vector2& velocity = this_enemy->getVelocity();
     float& attCooldown = this_enemy->attackTimer;
     float& fleeTimer = this_enemy->fleeTimer;
-    float& chaseTimer = this_enemy->getRadiusEtc(2);
+    float& chaseTimer = this_enemy->getRefchaseTime();
     float& askNearestEnemyTimer = this_enemy->freeUseTimer1;
     Enemy*& nearestEnemy = this_enemy->nearestEnemy;
 
@@ -270,7 +249,6 @@ inline void shootTarget(Enemy* this_enemy, Character* target, const float& delta
         if(chaseTimer < 0.2f) velocity = {};        // wait a bit before chasing
         else if (chaseTimer >= 7.f){                // become neutral after 5 sec chasing
             velocity = {};
-            this_enemy->neutral = true;
             this_enemy->setEnemyState(EnemyState::IDLE);
             chaseTimer = 0.f;
         }
@@ -313,11 +291,52 @@ inline void shootTarget(Enemy* this_enemy, Character* target, const float& delta
 
 // ========= ENEMY DATA STRUCTS ============================
 
-const enemyData DEFAULT_ENEMYDATA{
-    .idle = idleWandering,
-    .behave = chaseTarget
+struct enemyData
+{
+    Texture2D* texture_idle{&Tex::texture_goblin_idle};
+    Texture2D* texture_run{&Tex::texture_goblin_run};
+    int maxFramesIdle{6};
+    int maxFramesRun{6};
+    int frameRows{1};
+    bool ignoreFrameRows{false};
+
+    float speed{};
+    float health{};
+    float damage{};
+    float chase_radius{};
+    int enemyType{};
+    bool isNeutral{false};  // unused
+
+    // Location and size of collisionBox & hurtBox.
+    // x and y are propotional displacement from sprite screen position,
+    // width and height are scaling proportional to texture.
+    Rectangle collisionBox{
+        .x = 0.f,
+        .y = 0.f,
+        .width = 1.f,
+        .height = 1.f,
+    };
+    Rectangle hurtBox{
+        .x = 0.f,
+        .y = 0.f,
+        .width = 1.f,
+        .height = 1.f,
+    };
+
+    const itemData* item_drop{&HEART_ITEMDATA};
+
+    // behaviour functions
+    void(*idleLogic)(Enemy* enemy, Character* player, const float& deltaTime) = idleWandering;
+    void(*transitionLogic)(Enemy* enemy, Character* player, const float& deltaTime) = playerSpottedSequence;
+    void(*actionLogic)(Enemy* enemy, Character* player, const float& deltaTime) = fleeTarget;
 };
-const enemyData SLIME_ENEMYDATA{
+
+const enemyData DEFAULT_ENEMYDATA
+{
+
+};
+const enemyData SLIME_ENEMYDATA
+{
     .texture_idle = &Tex::texture_slime_idle,
     .texture_run = &Tex::texture_slime_run,
     .maxFramesIdle = 6,
@@ -329,10 +348,12 @@ const enemyData SLIME_ENEMYDATA{
     .chase_radius = 300.f,
     .enemyType = 0,
     .item_drop = &HEART_2_ITEMDATA,
-    .idle = idleWandering,
-    .behave = fleeTarget
+    .idleLogic = idleWandering,
+    .transitionLogic = playerSpottedSequence,
+    .actionLogic = fleeTarget
 };
-const enemyData SLIME_BLUE_ENEMYDATA{
+const enemyData SLIME_BLUE_ENEMYDATA
+{
     .texture_idle = &Tex::texture_slime_blue_idle,
     .texture_run = &Tex::texture_slime_blue_run,
     .maxFramesIdle = 6,
@@ -344,10 +365,12 @@ const enemyData SLIME_BLUE_ENEMYDATA{
     .chase_radius = 400.f,
     .enemyType = 0,
     .item_drop = &HEART_3_ITEMDATA,
-    .idle = idleWandering,
-    .behave = chaseTarget
+    .idleLogic = idleWandering,
+    .transitionLogic = playerSpottedSequence,
+    .actionLogic = chaseTarget
 };
-const enemyData MADKNIGHT_ENEMYDATA{
+const enemyData MADKNIGHT_ENEMYDATA
+{
     .texture_idle = &Tex::texture_madknight_idle,
     .texture_run = &Tex::texture_madknight_run,
     .maxFramesIdle = 6,
@@ -366,10 +389,12 @@ const enemyData MADKNIGHT_ENEMYDATA{
         .height = 0.25f
     },
     .item_drop = &COIN_ITEMDATA,
-    .idle = idleWandering,
-    .behave = shootTarget
+    .idleLogic = idleWandering,
+    .transitionLogic = playerSpottedSequence,
+    .actionLogic = shootTarget
 };
-const enemyData RED_ENEMYDATA{
+const enemyData RED_ENEMYDATA
+{
     .texture_idle = &Tex::texture_red_idle,
     .texture_run = &Tex::texture_red_run,
     .maxFramesIdle = 4,
@@ -387,10 +412,12 @@ const enemyData RED_ENEMYDATA{
         .height = 0.5f
     },
     .item_drop = &GEM_ITEMDATA,
-    .idle = idleWanderingAlert,
-    .behave = chaseTarget
+    .idleLogic = idleWanderingAlert,
+    .transitionLogic = playerSpottedSequence,
+    .actionLogic = chaseTarget
 };
-const enemyData GOBLIN_ENEMYDATA{
+const enemyData GOBLIN_ENEMYDATA
+{
     .texture_idle = &Tex::texture_goblin_idle,
     .texture_run = &Tex::texture_goblin_run,
     .maxFramesIdle = 6,
@@ -409,10 +436,12 @@ const enemyData GOBLIN_ENEMYDATA{
         .height = 0.25f
     },
     .item_drop = &COIN_ITEMDATA,
-    .idle = idleWanderingAlert,
-    .behave = chaseTarget
+    .idleLogic = idleWanderingAlert,
+    .transitionLogic = playerSpottedSequence,
+    .actionLogic = chaseTarget
 };
-const enemyData* ENEMYDATA_ARR[]{
+const enemyData* ENEMYDATA_ARR[]
+{
     &SLIME_ENEMYDATA,
     &SLIME_BLUE_ENEMYDATA,
     &MADKNIGHT_ENEMYDATA,
