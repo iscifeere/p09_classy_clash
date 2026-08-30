@@ -464,7 +464,7 @@ Enemy* EntityMng::getNearestEnemyByType(Enemy* this_enemy){     // returns a poi
     Enemy* nearestEnemy{nullptr};
     float distanceToNearestEnemy{};
     float distanceToCurrentEnemy{};
-    int thisEnemyType = this_enemy->getEnemyType();
+    EnemyType thisEnemyType = this_enemy->getEnemyType();
 
     for(Enemy& enemy : enemyPool){
         if(enemy.getAlive() && enemy.getEnemyType() == thisEnemyType && &enemy != this_enemy){
@@ -485,7 +485,7 @@ Enemy* EntityMng::getNearestEnemyByType(Enemy* this_enemy){     // returns a poi
     return nearestEnemy;   // returns nullptr if no enemy is found
 }
 
-Enemy* EntityMng::getNearestEnemyByType(Enemy* this_enemy, int p_EnemyType){    // returns a pointer to the nearest enemy of a specified type
+Enemy* EntityMng::getNearestEnemyByType(Enemy* this_enemy, EnemyType p_EnemyType){    // returns a pointer to the nearest enemy of a specified type
     Enemy* nearestEnemy{nullptr};
     float distanceToNearestEnemy{};
     float distanceToCurrentEnemy{};
@@ -513,7 +513,7 @@ Enemy* EntityMng::getNearestChasingEnemyByType(Enemy* this_enemy){     // return
     Enemy* nearestEnemy{nullptr};
     float distanceToNearestEnemy{};
     float distanceToCurrentEnemy{};
-    int thisEnemyType = this_enemy->getEnemyType();
+    EnemyType thisEnemyType = this_enemy->getEnemyType();
 
     for(Enemy& enemy : enemyPool){
         if(enemy.getAlive() && enemy.getEnemyType() == thisEnemyType && enemy.getEnemyState() == EnemyState::ACTION && &enemy != this_enemy){

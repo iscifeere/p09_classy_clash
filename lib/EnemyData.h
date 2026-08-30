@@ -2,294 +2,18 @@
 #define ENEMYDATA_H
 
 #include "Enemy.h"
-#include "EntityManager.h"
-
-// ========= ENEMY BEHAVIOUR FUNCTIONS ==================================
-
-// IDLE LOGIC
-// =========================================================
-
-inline void idleWandering(Enemy* enemy, Character* player, const float& deltaTime)
-{
-    Vector2& velocity = enemy->getVelocity();
-    float& chaseTime = enemy->getRefchaseTime();
-    const Vector2& wanderingPoint = enemy->getConstRefWanderingPoint();
-    const Vector2& worldPos = enemy->getRefWorldPos();
-
-    if(Vector2Length(velocity) == 0.f) chaseTime += deltaTime;  // start counting when still
-
-    // once every amount of time decide randomly whether to move or stay still
-    if(chaseTime >= 2.f)
-    {
-        if(GetRandomValue(0,2))
-        {
-            // create random point to wander off to
-            Vector2 randomDirection
-            {
-                static_cast<float>(GetRandomValue(-10,10)),
-                static_cast<float>(GetRandomValue(-10,10))
-            };
-            float randomDistance = static_cast<float>(GetRandomValue(100,600));
-            // float randomDistance = 600.f;
-
-            enemy->setWanderingPoint( Vector2Add(worldPos, Vector2Scale(Vector2Normalize(randomDirection), randomDistance)) );
-
-            velocity = Vector2Subtract(wanderingPoint, worldPos);   // get direction to wander point
-        }
-
-        chaseTime = {};
-    }
-    
-    // if too close or far to wander point, stop moving
-    float wanderPointDistance = Vector2Length(Vector2Subtract(wanderingPoint, worldPos));
-    if(wanderPointDistance < 20.f || wanderPointDistance > 610.f) velocity = {};
-}
-
-inline void idleWanderingAlert(Enemy* enemy, Character* player, const float& deltaTime)
-{
-    Vector2& velocity = enemy->getVelocity();
-    float& chaseTime = enemy->getRefchaseTime();
-    const Vector2& wanderingPoint = enemy->getConstRefWanderingPoint();
-    const Vector2& worldPos = enemy->getRefWorldPos();
-
-    float distanceToPlayer{ Vector2Length( Vector2Subtract(player->getWorldPos(), worldPos) ) };
-    if(distanceToPlayer < 400.f)
-    {
-        chaseTime = {};
-        velocity = {};
-        enemy->setEnemyState(EnemyState::PLAYER_SPOTTED);
-        enemy->getTransitionLogic()(enemy, player, deltaTime);
-        return;
-    }
-
-    if(Vector2Length(velocity) == 0.f) chaseTime += deltaTime;  // start counting when still
-
-    // once every amount of time decide randomly whether to move or stay still
-    if(chaseTime >= 2.f)
-    {
-        if(GetRandomValue(0,2))
-        {
-            // create random point to wander off to
-            Vector2 randomDirection
-            {
-                static_cast<float>(GetRandomValue(-10,10)),
-                static_cast<float>(GetRandomValue(-10,10))
-            };
-            float randomDistance = static_cast<float>(GetRandomValue(100,600));
-            // float randomDistance = 600.f;
-
-            enemy->setWanderingPoint( Vector2Add(worldPos, Vector2Scale(Vector2Normalize(randomDirection), randomDistance)) );
-
-            velocity = Vector2Subtract(wanderingPoint, worldPos);   // get direction to wander point
-        }
-
-        chaseTime = {};
-    }
-    
-    // if too close or far to wander point, stop moving
-    float wanderPointDistance = Vector2Length(Vector2Subtract(wanderingPoint, worldPos));
-    if(wanderPointDistance < 20.f || wanderPointDistance > 610.f) velocity = {};
-}
-
-
-// TRANSITION LOGIC
-// =========================================================
-
-void playerSpottedSequence(Enemy* enemy, Character* player, const float& deltaTime)
-{
-    float& chaseTime = enemy->getRefchaseTime();
-
-    chaseTime += deltaTime;
-    if(chaseTime >= 0.5f)
-    {
-        chaseTime = {};
-        enemy->setEnemyState(EnemyState::ACTION);
-        enemy->getActionLogic()(enemy, player, deltaTime);
-        return;
-    }
-}
-
-
-// CONFRONTATION LOGIC
-// =========================================================
-
-inline void chaseTarget(Enemy* enemy, Character* target, const float& deltaTime)
-{
-    Vector2& velocity = enemy->getVelocity();
-    float& in_radius = enemy->radius;
-    float& out_radius = enemy->chaseRadius;
-    float& chaseTime = enemy->getRefchaseTime();
-    float& attCooldown = enemy->attackTimer;
-
-    // get to target
-    velocity = Vector2Subtract(target->getWorldPos(), enemy->getWorldPos());
-    float distance = Vector2Length(velocity);
-
-    if(attCooldown == 0.f)      // if attack cooldown is off
-    {
-        // damage player on contact
-        if(CheckCollisionRecs(target->getHurtRec(),enemy->getHurtRec()))
-        {
-            target->takeDamage(enemy->getDamage());
-            EntityMng::createKnockbackForce(Vector2Normalize(velocity), 25.f, target); // TO DO testing
-            attCooldown += deltaTime;
-        }
-    }
-    else if(attCooldown >= 1.f)
-    {
-        attCooldown = 0.f;
-    }
-    else
-    {
-        attCooldown += deltaTime;
-    }
-
-    // if too close / too far -> don't chase
-    if(distance < in_radius){
-        velocity = {};
-        chaseTime = 0.f;
-        return;
-    }
-    else if(distance > out_radius)
-    {
-        velocity = {};
-        chaseTime = 0.f;
-        enemy->setEnemyState(EnemyState::IDLE);
-        return;
-    }
-
-    chaseTime += deltaTime;
-    if(chaseTime < 0.2f || chaseTime >= 5.f) velocity = {}; // wait a bit to move, and at 5 sec stop
-}
-
-inline void fleeTarget(Enemy* enemy, Character* target, const float& deltaTime)
-{
-    Vector2& velocity = enemy->getVelocity();
-    float& out_radius = enemy->chaseRadius; // unused
-    float& chaseTime = enemy->getRefchaseTime();
-    
-    // get inverted target direction
-    velocity = Vector2Subtract(enemy->getWorldPos(), target->getWorldPos());
-    float distance = Vector2Length(velocity);
-
-    // if too far don't flee
-    if(distance > 600.f){
-      velocity = {};
-      chaseTime = 0.f;
-      enemy->setEnemyState(EnemyState::IDLE);
-      return;
-    }
-
-    chaseTime += deltaTime;
-    
-    if(chaseTime < 0.2f) velocity = {}; // wait a bit to start moving
-    else if (chaseTime >= 5.f){ // after 5 sec return to idle
-        velocity = {};
-        chaseTime = 0.f;
-        enemy->setEnemyState(EnemyState::IDLE);
-        return;
-    }
-}
-
-inline void shootTarget(Enemy* this_enemy, Character* target, const float& deltaTime)
-{
-    Vector2& velocity = this_enemy->getVelocity();
-    float& attCooldown = this_enemy->attackTimer;
-    float& fleeTimer = this_enemy->fleeTimer;
-    float& chaseTimer = this_enemy->getRefchaseTime();
-    float& askNearestEnemyTimer = this_enemy->freeUseTimer1;
-    Enemy*& nearestEnemy = this_enemy->nearestEnemy;
-
-    // get target direction
-    Vector2 vecToPlayer = Vector2Subtract(target->getWorldPos(), this_enemy->getWorldPos());
-    float distanceToPlayer = Vector2Length(vecToPlayer);
-    velocity = vecToPlayer;
-    
-    // get direction of nearest enemy of same type
-    Vector2 vecAwayFromNearestEnemy{};
-    float distanceToNearestEnemy{};
-
-    if(askNearestEnemyTimer == 0.f)
-    {
-        nearestEnemy = EntityMng::getNearestChasingEnemyByType(this_enemy);    // expensive function, shouldn't be done every frame
-        askNearestEnemyTimer += deltaTime;
-    }
-    else if(askNearestEnemyTimer >= 0.7f) askNearestEnemyTimer = 0.f;
-    else askNearestEnemyTimer += deltaTime;
-
-    if(nearestEnemy != nullptr)
-    {
-        vecAwayFromNearestEnemy = Vector2Subtract(this_enemy->getWorldPos(), nearestEnemy->getWorldPos());
-        distanceToNearestEnemy = Vector2Length(vecAwayFromNearestEnemy);
-    }
-
-    if(this_enemy->flee)
-    {
-        velocity = Vector2Scale(vecToPlayer, -1.f);
-
-        fleeTimer += deltaTime;
-        if(fleeTimer >= 0.7f && distanceToPlayer > 380.f) {fleeTimer = 0.f; this_enemy->flee = false;}
-    }
-    
-    // get away from near enemy
-    if(distanceToNearestEnemy <= 200.f)     // if too close to nearest enemy, prioritize them
-    {
-        velocity = Vector2Add( Vector2Scale(velocity, 0.2f), Vector2Scale(vecAwayFromNearestEnemy, 0.8f) );
-    }
-    else if(distanceToNearestEnemy <= 400.f)    // if nearest enemy and player are equally distant, get away from both
-    {
-        velocity = Vector2Add( Vector2Scale(velocity, 0.5f), Vector2Scale(vecAwayFromNearestEnemy, 0.5f) );
-    }
-        
-    if(distanceToPlayer > 430.f)
-    {
-        this_enemy->chase = true;
-        
-        chaseTimer += deltaTime;
-        if(chaseTimer < 0.2f) velocity = {};        // wait a bit before chasing
-        else if (chaseTimer >= 7.f){                // become neutral after 5 sec chasing
-            velocity = {};
-            this_enemy->setEnemyState(EnemyState::IDLE);
-            chaseTimer = 0.f;
-        }
-
-        return;
-    }
-    
-    chaseTimer = 0.f;
-    
-    // if in radius -> stop and shoot
-    if(!this_enemy->flee)
-    {   
-        if(distanceToPlayer <= 360.f)
-        {
-            this_enemy->chase = false;
-        }
-        if(!this_enemy->chase)
-        {
-            if(distanceToPlayer >= 215.f)
-            {
-                if(attCooldown == 0.f){     // if cooldown is off -> shoot proyectile
-                    // velocity = vecToPlayer;
-                    EntityMng::spawnProyectile(this_enemy->getWorldPos(), vecToPlayer, true);
-                    attCooldown += deltaTime;
-                } else if (attCooldown >= 0.8f) attCooldown = 0.f;
-                else attCooldown += deltaTime;
-                
-                this_enemy->setDrawColor(BLUE);
-            }
-            else {
-                // if too close -> get away
-                this_enemy->flee = true;
-            }
-            velocity = {};
-        }
-    }
-    
-}
-
+#include "EnemyBehaviour.h"
 
 // ========= ENEMY DATA STRUCTS ============================
+
+enum class EnemyType
+{
+    ENEMY_SLIME,
+    ENEMY_SLIME_BLUE,
+    ENEMY_MAD_KNIGHT,
+    ENEMY_RED,
+    ENEMY_GOBLIN
+};
 
 struct enemyData
 {
@@ -304,7 +28,7 @@ struct enemyData
     float health{};
     float damage{};
     float chase_radius{};
-    int enemyType{};
+    EnemyType enemyType{EnemyType::ENEMY_SLIME};
     bool isNeutral{false};  // unused
 
     // Location and size of collisionBox & hurtBox.
@@ -326,9 +50,9 @@ struct enemyData
     const itemData* item_drop{&HEART_ITEMDATA};
 
     // behaviour functions
-    void(*idleLogic)(Enemy* enemy, Character* player, const float& deltaTime) = idleWandering;
-    void(*transitionLogic)(Enemy* enemy, Character* player, const float& deltaTime) = playerSpottedSequence;
-    void(*actionLogic)(Enemy* enemy, Character* player, const float& deltaTime) = fleeTarget;
+    void (*idleLogic)(Enemy* thisEnemy, Character* player, const float& deltaTime) = EnemyBehaviour::idleWandering;
+    void (*transitionLogic)(Enemy* thisEnemy, Character* player, const float& deltaTime) = EnemyBehaviour::playerSpottedSequence;
+    void (*actionLogic)(Enemy* thisEnemy, Character* player, const float& deltaTime) = EnemyBehaviour::fleeTarget;
 };
 
 const enemyData DEFAULT_ENEMYDATA
@@ -346,11 +70,11 @@ const enemyData SLIME_ENEMYDATA
     .health = 40.f,
     .damage = 5.f,
     .chase_radius = 300.f,
-    .enemyType = 0,
+    .enemyType = EnemyType::ENEMY_SLIME,
     .item_drop = &HEART_2_ITEMDATA,
-    .idleLogic = idleWandering,
-    .transitionLogic = playerSpottedSequence,
-    .actionLogic = fleeTarget
+    .idleLogic = EnemyBehaviour::idleWandering,
+    .transitionLogic = EnemyBehaviour::playerSpottedSequence,
+    .actionLogic = EnemyBehaviour::fleeTarget
 };
 const enemyData SLIME_BLUE_ENEMYDATA
 {
@@ -363,11 +87,11 @@ const enemyData SLIME_BLUE_ENEMYDATA
     .health = 80.f,
     .damage = 10.f,
     .chase_radius = 400.f,
-    .enemyType = 0,
+    .enemyType = EnemyType::ENEMY_SLIME_BLUE,
     .item_drop = &HEART_3_ITEMDATA,
-    .idleLogic = idleWandering,
-    .transitionLogic = playerSpottedSequence,
-    .actionLogic = chaseTarget
+    .idleLogic = EnemyBehaviour::idleWandering,
+    .transitionLogic = EnemyBehaviour::playerSpottedSequence,
+    .actionLogic = EnemyBehaviour::chaseTarget
 };
 const enemyData MADKNIGHT_ENEMYDATA
 {
@@ -380,7 +104,7 @@ const enemyData MADKNIGHT_ENEMYDATA
     .health = 120.f,
     .damage = 10.f,
     .chase_radius = 400.f,
-    .enemyType = 1,
+    .enemyType = EnemyType::ENEMY_MAD_KNIGHT,
     .isNeutral = true,
     .collisionBox = {
         .x = 0.2f,
@@ -389,9 +113,9 @@ const enemyData MADKNIGHT_ENEMYDATA
         .height = 0.25f
     },
     .item_drop = &COIN_ITEMDATA,
-    .idleLogic = idleWandering,
-    .transitionLogic = playerSpottedSequence,
-    .actionLogic = shootTarget
+    .idleLogic = EnemyBehaviour::idleWandering,
+    .transitionLogic = EnemyBehaviour::playerSpottedSequence,
+    .actionLogic = EnemyBehaviour::shootTarget
 };
 const enemyData RED_ENEMYDATA
 {
@@ -404,7 +128,7 @@ const enemyData RED_ENEMYDATA
     .health = 120.f,
     .damage = 10.f,
     .chase_radius = 400.f,
-    .enemyType = 2,
+    .enemyType = EnemyType::ENEMY_RED,
     .collisionBox = {
         .x = 0.25f,
         .y = 0.25f,
@@ -412,9 +136,9 @@ const enemyData RED_ENEMYDATA
         .height = 0.5f
     },
     .item_drop = &GEM_ITEMDATA,
-    .idleLogic = idleWanderingAlert,
-    .transitionLogic = playerSpottedSequence,
-    .actionLogic = chaseTarget
+    .idleLogic = EnemyBehaviour::idleWanderingAlert,
+    .transitionLogic = EnemyBehaviour::playerSpottedSequence,
+    .actionLogic = EnemyBehaviour::chaseTarget
 };
 const enemyData GOBLIN_ENEMYDATA
 {
@@ -427,7 +151,7 @@ const enemyData GOBLIN_ENEMYDATA
     .health = 80.f,
     .damage = 10.f,
     .chase_radius = 400.f,
-    .enemyType = 3,
+    .enemyType = EnemyType::ENEMY_GOBLIN,
     .isNeutral = true,
     .collisionBox = {
         .x = 0.2f,
@@ -436,9 +160,9 @@ const enemyData GOBLIN_ENEMYDATA
         .height = 0.25f
     },
     .item_drop = &COIN_ITEMDATA,
-    .idleLogic = idleWanderingAlert,
-    .transitionLogic = playerSpottedSequence,
-    .actionLogic = chaseTarget
+    .idleLogic = EnemyBehaviour::idleWanderingAlert,
+    .transitionLogic = EnemyBehaviour::playerSpottedSequence,
+    .actionLogic = EnemyBehaviour::chaseTarget
 };
 const enemyData* ENEMYDATA_ARR[]
 {

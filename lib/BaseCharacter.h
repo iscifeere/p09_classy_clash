@@ -10,13 +10,10 @@ class BaseCharacter : public Entity
 public:
     BaseCharacter();
     
-    // Vector2 getWorldPos(){ return worldPos; }
     Vector2 getWorldPos(){ return worldPos; }
-    const Vector2& getRefWorldPos(){ return worldPos; }
     void undoMovementX();
     void undoMovementY();
     virtual bool tick(float deltaTime);
-    // virtual Vector2 getScreenPos() = 0;
     bool getAlive() { return alive; }
     void setAlive( bool isAlive ) { alive = isAlive; }
     void setSpeed( float newSpeed ) { speed = newSpeed; }
@@ -26,7 +23,6 @@ public:
     bool getInvul(){ return invul; }
     virtual void deathSequence() = 0;
     virtual void addHealth( float healthAdd ) { health += healthAdd; }
-    Vector2& getVelocity(){ return velocity; }      // returns a reference
     virtual void render();
     virtual void showDebugData() = 0;
     void setWorldPos( Vector2 newPos ){ worldPos = newPos; }
@@ -54,9 +50,6 @@ protected:
     bool ignoreFrameRows{false};
     float updateTime{1.f/12.f};
     float speed{5.f};
-    // float frameWidth{};
-    // float frameHeight{};
-    // float scale{8.0f};
     
     Vector2 velocity{};
     Vector2 movement{};

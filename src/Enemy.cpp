@@ -29,7 +29,7 @@ void Enemy::init(){
     idleLogic = data->idleLogic;
     transitionLogic = data->transitionLogic;
     actionLogic = data->actionLogic;
-    currentStateLogic = idleLogic;
+    currentStateLogic = data->idleLogic;
 }
 
 Enemy::Enemy(){
@@ -37,22 +37,6 @@ Enemy::Enemy(){
     setAlive(false);
     target = EntityMng::getPlayerPtr();
     data = &DEFAULT_ENEMYDATA;
-    init();
-}
-
-Enemy::Enemy(Vector2 pos)
-{
-    worldPos = pos;
-    target = EntityMng::getPlayerPtr();
-    data = &DEFAULT_ENEMYDATA;
-    init();
-}
-
-Enemy::Enemy(Vector2 pos, const enemyData* enemy_data)
-{
-    worldPos = pos;
-    target = EntityMng::getPlayerPtr();
-    data = enemy_data;
     init();
 }
 
@@ -191,7 +175,7 @@ void Enemy::render(){
     drawColor = WHITE;    // reset color
 }
 
-int Enemy::getEnemyType()
+EnemyType Enemy::getEnemyType()
 {
     return data->enemyType;
 }

@@ -61,7 +61,7 @@ public:
     static void spawnRandomEnemies();
     static Enemy* getNearestEnemy(Enemy* this_enemy);
     static Enemy* getNearestEnemyByType(Enemy* this_enemy);
-    static Enemy* getNearestEnemyByType(Enemy* this_enemy, int p_EnemyType);
+    static Enemy* getNearestEnemyByType(Enemy* this_enemy, EnemyType p_EnemyType);
     static Enemy* getNearestChasingEnemyByType(Enemy* this_enemy);
 
 private:
