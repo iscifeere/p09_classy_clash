@@ -61,7 +61,7 @@ bool Enemy::tick(float deltaTime){
     if (!getAlive()) return false;    // if not alive, do nothing and return false
 
     // ====== MOVEMENT ============
-    currentStateLogic(this, target, deltaTime);
+    currentStateLogic(*this, target, deltaTime);
 
     // ====== TICK AND VARIABLE RESETS ============
     BaseCharacter::tick(deltaTime);

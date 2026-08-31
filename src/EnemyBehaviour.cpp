@@ -1,4 +1,4 @@
-#include "EnemyBehaviour.h"
+#include "EnemyBehaviourManager.h"
 #include "EntityManager.h"
 
 // ========= ENEMY BEHAVIOUR FUNCTIONS ==================================
@@ -6,12 +6,12 @@
 // IDLE LOGIC
 // =========================================================
 
-void EnemyBehaviour::idleWandering(Enemy* thisEnemy, Character* player, const float& deltaTime)
+void EnemyBehaviourManager::idleWandering(Enemy& thisEnemy, Character* player, const float& deltaTime)
 {
-    Vector2& velocity = thisEnemy->velocity;
-    float& chaseTime = thisEnemy->chaseTime;
-    const Vector2& wanderingPoint = thisEnemy->wanderingPoint;
-    const Vector2& worldPos = thisEnemy->worldPos;
+    Vector2& velocity = thisEnemy.velocity;
+    float& chaseTime = thisEnemy.chaseTime;
+    const Vector2& wanderingPoint = thisEnemy.wanderingPoint;
+    const Vector2& worldPos = thisEnemy.worldPos;
 
     if(Vector2Length(velocity) == 0.f) chaseTime += deltaTime;  // start counting when still
 
@@ -29,7 +29,7 @@ void EnemyBehaviour::idleWandering(Enemy* thisEnemy, Character* player, const fl
             float randomDistance = static_cast<float>(GetRandomValue(100,600));
             // float randomDistance = 600.f;
 
-            thisEnemy->setWanderingPoint( Vector2Add(worldPos, Vector2Scale(Vector2Normalize(randomDirection), randomDistance)) );
+            thisEnemy.setWanderingPoint( Vector2Add(worldPos, Vector2Scale(Vector2Normalize(randomDirection), randomDistance)) );
 
             velocity = Vector2Subtract(wanderingPoint, worldPos);   // get direction to wander point
         }
@@ -42,20 +42,20 @@ void EnemyBehaviour::idleWandering(Enemy* thisEnemy, Character* player, const fl
     if(wanderPointDistance < 20.f || wanderPointDistance > 610.f) velocity = {};
 }
 
-void EnemyBehaviour::idleWanderingAlert(Enemy* thisEnemy, Character* player, const float& deltaTime)
+void EnemyBehaviourManager::idleWanderingAlert(Enemy& thisEnemy, Character* player, const float& deltaTime)
 {
-    Vector2& velocity = thisEnemy->velocity;
-    float& chaseTime = thisEnemy->chaseTime;
-    const Vector2& wanderingPoint = thisEnemy->wanderingPoint;
-    const Vector2& worldPos = thisEnemy->worldPos;
+    Vector2& velocity = thisEnemy.velocity;
+    float& chaseTime = thisEnemy.chaseTime;
+    const Vector2& wanderingPoint = thisEnemy.wanderingPoint;
+    const Vector2& worldPos = thisEnemy.worldPos;
 
     float distanceToPlayer{ Vector2Length( Vector2Subtract(player->getWorldPos(), worldPos) ) };
     if(distanceToPlayer < 400.f)
     {
         chaseTime = {};
         velocity = {};
-        thisEnemy->setEnemyState(EnemyState::PLAYER_SPOTTED);
-        thisEnemy->transitionLogic(thisEnemy, player, deltaTime);
+        thisEnemy.setEnemyState(EnemyState::PLAYER_SPOTTED);
+        thisEnemy.transitionLogic(thisEnemy, player, deltaTime);
         return;
     }
 
@@ -75,7 +75,7 @@ void EnemyBehaviour::idleWanderingAlert(Enemy* thisEnemy, Character* player, con
             float randomDistance = static_cast<float>(GetRandomValue(100,600));
             // float randomDistance = 600.f;
 
-            thisEnemy->setWanderingPoint( Vector2Add(worldPos, Vector2Scale(Vector2Normalize(randomDirection), randomDistance)) );
+            thisEnemy.setWanderingPoint( Vector2Add(worldPos, Vector2Scale(Vector2Normalize(randomDirection), randomDistance)) );
 
             velocity = Vector2Subtract(wanderingPoint, worldPos);   // get direction to wander point
         }
@@ -92,16 +92,16 @@ void EnemyBehaviour::idleWanderingAlert(Enemy* thisEnemy, Character* player, con
 // TRANSITION LOGIC
 // =========================================================
 
-void EnemyBehaviour::playerSpottedSequence(Enemy* thisEnemy, Character* player, const float& deltaTime)
+void EnemyBehaviourManager::playerSpottedSequence(Enemy& thisEnemy, Character* player, const float& deltaTime)
 {
-    float& chaseTime = thisEnemy->chaseTime;
+    float& chaseTime = thisEnemy.chaseTime;
 
     chaseTime += deltaTime;
     if(chaseTime >= 0.5f)
     {
         chaseTime = {};
-        thisEnemy->setEnemyState(EnemyState::ACTION);
-        thisEnemy->actionLogic(thisEnemy, player, deltaTime);
+        thisEnemy.setEnemyState(EnemyState::ACTION);
+        thisEnemy.actionLogic(thisEnemy, player, deltaTime);
         return;
     }
 }
@@ -110,24 +110,24 @@ void EnemyBehaviour::playerSpottedSequence(Enemy* thisEnemy, Character* player, 
 // CONFRONTATION LOGIC
 // =========================================================
 
-void EnemyBehaviour::chaseTarget(Enemy* thisEnemy, Character* target, const float& deltaTime)
+void EnemyBehaviourManager::chaseTarget(Enemy& thisEnemy, Character* target, const float& deltaTime)
 {
-    Vector2& velocity = thisEnemy->velocity;
-    float& in_radius = thisEnemy->radius;
-    float& out_radius = thisEnemy->chaseRadius;
-    float& chaseTime = thisEnemy->chaseTime;
-    float& attCooldown = thisEnemy->attackTimer;
+    Vector2& velocity = thisEnemy.velocity;
+    float& in_radius = thisEnemy.radius;
+    float& out_radius = thisEnemy.chaseRadius;
+    float& chaseTime = thisEnemy.chaseTime;
+    float& attCooldown = thisEnemy.attackTimer;
 
     // get to target
-    velocity = Vector2Subtract(target->getWorldPos(), thisEnemy->getWorldPos());
+    velocity = Vector2Subtract(target->getWorldPos(), thisEnemy.getWorldPos());
     float distance = Vector2Length(velocity);
 
     if(attCooldown == 0.f)      // if attack cooldown is off
     {
         // damage player on contact
-        if(CheckCollisionRecs(target->getHurtRec(),thisEnemy->getHurtRec()))
+        if(CheckCollisionRecs(target->getHurtRec(),thisEnemy.getHurtRec()))
         {
-            target->takeDamage(thisEnemy->getDamage());
+            target->takeDamage(thisEnemy.getDamage());
             EntityMng::createKnockbackForce(Vector2Normalize(velocity), 25.f, target); // TO DO testing
             attCooldown += deltaTime;
         }
@@ -151,7 +151,7 @@ void EnemyBehaviour::chaseTarget(Enemy* thisEnemy, Character* target, const floa
     {
         velocity = {};
         chaseTime = 0.f;
-        thisEnemy->setEnemyState(EnemyState::IDLE);
+        thisEnemy.setEnemyState(EnemyState::IDLE);
         return;
     }
 
@@ -159,21 +159,21 @@ void EnemyBehaviour::chaseTarget(Enemy* thisEnemy, Character* target, const floa
     if(chaseTime < 0.2f || chaseTime >= 5.f) velocity = {}; // wait a bit to move, and at 5 sec stop
 }
 
-void EnemyBehaviour::fleeTarget(Enemy* thisEnemy, Character* target, const float& deltaTime)
+void EnemyBehaviourManager::fleeTarget(Enemy& thisEnemy, Character* target, const float& deltaTime)
 {
-    Vector2& velocity = thisEnemy->velocity;
-    float& out_radius = thisEnemy->chaseRadius; // unused
-    float& chaseTime = thisEnemy->chaseTime;
+    Vector2& velocity = thisEnemy.velocity;
+    float& out_radius = thisEnemy.chaseRadius; // unused
+    float& chaseTime = thisEnemy.chaseTime;
     
     // get inverted target direction
-    velocity = Vector2Subtract(thisEnemy->getWorldPos(), target->getWorldPos());
+    velocity = Vector2Subtract(thisEnemy.getWorldPos(), target->getWorldPos());
     float distance = Vector2Length(velocity);
 
     // if too far don't flee
     if(distance > 600.f){
       velocity = {};
       chaseTime = 0.f;
-      thisEnemy->setEnemyState(EnemyState::IDLE);
+      thisEnemy.setEnemyState(EnemyState::IDLE);
       return;
     }
 
@@ -183,22 +183,22 @@ void EnemyBehaviour::fleeTarget(Enemy* thisEnemy, Character* target, const float
     else if (chaseTime >= 5.f){ // after 5 sec return to idle
         velocity = {};
         chaseTime = 0.f;
-        thisEnemy->setEnemyState(EnemyState::IDLE);
+        thisEnemy.setEnemyState(EnemyState::IDLE);
         return;
     }
 }
 
-void EnemyBehaviour::shootTarget(Enemy* thisEnemy, Character* target, const float& deltaTime)
+void EnemyBehaviourManager::shootTarget(Enemy& thisEnemy, Character* target, const float& deltaTime)
 {
-    Vector2& velocity = thisEnemy->velocity;
-    float& attCooldown = thisEnemy->attackTimer;
-    float& fleeTimer = thisEnemy->fleeTimer;
-    float& chaseTimer = thisEnemy->chaseTime;
-    float& askNearestEnemyTimer = thisEnemy->freeUseTimer1;
-    Enemy*& nearestEnemy = thisEnemy->nearestEnemy;
+    Vector2& velocity = thisEnemy.velocity;
+    float& attCooldown = thisEnemy.attackTimer;
+    float& fleeTimer = thisEnemy.fleeTimer;
+    float& chaseTimer = thisEnemy.chaseTime;
+    float& askNearestEnemyTimer = thisEnemy.freeUseTimer1;
+    Enemy*& nearestEnemy = thisEnemy.nearestEnemy;
 
     // get target direction
-    Vector2 vecToPlayer = Vector2Subtract(target->getWorldPos(), thisEnemy->getWorldPos());
+    Vector2 vecToPlayer = Vector2Subtract(target->getWorldPos(), thisEnemy.getWorldPos());
     float distanceToPlayer = Vector2Length(vecToPlayer);
     velocity = vecToPlayer;
     
@@ -208,7 +208,7 @@ void EnemyBehaviour::shootTarget(Enemy* thisEnemy, Character* target, const floa
 
     if(askNearestEnemyTimer == 0.f)
     {
-        nearestEnemy = EntityMng::getNearestChasingEnemyByType(thisEnemy);    // TO DO expensive function, shouldn't be done every frame
+        nearestEnemy = EntityMng::getNearestChasingEnemyByType(&thisEnemy);    // TO DO expensive function, shouldn't be done every frame
         askNearestEnemyTimer += deltaTime;
     }
     else if(askNearestEnemyTimer >= 0.7f) askNearestEnemyTimer = 0.f;
@@ -216,16 +216,16 @@ void EnemyBehaviour::shootTarget(Enemy* thisEnemy, Character* target, const floa
 
     if(nearestEnemy != nullptr)
     {
-        vecAwayFromNearestEnemy = Vector2Subtract(thisEnemy->getWorldPos(), nearestEnemy->getWorldPos());
+        vecAwayFromNearestEnemy = Vector2Subtract(thisEnemy.getWorldPos(), nearestEnemy->getWorldPos());
         distanceToNearestEnemy = Vector2Length(vecAwayFromNearestEnemy);
     }
 
-    if(thisEnemy->flee)
+    if(thisEnemy.flee)
     {
         velocity = Vector2Scale(vecToPlayer, -1.f);
 
         fleeTimer += deltaTime;
-        if(fleeTimer >= 0.7f && distanceToPlayer > 380.f) {fleeTimer = 0.f; thisEnemy->flee = false;}
+        if(fleeTimer >= 0.7f && distanceToPlayer > 380.f) {fleeTimer = 0.f; thisEnemy.flee = false;}
     }
     
     // get away from near enemy
@@ -240,13 +240,13 @@ void EnemyBehaviour::shootTarget(Enemy* thisEnemy, Character* target, const floa
         
     if(distanceToPlayer > 430.f)
     {
-        thisEnemy->chase = true;
+        thisEnemy.chase = true;
         
         chaseTimer += deltaTime;
         if(chaseTimer < 0.2f) velocity = {};        // wait a bit before chasing
         else if (chaseTimer >= 7.f){                // become neutral after 5 sec chasing
             velocity = {};
-            thisEnemy->setEnemyState(EnemyState::IDLE);
+            thisEnemy.setEnemyState(EnemyState::IDLE);
             chaseTimer = 0.f;
         }
 
@@ -256,28 +256,28 @@ void EnemyBehaviour::shootTarget(Enemy* thisEnemy, Character* target, const floa
     chaseTimer = 0.f;
     
     // if in radius -> stop and shoot
-    if(!thisEnemy->flee)
+    if(!thisEnemy.flee)
     {   
         if(distanceToPlayer <= 360.f)
         {
-            thisEnemy->chase = false;
+            thisEnemy.chase = false;
         }
-        if(!thisEnemy->chase)
+        if(!thisEnemy.chase)
         {
             if(distanceToPlayer >= 215.f)
             {
                 if(attCooldown == 0.f){     // if cooldown is off -> shoot proyectile
                     // velocity = vecToPlayer;
-                    EntityMng::spawnProyectile(thisEnemy->getWorldPos(), vecToPlayer, true);
+                    EntityMng::spawnProyectile(thisEnemy.getWorldPos(), vecToPlayer, true);
                     attCooldown += deltaTime;
                 } else if (attCooldown >= 0.8f) attCooldown = 0.f;
                 else attCooldown += deltaTime;
                 
-                thisEnemy->setDrawColor(BLUE);
+                thisEnemy.setDrawColor(BLUE);
             }
             else {
                 // if too close -> get away
-                thisEnemy->flee = true;
+                thisEnemy.flee = true;
             }
             velocity = {};
         }

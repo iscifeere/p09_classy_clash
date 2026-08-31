@@ -2,7 +2,7 @@
 #define ENEMYDATA_H
 
 #include "Enemy.h"
-#include "EnemyBehaviour.h"
+#include "EnemyBehaviourManager.h"
 
 // ========= ENEMY DATA STRUCTS ============================
 
@@ -50,9 +50,9 @@ struct enemyData
     const itemData* item_drop{&HEART_ITEMDATA};
 
     // behaviour functions
-    void (*idleLogic)(Enemy* thisEnemy, Character* player, const float& deltaTime) = EnemyBehaviour::idleWandering;
-    void (*transitionLogic)(Enemy* thisEnemy, Character* player, const float& deltaTime) = EnemyBehaviour::playerSpottedSequence;
-    void (*actionLogic)(Enemy* thisEnemy, Character* player, const float& deltaTime) = EnemyBehaviour::fleeTarget;
+    void (*idleLogic)(Enemy& thisEnemy, Character* player, const float& deltaTime) = EnemyBehaviourManager::idleWandering;
+    void (*transitionLogic)(Enemy& thisEnemy, Character* player, const float& deltaTime) = EnemyBehaviourManager::playerSpottedSequence;
+    void (*actionLogic)(Enemy& thisEnemy, Character* player, const float& deltaTime) = EnemyBehaviourManager::fleeTarget;
 };
 
 const enemyData DEFAULT_ENEMYDATA
@@ -72,9 +72,9 @@ const enemyData SLIME_ENEMYDATA
     .chase_radius = 300.f,
     .enemyType = EnemyType::ENEMY_SLIME,
     .item_drop = &HEART_2_ITEMDATA,
-    .idleLogic = EnemyBehaviour::idleWandering,
-    .transitionLogic = EnemyBehaviour::playerSpottedSequence,
-    .actionLogic = EnemyBehaviour::fleeTarget
+    .idleLogic = EnemyBehaviourManager::idleWandering,
+    .transitionLogic = EnemyBehaviourManager::playerSpottedSequence,
+    .actionLogic = EnemyBehaviourManager::fleeTarget
 };
 const enemyData SLIME_BLUE_ENEMYDATA
 {
@@ -89,9 +89,9 @@ const enemyData SLIME_BLUE_ENEMYDATA
     .chase_radius = 400.f,
     .enemyType = EnemyType::ENEMY_SLIME_BLUE,
     .item_drop = &HEART_3_ITEMDATA,
-    .idleLogic = EnemyBehaviour::idleWandering,
-    .transitionLogic = EnemyBehaviour::playerSpottedSequence,
-    .actionLogic = EnemyBehaviour::chaseTarget
+    .idleLogic = EnemyBehaviourManager::idleWandering,
+    .transitionLogic = EnemyBehaviourManager::playerSpottedSequence,
+    .actionLogic = EnemyBehaviourManager::chaseTarget
 };
 const enemyData MADKNIGHT_ENEMYDATA
 {
@@ -113,9 +113,9 @@ const enemyData MADKNIGHT_ENEMYDATA
         .height = 0.25f
     },
     .item_drop = &COIN_ITEMDATA,
-    .idleLogic = EnemyBehaviour::idleWandering,
-    .transitionLogic = EnemyBehaviour::playerSpottedSequence,
-    .actionLogic = EnemyBehaviour::shootTarget
+    .idleLogic = EnemyBehaviourManager::idleWandering,
+    .transitionLogic = EnemyBehaviourManager::playerSpottedSequence,
+    .actionLogic = EnemyBehaviourManager::shootTarget
 };
 const enemyData RED_ENEMYDATA
 {
@@ -136,9 +136,9 @@ const enemyData RED_ENEMYDATA
         .height = 0.5f
     },
     .item_drop = &GEM_ITEMDATA,
-    .idleLogic = EnemyBehaviour::idleWanderingAlert,
-    .transitionLogic = EnemyBehaviour::playerSpottedSequence,
-    .actionLogic = EnemyBehaviour::chaseTarget
+    .idleLogic = EnemyBehaviourManager::idleWanderingAlert,
+    .transitionLogic = EnemyBehaviourManager::playerSpottedSequence,
+    .actionLogic = EnemyBehaviourManager::chaseTarget
 };
 const enemyData GOBLIN_ENEMYDATA
 {
@@ -160,9 +160,9 @@ const enemyData GOBLIN_ENEMYDATA
         .height = 0.25f
     },
     .item_drop = &COIN_ITEMDATA,
-    .idleLogic = EnemyBehaviour::idleWanderingAlert,
-    .transitionLogic = EnemyBehaviour::playerSpottedSequence,
-    .actionLogic = EnemyBehaviour::chaseTarget
+    .idleLogic = EnemyBehaviourManager::idleWanderingAlert,
+    .transitionLogic = EnemyBehaviourManager::playerSpottedSequence,
+    .actionLogic = EnemyBehaviourManager::chaseTarget
 };
 const enemyData* ENEMYDATA_ARR[]
 {

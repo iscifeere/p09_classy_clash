@@ -8,7 +8,7 @@
 #include "Item.h"
 #include "GenericEntity.h"
 
-class EnemyBehaviour;
+class EnemyBehaviourManager;
 struct enemyData;
 enum class EnemyType;
 enum class EnemyState
@@ -23,7 +23,7 @@ enum class EnemyState
 class Enemy : public BaseCharacter
 {
 public:
-    friend EnemyBehaviour;      // manages different behaviours and state's logic
+    friend EnemyBehaviourManager;      // manages different behaviours and state's logic
     
     Enemy();
 
@@ -64,10 +64,10 @@ private:
     const enemyData* data{nullptr};
     const itemData* itemDrop{&HEART_ITEMDATA};
     
-    void (*currentStateLogic)(Enemy* thisEnemy, Character* player, const float& deltaTime) = nullptr;
-    void (*idleLogic)(Enemy* thisEnemy, Character* player, const float& deltaTime) = nullptr;
-    void (*transitionLogic)(Enemy* thisEnemy, Character* player, const float& deltaTime) = nullptr;
-    void (*actionLogic)(Enemy* thisEnemy, Character* player, const float& deltaTime) = nullptr;
+    void (*currentStateLogic)(Enemy& thisEnemy, Character* player, const float& deltaTime) = nullptr;
+    void (*idleLogic)(Enemy& thisEnemy, Character* player, const float& deltaTime) = nullptr;
+    void (*transitionLogic)(Enemy& thisEnemy, Character* player, const float& deltaTime) = nullptr;
+    void (*actionLogic)(Enemy& thisEnemy, Character* player, const float& deltaTime) = nullptr;
 };
 
 //===========================================================
