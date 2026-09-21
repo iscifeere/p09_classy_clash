@@ -11,6 +11,7 @@ public:
     BaseCharacter();
     
     Vector2 getWorldPos(){ return worldPos; }
+    Vector2 getPrevWorldPos(){ return prevWorldPos; }
     void undoMovementX();
     void undoMovementY();
     virtual bool tick(float deltaTime);
@@ -25,7 +26,12 @@ public:
     virtual void addHealth( float healthAdd ) { health += healthAdd; }
     virtual void render();
     virtual void showDebugData() = 0;
-    void setWorldPos( Vector2 newPos ){ worldPos = newPos; }
+    void setWorldPos( Vector2 newWorldPos ){ worldPos = newWorldPos; }
+    void setWorldPosX( float newXPos ){ worldPos.x = newXPos; }
+    void setWorldPosY( float newYPos ){ worldPos.y = newYPos; }
+    void addWorldPos( Vector2 addWorldPos );
+    void addWorldPosX( float addXPos ){ worldPos.x += addXPos; }
+    void addWorldPosY( float addYPos ){ worldPos.y += addYPos; }
     void checkMapBoundsCollision();
 
     void applyMovementForce(Vector2 direction, float magnitude);
@@ -35,7 +41,7 @@ protected:
     Texture2D* idle{&Tex::texture_knight_idle};
     Texture2D* run{&Tex::texture_knight_run};
     Vector2 worldPos{};
-    Vector2 worldPosLastFrame{};        // unused
+    Vector2 prevWorldPos{};
     // 1 : facing right | -1 : facing left
     float rightLeft{1.f};
 

@@ -47,9 +47,9 @@ Vector2 Character::getWindowOriginWorPos(){
     return Vector2Subtract( worldPos, Tex::halfWinSize );
 }
 
-Vector2 Character::getPrevWorldPos(){
-    return Vector2Subtract( worldPos, movement );
-}
+// Vector2 Character::getPrevWorldPos(){
+//     return Vector2Subtract( worldPos, movement );
+// }
 
 Rectangle Character::getCollisionRec(){
     Vector2 renderPos{getRenderPos()};

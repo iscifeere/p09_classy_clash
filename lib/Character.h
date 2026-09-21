@@ -13,11 +13,9 @@ public:
     void init();    // initialize necessary variables, called in constructor
 
     bool tick(float deltaTime) override;
-    // Vector2 getWorldPos() override;
     void setWorldPos(Vector2 pos){ worldPos = pos; }
     Vector2 getScreenPos() override;
     Vector2 getWindowOriginWorPos();
-    Vector2 getPrevWorldPos();  // calculate worldPos from previous tick
     Rectangle getCollisionRec();        // relative position version
     Rectangle getCollisionRecWorPos();  // absolute position version
     Rectangle getPrevCollisionRecWorPos();

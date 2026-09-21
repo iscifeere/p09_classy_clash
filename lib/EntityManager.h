@@ -52,6 +52,7 @@ public:
 
     static void tickEntities(float deltaTime);
     static void checkEntityCollisions();
+    static void checkEntityMapBoundsCollisions();
     static void showEntitiesDebugData();
     static void renderEntities();
     static void clearEntityPools();

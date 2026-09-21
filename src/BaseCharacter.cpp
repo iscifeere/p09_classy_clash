@@ -6,17 +6,21 @@ BaseCharacter::BaseCharacter(){
 }
 
 void BaseCharacter::undoMovementX(){
-    worldPos.x -= movement.x;
+    worldPos.x = prevWorldPos.x;
     drawColor = BLACK;
 }
 void BaseCharacter::undoMovementY(){
-    worldPos.y -= movement.y;
+    worldPos.y = prevWorldPos.y;
     drawColor = BLACK;
+}
+
+void BaseCharacter::addWorldPos(Vector2 addWorldPos){
+    worldPos = Vector2Add(worldPos, addWorldPos);
 }
 
 bool BaseCharacter::tick(float deltaTime){
     // save previous world position
-    worldPosLastFrame = worldPos;       // unused
+    prevWorldPos = worldPos;
 
     // update animation frame
     runningTime += deltaTime;
@@ -28,9 +32,6 @@ bool BaseCharacter::tick(float deltaTime){
         velocity.x < 0.f ? rightLeft = -1.f : rightLeft = 1.f;
         movement = Vector2Scale(Vector2Normalize(velocity), speed);
         worldPos = Vector2Add(worldPos, movement);
-
-        checkMapBoundsCollision();
-
     } else {texture = idle; maxFrames = maxFramesIdle;}
 
     // update invulnerability

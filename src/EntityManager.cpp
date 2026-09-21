@@ -164,22 +164,41 @@ void EntityMng::checkEntityCollisions(){
     checkPropCollisions();
     checkProyectileCollisions();
     checkAttackCollisions();
+    checkEntityMapBoundsCollisions();
 }
 
 void EntityMng::checkPropCollisions(){
+    Rectangle playerCollisionRecWorPos{player.getCollisionRecWorPos()};
     Rectangle playerPrevCollisionRec{player.getPrevCollisionRecWorPos()};
+    Rectangle propCollisionRec{};
 
     for(auto& prop : propPool){
         if(prop.getAlive()){
-            Rectangle propCollisionRec{prop.getCollisionRecWorPos()};
+            propCollisionRec = prop.getCollisionRecWorPos();
             
-            if( CheckCollisionRecs(propCollisionRec, player.getCollisionRecWorPos()) ){
-                if(
-                    playerPrevCollisionRec.x + playerPrevCollisionRec.width < propCollisionRec.x ||
-                    playerPrevCollisionRec.x > propCollisionRec.x + propCollisionRec.width
-                ) player.undoMovementX();
-                else player.undoMovementY();
-            }}}
+            if( CheckCollisionRecs(propCollisionRec, playerCollisionRecWorPos) ){
+
+                if(playerPrevCollisionRec.x + playerPrevCollisionRec.width < propCollisionRec.x)
+                {
+                    player.addWorldPosX( propCollisionRec.x - (playerCollisionRecWorPos.x + playerCollisionRecWorPos.width) - 1.f );
+                }
+                else if(playerPrevCollisionRec.x > propCollisionRec.x + propCollisionRec.width)
+                {
+                    player.addWorldPosX( (propCollisionRec.x + propCollisionRec.width) - playerCollisionRecWorPos.x + 1.f );
+                }
+                else if(playerPrevCollisionRec.y + playerPrevCollisionRec.height < propCollisionRec.y)
+                {
+                    player.addWorldPosY( propCollisionRec.y - (playerCollisionRecWorPos.y + playerCollisionRecWorPos.height) - 1.f );
+                }
+                else if(playerPrevCollisionRec.y > propCollisionRec.y + propCollisionRec.height)
+                {
+                    player.addWorldPosY( (propCollisionRec.y + propCollisionRec.height) - playerCollisionRecWorPos.y + 1.f );
+                }
+
+                playerCollisionRecWorPos = player.getCollisionRecWorPos();
+            }
+        }
+    }
 }
 
 void EntityMng::checkProyectileCollisions(){
@@ -236,6 +255,16 @@ void EntityMng::checkAttackCollisions(){
     }
 }
 
+void EntityMng::checkEntityMapBoundsCollisions(){
+    player.checkMapBoundsCollision();
+
+    Enemy* enemy{nullptr};
+    for(size_t i{i_EnemiesStart} ; i < i_EnemiesEnd ; ++i){
+        enemy = std::get<Enemy*>(activeEntities[i]);
+        enemy->checkMapBoundsCollision();
+    }
+}
+
 void EntityMng::tickEntities(float deltaTime){
     i_EntitiesEnd = 0;
     i_EnemiesStart = 0;
@@ -244,12 +273,6 @@ void EntityMng::tickEntities(float deltaTime){
     i_ProyectilesEnd = 0;
     i_AttacksStart = 0;
     i_AttacksEnd = 0;
-
-    for(auto& knockback : m_knockbackPool){
-        if(knockback.isActive()){
-            knockback.tick(deltaTime);
-        }
-    }
 
     player.tick(deltaTime);
     // add player to active entities
@@ -307,6 +330,12 @@ void EntityMng::tickEntities(float deltaTime){
             activeEntities[i_EntitiesEnd] = &prop;
             i_EntitiesEnd++;
         }}
+
+    for(auto& knockback : m_knockbackPool){
+        if(knockback.isActive()){
+            knockback.tick(deltaTime);
+        }
+    }
 }
 
 void EntityMng::showEntitiesDebugData(){
