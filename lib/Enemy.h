@@ -38,6 +38,8 @@ public:
 
     Vector2 getScreenPos() override;
     Rectangle getCollisionRec();
+    Rectangle getCollisionRecWorPos();
+    Rectangle getPrevCollisionRecWorPos();
     Rectangle getHurtRec();
     float getDamage();
     EnemyType getEnemyType();

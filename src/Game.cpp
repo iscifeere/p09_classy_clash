@@ -98,7 +98,7 @@ void Game::gameplayScreen(float deltaTime)
     if(!g_PauseGame)
     {
         EntityMng::tickEntities(deltaTime);
-        EntityMng::checkEntityCollisions();
+        EntityMng::checkCollisions();
     }
 
     if(IsKeyPressed(KEY_N)) EntityMng::logEntityArrayStatus();

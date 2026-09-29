@@ -89,6 +89,45 @@ Rectangle Enemy::getCollisionRec(){
     };
 }
 
+Rectangle Enemy::getCollisionRecWorPos(){
+    float scaledWidth = frameWidth*scale;
+    float scaledHeight = frameHeight*scale;
+    Vector2 worldPosTopLeft{
+        worldPos.x - scaledWidth*0.5f,
+        worldPos.y - scaledHeight*0.5f
+    };
+
+    return Rectangle{
+        // displacement
+        worldPosTopLeft.x + ( scaledWidth * data->collisionBox.x ),
+        worldPosTopLeft.y + ( scaledHeight * data->collisionBox.y ),
+
+        // scaling
+        scaledWidth * data->collisionBox.width,
+        scaledHeight * data->collisionBox.height
+    };
+}
+
+Rectangle Enemy::getPrevCollisionRecWorPos(){
+    float scaledWidth = frameWidth*scale;
+    float scaledHeight = frameHeight*scale;
+    Vector2 prevWorldPos{getPrevWorldPos()};
+    Vector2 worldPosTopLeft{
+        prevWorldPos.x - scaledWidth*0.5f,
+        prevWorldPos.y - scaledHeight*0.5f
+    };
+
+    return Rectangle{
+        // displacement
+        worldPosTopLeft.x + ( scaledWidth * data->collisionBox.x ),
+        worldPosTopLeft.y + ( scaledHeight * data->collisionBox.y ),
+
+        // scaling
+        scaledWidth * data->collisionBox.width,
+        scaledHeight * data->collisionBox.height
+    };
+}
+
 Rectangle Enemy::getHurtRec(){
     Vector2 renderPos{getRenderPos()};
     float scaledWidth = frameWidth*scale;

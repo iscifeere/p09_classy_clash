@@ -51,8 +51,9 @@ public:
     static void createKnockbackForce(Vector2 direction, float magnitude, BaseCharacter* targetCharacter);
 
     static void tickEntities(float deltaTime);
-    static void checkEntityCollisions();
+    static void checkCollisions();
     static void checkEntityMapBoundsCollisions();
+    static void checkEnemyCollisions();
     static void showEntitiesDebugData();
     static void renderEntities();
     static void clearEntityPools();
