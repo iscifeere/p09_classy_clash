@@ -11,6 +11,7 @@
 #include "Attacks.h"
 #include <array>
 #include <variant>
+#include <functional>
 
 using EntityVariant = std::variant<Character*, Enemy*, Item*, GenEntity*, Prop*, SwordSlash*>;
 
@@ -61,10 +62,14 @@ public:
 
     static void showPlayerScore();
     static void spawnRandomEnemies();
+
     static Enemy* getNearestEnemy(Enemy* this_enemy);
     static Enemy* getNearestEnemyByType(Enemy* this_enemy);
     static Enemy* getNearestEnemyByType(Enemy* this_enemy, EnemyType p_EnemyType);
     static Enemy* getNearestChasingEnemyByType(Enemy* this_enemy);
+    
+    static Enemy& getActiveEnemyAtIndex(size_t index);
+    static void forEachActiveEnemy(std::function<void(Enemy&)> func);
 
 private:
     static const int ITEM_ARR_SIZE{10};

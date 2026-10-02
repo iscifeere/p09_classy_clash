@@ -2,10 +2,6 @@
 #include <iostream>
 #include <algorithm>
 
-#define DEBUG // for console logging when debugging
-
-#define STATE_ACTION 1
-
 Character EntityMng::player{};
 std::array<Enemy, EntityMng::ENEMY_ARR_SIZE> EntityMng::enemyPool{};
 std::array<Item, EntityMng::ITEM_ARR_SIZE> EntityMng::itemPool{};
@@ -163,9 +159,9 @@ void EntityMng::spawnAttack(Vector2 pos, float damage){
 void EntityMng::checkCollisions(){
     checkEnemyCollisions();
     checkPropCollisions();
+    checkEntityMapBoundsCollisions();
     checkProyectileCollisions();
     checkAttackCollisions();
-    checkEntityMapBoundsCollisions();
 }
 
 void EntityMng::checkPropCollisions(){
@@ -267,129 +263,61 @@ void EntityMng::checkEntityMapBoundsCollisions(){
     }
 }
 
-// void EntityMng::checkEnemyCollisions(){
-//     Rectangle playerCollisionRecWorPos{player.getCollisionRecWorPos()};
-//     Rectangle playerPrevCollisionRec{player.getPrevCollisionRecWorPos()};
-//     Rectangle enemyCollisionRecWorPos{};
-//     Rectangle enemyPrevCollisionRec{};
-
-//     for(auto& enemy : enemyPool){
-//         if(enemy.getAlive()){
-//             enemyCollisionRecWorPos = enemy.getCollisionRecWorPos();
-//             enemyPrevCollisionRec = enemy.getPrevCollisionRecWorPos();
-            
-//             if( CheckCollisionRecs(enemyCollisionRecWorPos, playerCollisionRecWorPos) ){
-
-//                 if(playerPrevCollisionRec.x + playerPrevCollisionRec.width < enemyPrevCollisionRec.x)
-//                 {
-//                     player.addWorldPosX( enemyCollisionRecWorPos.x - (playerCollisionRecWorPos.x + playerCollisionRecWorPos.width) - 1.f );
-//                 }
-//                 else if(playerPrevCollisionRec.x > enemyPrevCollisionRec.x + enemyPrevCollisionRec.width)
-//                 {
-//                     player.addWorldPosX( (enemyCollisionRecWorPos.x + enemyCollisionRecWorPos.width) - playerCollisionRecWorPos.x + 1.f );
-//                 }
-//                 else if(playerPrevCollisionRec.y + playerPrevCollisionRec.height < enemyPrevCollisionRec.y)
-//                 {
-//                     player.addWorldPosY( enemyCollisionRecWorPos.y - (playerCollisionRecWorPos.y + playerCollisionRecWorPos.height) - 1.f );
-//                 }
-//                 else if(playerPrevCollisionRec.y > enemyPrevCollisionRec.y + enemyPrevCollisionRec.height)
-//                 {
-//                     player.addWorldPosY( (enemyCollisionRecWorPos.y + enemyCollisionRecWorPos.height) - playerCollisionRecWorPos.y + 1.f );
-//                 }
-
-//                 playerCollisionRecWorPos = player.getCollisionRecWorPos();
-//             }
-//         }
-//     }
-// }
-
-// void EntityMng::checkEnemyCollisions(){
-//     Rectangle playerCollisionRecWorPos{player.getCollisionRecWorPos()};
-//     Rectangle playerPrevCollisionRec{player.getPrevCollisionRecWorPos()};
-//     Rectangle enemyCollisionRecWorPos{};
-//     Rectangle enemyPrevCollisionRec{};
-
-//     for(auto& enemy : enemyPool){
-//         if(enemy.getAlive()){
-//             enemyCollisionRecWorPos = enemy.getCollisionRecWorPos();
-//             enemyPrevCollisionRec = enemy.getPrevCollisionRecWorPos();
-            
-//             if( CheckCollisionRecs(enemyCollisionRecWorPos, playerCollisionRecWorPos) ){
-
-//                 if(playerPrevCollisionRec.x + playerPrevCollisionRec.width < enemyPrevCollisionRec.x)
-//                 {
-//                     enemy.addWorldPosX( (playerCollisionRecWorPos.x + playerCollisionRecWorPos.width) - enemyCollisionRecWorPos.x + 1.f );
-//                 }
-//                 else if(playerPrevCollisionRec.x > enemyPrevCollisionRec.x + enemyPrevCollisionRec.width)
-//                 {
-//                     enemy.addWorldPosX( playerCollisionRecWorPos.x - (enemyCollisionRecWorPos.x + enemyCollisionRecWorPos.width) - 1.f );
-//                 }
-//                 else if(playerPrevCollisionRec.y + playerPrevCollisionRec.height < enemyPrevCollisionRec.y)
-//                 {
-//                     enemy.addWorldPosY( (playerCollisionRecWorPos.y + playerCollisionRecWorPos.height) - enemyCollisionRecWorPos.y + 1.f );
-//                 }
-//                 else if(playerPrevCollisionRec.y > enemyPrevCollisionRec.y + enemyPrevCollisionRec.height)
-//                 {
-//                     enemy.addWorldPosY( playerCollisionRecWorPos.y - (enemyCollisionRecWorPos.y + enemyCollisionRecWorPos.height) - 1.f );
-//                 }
-
-//                 playerCollisionRecWorPos = player.getCollisionRecWorPos();
-//             }
-//         }
-//     }
-// }
-
 void EntityMng::checkEnemyCollisions(){
     Rectangle playerCollisionRecWorPos{player.getCollisionRecWorPos()};
     Rectangle playerPrevCollisionRec{player.getPrevCollisionRecWorPos()};
     Rectangle enemyCollisionRecWorPos{};
     Rectangle enemyPrevCollisionRec{};
-    float collisionLength{};
+    float halfCollisionLength{};
 
-    for(auto& enemy : enemyPool){   // TODO optimize -> loop through active enemies
-        if(enemy.getAlive()){
+    // forEachActiveEnemy(checkCollision);
+    forEachActiveEnemy(
+        [
+            &playerCollisionRecWorPos,
+            &playerPrevCollisionRec,
+            &enemyCollisionRecWorPos,
+            &enemyPrevCollisionRec,
+            &halfCollisionLength
+        ](Enemy& enemy)
+        {
             enemyCollisionRecWorPos = enemy.getCollisionRecWorPos();
             enemyPrevCollisionRec = enemy.getPrevCollisionRecWorPos();
             
-            if( CheckCollisionRecs(enemyCollisionRecWorPos, playerCollisionRecWorPos) ){
+            if( CheckCollisionRecs(enemyCollisionRecWorPos, playerCollisionRecWorPos) )
+            {
 
                 // Check in which direction they are approaching
                 if(playerPrevCollisionRec.x + playerPrevCollisionRec.width < enemyPrevCollisionRec.x)
                 {
                     // Calculate collision area and push both entities in opposite directions
                     // Entity speed decides who pushes more -> When pushing against each other, the faster entity will push the slower one
-                    // (TODO maybe strength and weight should matter more, which would require a physics system)
-                    collisionLength = (playerCollisionRecWorPos.x + playerCollisionRecWorPos.width) - enemyCollisionRecWorPos.x;
-                    collisionLength *= 0.5f;
-                    enemy.addWorldPosX( collisionLength + 0.5f );
-                    player.addWorldPosX( -collisionLength - 0.5f );
+                    halfCollisionLength = ((playerCollisionRecWorPos.x + playerCollisionRecWorPos.width) - enemyCollisionRecWorPos.x + 1.f) * 0.5f;
+                    enemy.addWorldPosX( halfCollisionLength );
+                    player.addWorldPosX( -halfCollisionLength );
                 }
                 else if(playerPrevCollisionRec.x > enemyPrevCollisionRec.x + enemyPrevCollisionRec.width)
                 {
-                    collisionLength = playerCollisionRecWorPos.x - (enemyCollisionRecWorPos.x + enemyCollisionRecWorPos.width);
-                    collisionLength *= 0.5f;
-                    enemy.addWorldPosX( collisionLength - 0.5f );
-                    player.addWorldPosX( -collisionLength + 0.5f );
+                    halfCollisionLength = (playerCollisionRecWorPos.x - (enemyCollisionRecWorPos.x + enemyCollisionRecWorPos.width) - 1.f) * 0.5f;
+                    enemy.addWorldPosX( halfCollisionLength );
+                    player.addWorldPosX( -halfCollisionLength );
                 }
                 else if(playerPrevCollisionRec.y + playerPrevCollisionRec.height < enemyPrevCollisionRec.y)
                 {
-                    collisionLength = (playerCollisionRecWorPos.y + playerCollisionRecWorPos.height) - enemyCollisionRecWorPos.y;
-                    collisionLength *= 0.5f;
-                    enemy.addWorldPosY( collisionLength + 0.5f );
-                    player.addWorldPosY( -collisionLength - 0.5f );
+                    halfCollisionLength = ((playerCollisionRecWorPos.y + playerCollisionRecWorPos.height) - enemyCollisionRecWorPos.y + 1.f) * 0.5f;
+                    enemy.addWorldPosY( halfCollisionLength );
+                    player.addWorldPosY( -halfCollisionLength );
                 }
                 else if(playerPrevCollisionRec.y > enemyPrevCollisionRec.y + enemyPrevCollisionRec.height)
                 {
-                    collisionLength = playerCollisionRecWorPos.y - (enemyCollisionRecWorPos.y + enemyCollisionRecWorPos.height);
-                    collisionLength *= 0.5f;
-                    enemy.addWorldPosY( collisionLength - 0.5f );
-                    player.addWorldPosY( -collisionLength + 0.5f );
+                    halfCollisionLength = (playerCollisionRecWorPos.y - (enemyCollisionRecWorPos.y + enemyCollisionRecWorPos.height) - 1.f) * 0.5f;
+                    enemy.addWorldPosY( halfCollisionLength );
+                    player.addWorldPosY( -halfCollisionLength );
                 }
 
                 playerCollisionRecWorPos = player.getCollisionRecWorPos();
             }
         }
-    }
+    );
 }
 
 void EntityMng::tickEntities(float deltaTime){
@@ -688,4 +616,16 @@ Enemy* EntityMng::getNearestChasingEnemyByType(Enemy* this_enemy){     // return
     }
 
     return nearestEnemy;   // returns nullptr if no enemy is found
+}
+
+Enemy& EntityMng::getActiveEnemyAtIndex(size_t enemyIndex){
+    Enemy* enemy{ std::get<Enemy*>(activeEntities[enemyIndex]) };
+    return *enemy;
+}
+
+void EntityMng::forEachActiveEnemy(std::function<void(Enemy&)> func){
+    for(size_t i{i_EnemiesStart} ; i < i_EnemiesEnd ; ++i)
+    {
+        func(getActiveEnemyAtIndex(i));
+    }
 }
