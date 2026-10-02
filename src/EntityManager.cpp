@@ -164,37 +164,109 @@ void EntityMng::checkCollisions(){
     checkAttackCollisions();
 }
 
+// void EntityMng::checkPropCollisions(){
+//     Rectangle playerCollisionRecWorPos{player.getCollisionRecWorPos()};
+//     Rectangle playerPrevCollisionRec{player.getPrevCollisionRecWorPos()};
+//     Rectangle propCollisionRec{};
+
+//     for(auto& prop : propPool){ // TODO optimize -> loop through active props
+//         if(prop.getAlive()){
+//             propCollisionRec = prop.getCollisionRecWorPos();
+            
+//             if( CheckCollisionRecs(propCollisionRec, playerCollisionRecWorPos) ){
+
+//                 // Check in which direction they are approaching
+//                 if(playerPrevCollisionRec.x + playerPrevCollisionRec.width < propCollisionRec.x)
+//                 {
+//                     player.addWorldPosX( propCollisionRec.x - (playerCollisionRecWorPos.x + playerCollisionRecWorPos.width) - 1.f );
+//                 }
+//                 else if(playerPrevCollisionRec.x > propCollisionRec.x + propCollisionRec.width)
+//                 {
+//                     player.addWorldPosX( (propCollisionRec.x + propCollisionRec.width) - playerCollisionRecWorPos.x + 1.f );
+//                 }
+//                 else if(playerPrevCollisionRec.y + playerPrevCollisionRec.height < propCollisionRec.y)
+//                 {
+//                     player.addWorldPosY( propCollisionRec.y - (playerCollisionRecWorPos.y + playerCollisionRecWorPos.height) - 1.f );
+//                 }
+//                 else if(playerPrevCollisionRec.y > propCollisionRec.y + propCollisionRec.height)
+//                 {
+//                     player.addWorldPosY( (propCollisionRec.y + propCollisionRec.height) - playerCollisionRecWorPos.y + 1.f );
+//                 }
+
+//                 playerCollisionRecWorPos = player.getCollisionRecWorPos();
+//             }
+//         }
+//     }
+// }
 void EntityMng::checkPropCollisions(){
     Rectangle playerCollisionRecWorPos{player.getCollisionRecWorPos()};
     Rectangle playerPrevCollisionRec{player.getPrevCollisionRecWorPos()};
+    Rectangle enemyCollisionRecWorPos{};
+    Rectangle enemyPrevCollisionRec{};
     Rectangle propCollisionRec{};
 
     for(auto& prop : propPool){ // TODO optimize -> loop through active props
         if(prop.getAlive()){
             propCollisionRec = prop.getCollisionRecWorPos();
             
+            // Collision with player
             if( CheckCollisionRecs(propCollisionRec, playerCollisionRecWorPos) ){
 
                 // Check in which direction they are approaching
-                if(playerPrevCollisionRec.x + playerPrevCollisionRec.width < propCollisionRec.x)
+                if(playerPrevCollisionRec.x + playerPrevCollisionRec.width < propCollisionRec.x) // approaching prop from right
                 {
+                    // Calculate collision area and push player out
                     player.addWorldPosX( propCollisionRec.x - (playerCollisionRecWorPos.x + playerCollisionRecWorPos.width) - 1.f );
                 }
-                else if(playerPrevCollisionRec.x > propCollisionRec.x + propCollisionRec.width)
+                else if(playerPrevCollisionRec.x > propCollisionRec.x + propCollisionRec.width) // approaching prop from left
                 {
                     player.addWorldPosX( (propCollisionRec.x + propCollisionRec.width) - playerCollisionRecWorPos.x + 1.f );
                 }
-                else if(playerPrevCollisionRec.y + playerPrevCollisionRec.height < propCollisionRec.y)
+                else if(playerPrevCollisionRec.y + playerPrevCollisionRec.height < propCollisionRec.y) // approaching prop from above
                 {
                     player.addWorldPosY( propCollisionRec.y - (playerCollisionRecWorPos.y + playerCollisionRecWorPos.height) - 1.f );
                 }
-                else if(playerPrevCollisionRec.y > propCollisionRec.y + propCollisionRec.height)
+                else if(playerPrevCollisionRec.y > propCollisionRec.y + propCollisionRec.height) // approaching prop from below
                 {
                     player.addWorldPosY( (propCollisionRec.y + propCollisionRec.height) - playerCollisionRecWorPos.y + 1.f );
                 }
 
                 playerCollisionRecWorPos = player.getCollisionRecWorPos();
             }
+
+            // Collision with enemy
+            forEachActiveEnemy(
+                [
+                    &propCollisionRec,
+                    &enemyCollisionRecWorPos,
+                    &enemyPrevCollisionRec
+                ](Enemy& enemy)
+                {
+                    enemyCollisionRecWorPos = enemy.getCollisionRecWorPos();
+                    enemyPrevCollisionRec = enemy.getPrevCollisionRecWorPos();
+                    
+                    if( CheckCollisionRecs(propCollisionRec, enemyCollisionRecWorPos) ){
+
+                        // Check in which direction they are approaching
+                        if(enemyPrevCollisionRec.x + enemyPrevCollisionRec.width < propCollisionRec.x)
+                        {
+                            enemy.addWorldPosX( propCollisionRec.x - (enemyCollisionRecWorPos.x + enemyCollisionRecWorPos.width) - 1.f );
+                        }
+                        else if(enemyPrevCollisionRec.x > propCollisionRec.x + propCollisionRec.width)
+                        {
+                            enemy.addWorldPosX( (propCollisionRec.x + propCollisionRec.width) - enemyCollisionRecWorPos.x + 1.f );
+                        }
+                        else if(enemyPrevCollisionRec.y + enemyPrevCollisionRec.height < propCollisionRec.y)
+                        {
+                            enemy.addWorldPosY( propCollisionRec.y - (enemyCollisionRecWorPos.y + enemyCollisionRecWorPos.height) - 1.f );
+                        }
+                        else if(enemyPrevCollisionRec.y > propCollisionRec.y + propCollisionRec.height)
+                        {
+                            enemy.addWorldPosY( (propCollisionRec.y + propCollisionRec.height) - enemyCollisionRecWorPos.y + 1.f );
+                        }
+                    }
+                }
+            );
         }
     }
 }
