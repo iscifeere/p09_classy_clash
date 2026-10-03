@@ -19,11 +19,20 @@ public:
     Vector2 getWorldPos() { return worldPos; }
     Vector2 getScreenPos() override;
     Rectangle getCollisionRec();
+    Rectangle getCollisionRecWorPos();  // TODO replace getCollisionRec
+    Rectangle getPrevCollisionRecWorPos();
     bool getAlive() { return alive; }
     void setAlive( bool isAlive ) { alive = isAlive; }
     void showDebugData();
     void render();
     void checkPlayerCollision();
+
+    void setWorldPos( Vector2 newWorldPos ){ worldPos = newWorldPos; }
+    void setWorldPosX( float newXPos ){ worldPos.x = newXPos; }
+    void setWorldPosY( float newYPos ){ worldPos.y = newYPos; }
+    void addWorldPos( Vector2 addWorldPos );
+    void addWorldPosX( float addXPos ){ worldPos.x += addXPos; }
+    void addWorldPosY( float addYPos ){ worldPos.y += addYPos; }
 
     bool getIsEnemy(){ return isEnemy; }
     void setIsEnemy(bool& p_isEnemy){
@@ -33,6 +42,7 @@ public:
     
 private:
     Vector2 worldPos{};
+    Vector2 prevWorldPos{};
     Character* player{nullptr};
     Texture2D* texture{&Tex::texture_red_sphere};
     Vector2 velocity{};

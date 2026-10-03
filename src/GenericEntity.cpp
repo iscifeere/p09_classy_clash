@@ -26,6 +26,9 @@ bool GenEntity::tick(float deltaTime)
 {
     if( !getAlive() ) return false;
 
+    // save previous world position
+    prevWorldPos = worldPos;
+
     // MOVEMENT
     movement = Vector2Scale(Vector2Normalize(velocity), speed);
     worldPos = Vector2Add(worldPos, movement);
@@ -47,6 +50,38 @@ Rectangle GenEntity::getCollisionRec(){
     return Rectangle{
         renderPos.x + scaledWidth * 0.25f,
         renderPos.y + scaledHeight * 0.25f,
+        scaledWidth * 0.5f,
+        scaledHeight * 0.5f
+    };
+}
+
+Rectangle GenEntity::getCollisionRecWorPos(){
+    float scaledWidth = frameWidth*scale;
+    float scaledHeight = frameHeight*scale;
+    Vector2 worldPosTopLeft{
+        worldPos.x - scaledWidth*0.5f,
+        worldPos.y - scaledHeight*0.5f
+    };
+
+    return Rectangle{
+        worldPosTopLeft.x + scaledWidth * 0.25f,
+        worldPosTopLeft.y + scaledHeight * 0.25f,
+        scaledWidth * 0.5f,
+        scaledHeight * 0.5f
+    };
+}
+
+Rectangle GenEntity::getPrevCollisionRecWorPos(){
+    float scaledWidth = frameWidth*scale;
+    float scaledHeight = frameHeight*scale;
+    Vector2 worldPosTopLeft{
+        prevWorldPos.x - scaledWidth*0.5f,
+        prevWorldPos.y - scaledHeight*0.5f
+    };
+
+    return Rectangle{
+        worldPosTopLeft.x + scaledWidth * 0.25f,
+        worldPosTopLeft.y + scaledHeight * 0.25f,
         scaledWidth * 0.5f,
         scaledHeight * 0.5f
     };
@@ -78,4 +113,8 @@ void GenEntity::checkPlayerCollision(){
             player->takeDamage(10);
             setAlive(false);
         }
+}
+
+void GenEntity::addWorldPos(Vector2 addWorldPos){
+    worldPos = Vector2Add(worldPos, addWorldPos);
 }

@@ -164,46 +164,14 @@ void EntityMng::checkCollisions(){
     checkAttackCollisions();
 }
 
-// void EntityMng::checkPropCollisions(){
-//     Rectangle playerCollisionRecWorPos{player.getCollisionRecWorPos()};
-//     Rectangle playerPrevCollisionRec{player.getPrevCollisionRecWorPos()};
-//     Rectangle propCollisionRec{};
-
-//     for(auto& prop : propPool){ // TODO optimize -> loop through active props
-//         if(prop.getAlive()){
-//             propCollisionRec = prop.getCollisionRecWorPos();
-            
-//             if( CheckCollisionRecs(propCollisionRec, playerCollisionRecWorPos) ){
-
-//                 // Check in which direction they are approaching
-//                 if(playerPrevCollisionRec.x + playerPrevCollisionRec.width < propCollisionRec.x)
-//                 {
-//                     player.addWorldPosX( propCollisionRec.x - (playerCollisionRecWorPos.x + playerCollisionRecWorPos.width) - 1.f );
-//                 }
-//                 else if(playerPrevCollisionRec.x > propCollisionRec.x + propCollisionRec.width)
-//                 {
-//                     player.addWorldPosX( (propCollisionRec.x + propCollisionRec.width) - playerCollisionRecWorPos.x + 1.f );
-//                 }
-//                 else if(playerPrevCollisionRec.y + playerPrevCollisionRec.height < propCollisionRec.y)
-//                 {
-//                     player.addWorldPosY( propCollisionRec.y - (playerCollisionRecWorPos.y + playerCollisionRecWorPos.height) - 1.f );
-//                 }
-//                 else if(playerPrevCollisionRec.y > propCollisionRec.y + propCollisionRec.height)
-//                 {
-//                     player.addWorldPosY( (propCollisionRec.y + propCollisionRec.height) - playerCollisionRecWorPos.y + 1.f );
-//                 }
-
-//                 playerCollisionRecWorPos = player.getCollisionRecWorPos();
-//             }
-//         }
-//     }
-// }
 void EntityMng::checkPropCollisions(){
+    Rectangle propCollisionRec{};
     Rectangle playerCollisionRecWorPos{player.getCollisionRecWorPos()};
     Rectangle playerPrevCollisionRec{player.getPrevCollisionRecWorPos()};
     Rectangle enemyCollisionRecWorPos{};
     Rectangle enemyPrevCollisionRec{};
-    Rectangle propCollisionRec{};
+    Rectangle projectileCollisionRecWorPos{};
+    // Rectangle projectilePrevCollisionRec{};
 
     for(auto& prop : propPool){ // TODO optimize -> loop through active props
         if(prop.getAlive()){
@@ -267,6 +235,57 @@ void EntityMng::checkPropCollisions(){
                     }
                 }
             );
+
+            // Collision with projectile
+            forEachActiveProjectile(
+                [
+                    &propCollisionRec,
+                    &projectileCollisionRecWorPos
+                ](GenEntity& projectile)
+                {
+                    projectileCollisionRecWorPos = projectile.getCollisionRecWorPos();
+                    // kill projectile on collision
+                    if( CheckCollisionRecs(propCollisionRec, projectileCollisionRecWorPos) ){
+                        projectile.setAlive(false); // still on active entities
+                        // TODO when disabling entity also remove it from activeEntities
+                        // disableEntity(projectile) --> kills it and removes it from activeEntities
+                    }
+                }
+            );
+            
+            // Projectiles get treated as solid by collision (fun)
+            // forEachActiveProjectile(
+            //     [
+            //         &propCollisionRec,
+            //         &projectileCollisionRecWorPos,
+            //         &projectilePrevCollisionRec
+            //     ](GenEntity& projectile)
+            //     {
+            //         projectileCollisionRecWorPos = projectile.getCollisionRecWorPos();
+            //         projectilePrevCollisionRec = projectile.getPrevCollisionRecWorPos();
+                    
+            //         if( CheckCollisionRecs(propCollisionRec, projectileCollisionRecWorPos) ){
+
+            //             // Check in which direction they are approaching
+            //             if(projectilePrevCollisionRec.x + projectilePrevCollisionRec.width < propCollisionRec.x)
+            //             {
+            //                 projectile.addWorldPosX( propCollisionRec.x - (projectileCollisionRecWorPos.x + projectileCollisionRecWorPos.width) - 1.f );
+            //             }
+            //             else if(projectilePrevCollisionRec.x > propCollisionRec.x + propCollisionRec.width)
+            //             {
+            //                 projectile.addWorldPosX( (propCollisionRec.x + propCollisionRec.width) - projectileCollisionRecWorPos.x + 1.f );
+            //             }
+            //             else if(projectilePrevCollisionRec.y + projectilePrevCollisionRec.height < propCollisionRec.y)
+            //             {
+            //                 projectile.addWorldPosY( propCollisionRec.y - (projectileCollisionRecWorPos.y + projectileCollisionRecWorPos.height) - 1.f );
+            //             }
+            //             else if(projectilePrevCollisionRec.y > propCollisionRec.y + propCollisionRec.height)
+            //             {
+            //                 projectile.addWorldPosY( (propCollisionRec.y + propCollisionRec.height) - projectileCollisionRecWorPos.y + 1.f );
+            //             }
+            //         }
+            //     }
+            // );
         }
     }
 }
@@ -691,13 +710,29 @@ Enemy* EntityMng::getNearestChasingEnemyByType(Enemy* this_enemy){     // return
 }
 
 Enemy& EntityMng::getActiveEnemyAtIndex(size_t enemyIndex){
-    Enemy* enemy{ std::get<Enemy*>(activeEntities[enemyIndex]) };
+    // [!] doesn't check wether enemy index is a valid active entity index or not
+    // if(enemyIndex < i_EnemiesStart || enemyIndex >= i_EnemiesEnd) return null or smth;
+    Enemy* enemy{ std::get<Enemy*>(activeEntities[enemyIndex]) }; // <-- std::get() will throw an exception if index isn't valid
     return *enemy;
+}
+
+GenEntity& EntityMng::getActiveProjectileAtIndex(size_t projectileIndex){
+    // [!] doesn't check if index is valid
+    // if(index < firstEntityIndex || index > lastEntityIndex) return;
+    GenEntity* projectile{ std::get<GenEntity*>(activeEntities[projectileIndex]) }; // <-- will throw if index isn't valid
+    return *projectile;
 }
 
 void EntityMng::forEachActiveEnemy(std::function<void(Enemy&)> func){
     for(size_t i{i_EnemiesStart} ; i < i_EnemiesEnd ; ++i)
     {
         func(getActiveEnemyAtIndex(i));
+    }
+}
+
+void EntityMng::forEachActiveProjectile(std::function<void(GenEntity&)> func){
+    for(size_t i{i_ProyectilesStart} ; i < i_ProyectilesEnd ; ++i)
+    {
+        func(getActiveProjectileAtIndex(i));
     }
 }

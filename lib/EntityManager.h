@@ -69,7 +69,10 @@ public:
     static Enemy* getNearestChasingEnemyByType(Enemy* this_enemy);
     
     static Enemy& getActiveEnemyAtIndex(size_t index);
+    static GenEntity& getActiveProjectileAtIndex(size_t index);
+
     static void forEachActiveEnemy(std::function<void(Enemy&)> func);
+    static void forEachActiveProjectile(std::function<void(GenEntity&)> func);
 
 private:
     static const int ITEM_ARR_SIZE{10};
