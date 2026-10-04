@@ -361,6 +361,63 @@ void EntityMng::checkEnemyCollisions(){
     Rectangle enemyPrevCollisionRec{};
     float halfCollisionLength{};
 
+    // collision between enemies
+    {
+        Enemy* enemyA{nullptr};
+        Enemy* enemyB{nullptr};
+        Rectangle& enemyACollisionRecWorPos{ enemyCollisionRecWorPos };
+        Rectangle& enemyAPrevCollisionRec{ enemyPrevCollisionRec };
+        Rectangle enemyBCollisionRecWorPos{};
+        Rectangle enemyBPrevCollisionRec{};
+    
+        for(size_t i{i_EnemiesStart} ; i < i_EnemiesEnd ; ++i)
+        {
+            enemyA = &getActiveEnemyAtIndex(i);
+            enemyACollisionRecWorPos = enemyA->getCollisionRecWorPos();
+            enemyAPrevCollisionRec = enemyA->getPrevCollisionRecWorPos();
+
+            for(size_t k{i+1} ; k < i_EnemiesEnd ; ++k)
+            {
+                enemyB = &getActiveEnemyAtIndex(k);
+                enemyBCollisionRecWorPos = enemyB->getCollisionRecWorPos();
+                enemyBPrevCollisionRec = enemyB->getPrevCollisionRecWorPos();
+
+                if( CheckCollisionRecs(enemyACollisionRecWorPos, enemyBCollisionRecWorPos) )
+                {
+
+                    // Check in which direction they are approaching
+                    if(enemyAPrevCollisionRec.x + enemyAPrevCollisionRec.width < enemyBPrevCollisionRec.x)
+                    {
+                        // Calculate collision area and push both entities in opposite directions
+                        // Entity speed decides who pushes more -> When pushing against each other, the faster entity will push the slower one
+                        halfCollisionLength = ((enemyACollisionRecWorPos.x + enemyACollisionRecWorPos.width) - enemyBCollisionRecWorPos.x + 1.f) * 0.5f;
+                        enemyA->addWorldPosX( -halfCollisionLength );
+                        enemyB->addWorldPosX( halfCollisionLength );
+                    }
+                    else if(enemyAPrevCollisionRec.x > enemyBPrevCollisionRec.x + enemyBPrevCollisionRec.width)
+                    {
+                        halfCollisionLength = (enemyACollisionRecWorPos.x - (enemyBCollisionRecWorPos.x + enemyBCollisionRecWorPos.width) - 1.f) * 0.5f;
+                        enemyA->addWorldPosX( -halfCollisionLength );
+                        enemyB->addWorldPosX( halfCollisionLength );
+                    }
+                    else if(enemyAPrevCollisionRec.y + enemyAPrevCollisionRec.height < enemyBPrevCollisionRec.y)
+                    {
+                        halfCollisionLength = ((enemyACollisionRecWorPos.y + enemyACollisionRecWorPos.height) - enemyBCollisionRecWorPos.y + 1.f) * 0.5f;
+                        enemyA->addWorldPosY( -halfCollisionLength );
+                        enemyB->addWorldPosY( halfCollisionLength );
+                    }
+                    else if(enemyAPrevCollisionRec.y > enemyBPrevCollisionRec.y + enemyBPrevCollisionRec.height)
+                    {
+                        halfCollisionLength = (enemyACollisionRecWorPos.y - (enemyBCollisionRecWorPos.y + enemyBCollisionRecWorPos.height) - 1.f) * 0.5f;
+                        enemyA->addWorldPosY( -halfCollisionLength );
+                        enemyB->addWorldPosY( halfCollisionLength );
+                    }
+                }
+            }
+        }
+    }
+
+    // collision with player
     // forEachActiveEnemy(checkCollision);
     forEachActiveEnemy(
         [
