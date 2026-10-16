@@ -1,5 +1,6 @@
 #include "GenericEntity.h"
 #include "raymath.h"
+#include "AudioManager.h"
 #include "EntityManager.h"
 
 void GenEntity::init(){
@@ -109,8 +110,8 @@ void GenEntity::render(){
 
 void GenEntity::checkPlayerCollision(){
     if( CheckCollisionRecs(getCollisionRec(), player->getHurtRec()) ){
-            // player->addHealth(10);
             player->takeDamage(10);
+            PlaySound(AudioManager::SfxExplosion_1);
             setAlive(false);
         }
 }

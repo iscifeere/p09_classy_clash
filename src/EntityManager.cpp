@@ -1,4 +1,5 @@
 #include "EntityManager.h"
+#include "AudioManager.h"
 #include <iostream>
 #include <algorithm>
 
@@ -307,6 +308,7 @@ void EntityMng::checkProyectileCollisions(){
     
                         if(CheckCollisionRecs( proyectile->getCollisionRec(), enemy->getHurtRec() )){   // affect one enemy
                             enemy->takeDamage(20);      // (if enemy dies, it's still in active entities for that frame...)
+                            PlaySound(AudioManager::SfxExplosion_1);
                             proyectile->setAlive(false);    // (still in active entities)
                             break;
                         }
@@ -336,6 +338,7 @@ void EntityMng::checkAttackCollisions(){
 
                 if(CheckCollisionRecs( attack->getHitBox(), enemy->getHurtRec() )){   // affect enemies
                     enemy->takeDamage(attack->getDamage());
+                    PlaySound(AudioManager::SfxPunch_4);
                     createKnockbackForce( Vector2Normalize(Vector2Subtract(enemy->getWorldPos(), player.getWorldPos())), 25.f, enemy );
                     attack->setAlive(false);
                 }

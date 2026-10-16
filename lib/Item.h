@@ -4,6 +4,7 @@
 #include "raylib.h"
 #include "Character.h"
 #include "Tex.h"
+#include "AudioManager.h"
 #include "Entity.h"
 
 struct itemData{
@@ -66,6 +67,7 @@ inline const itemData HEART_ITEMDATA{
     (1.f/12.f),
     [](Character* player){
         player->addHealth(20.f);
+        PlaySound(AudioManager::SfxHealth);
     }
 };
 inline const itemData HEART_2_ITEMDATA{
@@ -74,6 +76,7 @@ inline const itemData HEART_2_ITEMDATA{
     (1.f/12.f),
     [](Character* player){
         player->addHealth(20.f);
+        PlaySound(AudioManager::SfxHealth);
     }
 };
 inline const itemData HEART_3_ITEMDATA{
@@ -82,6 +85,7 @@ inline const itemData HEART_3_ITEMDATA{
     (1.f/24.f),
     [](Character* player){
         player->addHealth(40.f);
+        PlaySound(AudioManager::SfxHealth);
     }
 };
 inline const itemData COIN_ITEMDATA{
@@ -90,6 +94,7 @@ inline const itemData COIN_ITEMDATA{
     (1.f/12.f),
     [](Character* player){
         player->addMoney(10);
+        PlaySound(AudioManager::SfxCoin_1);
     }
 };
 inline const itemData GEM_ITEMDATA{
@@ -98,6 +103,7 @@ inline const itemData GEM_ITEMDATA{
     (1.f/6.f),
     [](Character* player){
         player->addMoney(50);
+        PlaySound(AudioManager::SfxHeart_Pick_Up);
     }
 };
 

@@ -77,11 +77,15 @@ void Game::challengeScreen()
         EntityMng::clearEntityPools();
         EntityMng::spawnRandomEnemies();
         g_PauseGame = false;
+        SetMusicVolume(AudioManager::Bgm_Conflict, 0.65f);
+        PlayMusicStream(AudioManager::Bgm_Conflict);
     }
 }
 
 void Game::gameplayScreen(float deltaTime)
 {
+    UpdateMusicStream(AudioManager::Bgm_Conflict);
+
     ClearBackground(PURPLE);
 
     const int FPS{GetFPS()};
@@ -92,7 +96,22 @@ void Game::gameplayScreen(float deltaTime)
 
     // GAME LOGIC BEGINS ==========================
 
-    if(IsKeyPressed(KEY_P)) g_PauseGame = !g_PauseGame;
+    if(IsKeyPressed(KEY_P))
+    {
+        g_PauseGame = !g_PauseGame;
+        if(g_PauseGame)
+        {
+            PauseMusicStream(AudioManager::Bgm_Conflict);
+            if(IsSoundPlaying(AudioManager::SfxMenu_Close)) StopSound(AudioManager::SfxMenu_Close);
+            PlaySound(AudioManager::SfxMenu_Open);
+        }
+        else
+        {
+            ResumeMusicStream(AudioManager::Bgm_Conflict);
+            if(IsSoundPlaying(AudioManager::SfxMenu_Open)) StopSound(AudioManager::SfxMenu_Open);
+            PlaySound(AudioManager::SfxMenu_Close);
+        }
+    }
 
     // ENTITIES TICK ========================
     if(!g_PauseGame)
@@ -112,12 +131,14 @@ void Game::gameplayScreen(float deltaTime)
     if(!EntityMng::player.getAlive())
     {
         gameState = GAME_OVER;  // go to game over screen
+        StopMusicStream(AudioManager::Bgm_Conflict);
         gameOverScreen();
         return;
     }
     else if(EntityMng::player.getWinCondition())
     {
         m_currentGameLevel++;
+        StopMusicStream(AudioManager::Bgm_Conflict);
 
         if(m_currentGameLevel >= 4)
         {
@@ -141,7 +162,11 @@ void Game::gameplayScreen(float deltaTime)
     EntityMng::showPlayerScore();
 
     #ifdef DEV_BUILD
-    if(IsKeyPressed(KEY_Z)) g_ShowDebugData = !g_ShowDebugData;
+    if(IsKeyPressed(KEY_Z))
+    {
+        g_ShowDebugData = !g_ShowDebugData;
+        PlaySound(AudioManager::SfxToggle_Option_1);
+    }
     #endif
     
     // draw debug data
@@ -279,6 +304,7 @@ void Game::gameOverScreen()
     {
         EntityMng::player.resurrect();
         gameState = GAME_PLAY;
+        PlayMusicStream(AudioManager::Bgm_Conflict);
     }
     else if(IsKeyPressed(KEY_J))    // reset level
     {

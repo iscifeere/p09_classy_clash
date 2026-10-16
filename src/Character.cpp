@@ -173,9 +173,18 @@ bool Character::tick(float deltaTime){
     if( attackTimer >= 0.40f ) attackTimer = 0.f;
     else if(attackTimer > 0.f) attackTimer += deltaTime;
 
-    if(IsKeyPressed(KEY_C)) selectedWeaponSlot = !selectedWeaponSlot;
+    if(IsKeyPressed(KEY_C))
+    {
+        selectedWeaponSlot = !selectedWeaponSlot;
+        PlaySound(AudioManager::SfxMisc_3);
+    }
 
     // shield
+    if( (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON) || IsKeyPressed(KEY_V)) && canShield && !isShielding )
+    {
+        if(selectedWeaponSlot) PlaySound(AudioManager::SfxShield_2);
+        else PlaySound(AudioManager::SfxShield_3);
+    }
     if( (IsMouseButtonDown(MOUSE_RIGHT_BUTTON) || IsKeyDown(KEY_V)) && canShield )
     {
         swordVariables.rotation = -30.f;
@@ -252,6 +261,7 @@ bool Character::tick(float deltaTime){
 
 void Character::deathSequence(){
     setAlive(false);
+    PlaySound(AudioManager::SfxPlayerKilled);
 }
 
 void Character::addHealth( float healthAdd ){
@@ -381,12 +391,14 @@ void Character::attackMelee()
     Vector2 direction = Vector2Normalize(Vector2Subtract( GetMousePosition(), getScreenPos() ));
     Vector2 position = Vector2Add(worldPos, Vector2Scale(direction, 100.f));
     EntityMng::spawnAttack(position, damagePerHit);
+    PlaySound(AudioManager::SfxSlash_1);
     direction.x < 0.f ? rightLeft = -1.f : rightLeft = 1.f;     // face towards the attack direction
 }
 
 void Character::shootProyectile(){
     Vector2 proyectileDirection{Vector2Subtract( GetMousePosition(), getScreenPos() )};
     EntityMng::spawnProyectile(worldPos, proyectileDirection, false);
+    PlaySound(AudioManager::SfxShoot_2);
 }
 
 void Character::cheatGetAllUpgrades()
@@ -397,6 +409,8 @@ void Character::cheatGetAllUpgrades()
     canOverHeal = true;
     canAutoShoot = true;
     canMoveWhileShield = true;
+
+    PlaySound(AudioManager::SfxBonus_4);
 }
 
 void Character::cheatGetUpgrade(int p_UpgradeChoice)
@@ -430,4 +444,18 @@ void Character::cheatGetUpgrade(int p_UpgradeChoice)
     default:
         break;
     }
+
+    PlaySound(AudioManager::SfxBonus_4);
+}
+
+void Character::takeDamage(float damage)
+{
+    if(invul) return;
+
+    health -= damage;
+    if(health <= 0.f) deathSequence();
+    
+    drawColor = RED;
+    invul = true;
+    PlaySound(AudioManager::SfxPlayerHit0);
 }

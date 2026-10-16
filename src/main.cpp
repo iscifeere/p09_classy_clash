@@ -2,6 +2,7 @@
 #include "raylib.h"
 #include "raymath.h"
 #include "Tex.h"
+#include "AudioManager.h"
 #include "Character.h"
 #include "Prop.h"
 #include "Enemy.h"
@@ -26,11 +27,12 @@ int main(void) {
     
     InitWindow(windowDimensions[0], windowDimensions[1], "ClassyClash");
 
-    // LOAD TEXTURES | change working directory
+    // LOAD ASSETS | change working directory
     ChangeDirectory(app_dir);
     const std::string loadingAssetsDirectory{ GetWorkingDirectory() };
 
     Tex::loadTexturesArr();     // load every texture into memory
+    AudioManager::Init();
 
     g_MapPosCorrection = {
         static_cast<float>(Tex::winSize[0])*0.5f - (Tex::texture_knight_idle.width/6)*Tex::MAP_SCALE*0.5f,
@@ -58,6 +60,11 @@ int main(void) {
     SetTargetFPS(60);
     while (!WindowShouldClose())
     {
+        if(IsKeyPressed(KEY_M))
+        {
+            GetMasterVolume() > 0.f ? SetMasterVolume(0.f) : SetMasterVolume(1.f);
+        }
+        
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
@@ -68,8 +75,9 @@ int main(void) {
         EndDrawing();
     }
 
-    // UNLOAD TEXTURES
+    // UNLOAD ASSETS
     Tex::unloadTexturesArr();
+    AudioManager::Shutdown();
 
     CloseWindow();
 

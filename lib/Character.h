@@ -22,6 +22,7 @@ public:
     Rectangle getWeaponCollisionRec(){ return weaponCollisionRec; }
     Rectangle getHurtRec();
     float getDamage(){ return damagePerHit; }
+    void takeDamage(float damage) override;
     void deathSequence() override;
     void addHealth( float healthAdd ) override;
     void setHealth( float newHealth ){ health = newHealth; }

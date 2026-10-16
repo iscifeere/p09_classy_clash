@@ -3,6 +3,7 @@
 
 #include "raylib.h"
 #include "Tex.h"
+#include "AudioManager.h"
 #include "Entity.h"
 
 class BaseCharacter : public Entity

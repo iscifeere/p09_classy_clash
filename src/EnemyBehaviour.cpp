@@ -1,3 +1,4 @@
+#include "AudioManager.h"
 #include "EnemyBehaviourManager.h"
 #include "EntityManager.h"
 
@@ -55,6 +56,7 @@ void EnemyBehaviourManager::idleWanderingAlert(Enemy& thisEnemy, Character* play
         chaseTime = {};
         velocity = {};
         thisEnemy.setEnemyState(EnemyState::PLAYER_SPOTTED);
+        PlaySound(AudioManager::SfxMisc_6);
         thisEnemy.transitionLogic(thisEnemy, player, deltaTime);
         return;
     }
@@ -129,6 +131,7 @@ void EnemyBehaviourManager::chaseTarget(Enemy& thisEnemy, Character* target, con
         {
             target->takeDamage(thisEnemy.getDamage());
             EntityMng::createKnockbackForce(Vector2Normalize(velocity), 25.f, target); // TO DO testing
+            PlaySound(AudioManager::SfxPunch_2);
             attCooldown += deltaTime;
         }
     }
@@ -269,6 +272,7 @@ void EnemyBehaviourManager::shootTarget(Enemy& thisEnemy, Character* target, con
                 if(attCooldown == 0.f){     // if cooldown is off -> shoot proyectile
                     // velocity = vecToPlayer;
                     EntityMng::spawnProyectile(thisEnemy.getWorldPos(), vecToPlayer, true);
+                    PlaySound(AudioManager::SfxShoot_2);
                     attCooldown += deltaTime;
                 } else if (attCooldown >= 0.8f) attCooldown = 0.f;
                 else attCooldown += deltaTime;

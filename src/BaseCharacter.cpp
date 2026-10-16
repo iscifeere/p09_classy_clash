@@ -48,12 +48,12 @@ bool BaseCharacter::tick(float deltaTime){
 }
 
 void BaseCharacter::takeDamage(float damage){
-    if(!invul){
-        health -= damage;
-        if(health <= 0.f) deathSequence();
-        drawColor = RED;
-        invul = true;
-    }
+    if(invul) return;
+
+    health -= damage;
+    if(health <= 0.f) deathSequence();
+    drawColor = RED;
+    invul = true;
 }
 
 void BaseCharacter::render(){
