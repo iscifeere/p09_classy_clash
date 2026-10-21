@@ -152,8 +152,8 @@ void Enemy::takeDamage(float damage){
 void Enemy::deathSequence(){
     setAlive(false);
     EntityMng::spawnItem(worldPos, itemDrop);
-    PlaySound(AudioManager::SfxEnemy_Killed_1);
     target->incrementKilledEnemies();
+    EntityMng::Events->DispatchEvent(EventID::EnemyKilled);
 }
 
 void Enemy::showDebugData()     // draw debug data

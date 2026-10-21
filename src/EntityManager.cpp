@@ -4,6 +4,7 @@
 #include <algorithm>
 
 Character EntityMng::player{};
+EventManager* EntityMng::Events{nullptr};
 std::array<Enemy, EntityMng::ENEMY_ARR_SIZE> EntityMng::enemyPool{};
 std::array<Item, EntityMng::ITEM_ARR_SIZE> EntityMng::itemPool{};
 std::array<GenEntity, EntityMng::PROYECTILE_ARR_SIZE> EntityMng::proyectilePool{};

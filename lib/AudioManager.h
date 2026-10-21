@@ -1,7 +1,10 @@
 #ifndef AUDIO_MANAGER_H
 #define AUDIO_MANAGER_H
 
+#include <string>
+#include <unordered_map>
 #include "raylib.h"
+#include "EventManager.h"
 
 class AudioManager
 {
@@ -10,6 +13,9 @@ public:
 
     static void Init();
     static void Shutdown();
+    static void PlayEventSound(EventID event);
+
+    static const std::string NAME;
 
     static Sound SfxPlayerHit0;
     static Sound SfxPlayerKilled;
@@ -53,6 +59,10 @@ public:
     static Sound SfxMisc_6;
 
     static Music Bgm_Conflict;
+
+private:
+    static std::unordered_map<EventID, Sound> m_EventSounds;
+
 };
 
 #endif

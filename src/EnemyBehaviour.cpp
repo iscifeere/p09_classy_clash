@@ -57,6 +57,7 @@ void EnemyBehaviourManager::idleWanderingAlert(Enemy& thisEnemy, Character* play
         velocity = {};
         thisEnemy.setEnemyState(EnemyState::PLAYER_SPOTTED);
         PlaySound(AudioManager::SfxMisc_6);
+        // EntityMng::Events->DispatchEvent("playerSpottedByEnemy");
         thisEnemy.transitionLogic(thisEnemy, player, deltaTime);
         return;
     }

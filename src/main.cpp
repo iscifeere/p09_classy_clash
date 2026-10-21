@@ -3,13 +3,14 @@
 #include "raymath.h"
 #include "Tex.h"
 #include "AudioManager.h"
+#include "EntityManager.h"
+#include "GameEngine.h"
 #include "Character.h"
 #include "Prop.h"
 #include "Enemy.h"
 #include "Item.h"
 #include "GenericEntity.h"
 #include "Knockback.h"
-#include "EntityManager.h"
 #include <string>
 #include <cmath>
 #include "Game.h"
@@ -33,13 +34,24 @@ int main(void) {
 
     Tex::loadTexturesArr();     // load every texture into memory
     AudioManager::Init();
+    GameEngine engine{};
+    engine.Init();
+    EntityMng::init(engine.Events);
 
+    // SET EVENT SUBSCRIBERS
+    {
+        Subscriber audioSub{EventManager::CreateSubscriber(AudioManager::NAME, AudioManager::PlayEventSound)};
+        engine.Events.SubscribeToEvent(EventID::HeartCollected, audioSub);
+        engine.Events.SubscribeToEvent(EventID::CoinCollected, audioSub);
+        engine.Events.SubscribeToEvent(EventID::GemCollected, audioSub);
+        engine.Events.SubscribeToEvent(EventID::EnemyKilled, audioSub);
+    }
+    
     g_MapPosCorrection = {
         static_cast<float>(Tex::winSize[0])*0.5f - (Tex::texture_knight_idle.width/6)*Tex::MAP_SCALE*0.5f,
         static_cast<float>(Tex::winSize[1])*0.5f - Tex::texture_knight_idle.height*Tex::MAP_SCALE*0.5f
     };
 
-    EntityMng::initializeEntityManager();
     EntityMng::player.setWorldPos(Vector2Scale(Tex::halfWinSize, 2.f));
 
     EntityMng::spawnProp(Vector2{1584.f, 1184.f}, &ROCK_PROPDATA);
@@ -58,6 +70,10 @@ int main(void) {
     Game game{};
 
     SetTargetFPS(60);
+    
+    std::cout << "\nGAME LOOP START\n";
+    std::cout << "=====================================================\n" << std::endl;
+
     while (!WindowShouldClose())
     {
         if(IsKeyPressed(KEY_M))
@@ -75,9 +91,22 @@ int main(void) {
         EndDrawing();
     }
 
+    std::cout << "\n=====================================================\n";
+    std::cout << "GAME LOOP END\n" << std::endl;
+
+    // DELETE EVENT SUBSCRIBERS
+    {
+        Subscriber audioSub{EventManager::CreateSubscriber(AudioManager::NAME, AudioManager::PlayEventSound)};
+        engine.Events.DesubscribeFromEvent(EventID::HeartCollected, audioSub);
+        engine.Events.DesubscribeFromEvent(EventID::CoinCollected, audioSub);
+        engine.Events.DesubscribeFromEvent(EventID::GemCollected, audioSub);
+        engine.Events.DesubscribeFromEvent(EventID::EnemyKilled, audioSub);
+    }
+
     // UNLOAD ASSETS
     Tex::unloadTexturesArr();
     AudioManager::Shutdown();
+    engine.Shutdown();
 
     CloseWindow();
 

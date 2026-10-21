@@ -1,5 +1,8 @@
 #include "AudioManager.h"
 
+const std::string AudioManager::NAME{"AudioManager"};
+std::unordered_map<EventID, Sound> AudioManager::m_EventSounds{};
+
 Sound AudioManager::SfxPlayerHit0{};
 Sound AudioManager::SfxPlayerKilled{};
 Sound AudioManager::SfxEnemy_Killed_1{};
@@ -47,6 +50,11 @@ void AudioManager::Init()
 {
     InitAudioDevice();
 
+    m_EventSounds[EventID::HeartCollected] = LoadSound("../assets/sfx/Health.wav");    // TODO should store references to sounds, not the actual sound
+    m_EventSounds[EventID::CoinCollected] = LoadSound("../assets/sfx/Coin_1.wav");
+    m_EventSounds[EventID::GemCollected] = LoadSound("../assets/sfx/Heart_Pick_Up.wav");
+    m_EventSounds[EventID::EnemyKilled] = LoadSound("../assets/sfx/Enemy_Killed_1.wav");
+
     SfxPlayerHit0 = LoadSound("../assets/sfx/Player_Hit_0.wav");
     SfxPlayerKilled = LoadSound("../assets/sfx/Player_Killed.wav");
     SfxEnemy_Killed_1 = LoadSound("../assets/sfx/Enemy_Killed_1.wav");
@@ -93,6 +101,11 @@ void AudioManager::Init()
 
 void AudioManager::Shutdown()
 {
+    UnloadSound(m_EventSounds[EventID::HeartCollected]);
+    UnloadSound(m_EventSounds[EventID::CoinCollected]);
+    UnloadSound(m_EventSounds[EventID::GemCollected]);
+    UnloadSound(m_EventSounds[EventID::EnemyKilled]);
+
     UnloadSound(SfxPlayerHit0);
     UnloadSound(SfxPlayerKilled);
     UnloadSound(SfxEnemy_Killed_1);
@@ -137,4 +150,9 @@ void AudioManager::Shutdown()
     UnloadMusicStream(Bgm_Conflict);
 
     CloseAudioDevice();
+}
+
+void AudioManager::PlayEventSound(EventID event)
+{
+    PlaySound(m_EventSounds[event]);
 }

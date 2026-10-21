@@ -2,6 +2,7 @@
 #define ENTITYMNG_H
 
 #include "raylib.h"
+#include "EventManager.h"
 #include "Item.h"
 #include "Character.h"
 #include "Enemy.h"
@@ -22,8 +23,10 @@ public:
 
     static Character player;
     static Character* getPlayerPtr(){ return &player; }
+    static EventManager* Events;
     
-    static void initializeEntityManager(){
+    static void init(EventManager& events){
+        Events = &events;
         player.init();   // necessary because textures and window dimensions were not assigned previous to this
     }
 

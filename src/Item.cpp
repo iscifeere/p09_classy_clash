@@ -4,7 +4,8 @@
 #include "EntityManager.h"
 #include <iostream>
 
-void Item::init(){
+void Item::init()
+{
     std::cout << "[Item init function (" << this << ") ]" << std::endl;
 
     scale = 4.f;
@@ -18,7 +19,8 @@ void Item::init(){
     frameHeight = texture->height;
 }
 
-Item::Item(){
+Item::Item()
+{
     std::cout << "\n[Item default constructor (" << this << ") ]" << std::endl;
     setAlive(false);
     player = EntityMng::getPlayerPtr();
@@ -75,16 +77,10 @@ bool Item::tick(float deltaTime){
             // execute [EFFECT] on player...
             // player->addHealth(20.f);
             // data->effect(player);
-            item_effect(player);
+            item_effect(player, *EntityMng::Events);
             setAlive(false);
         }
     }
-
-    // // draw item
-    // Rectangle source{frameWidth*frame, 0.f, frameWidth, frameHeight};
-    // Rectangle dest{getScreenPos().x, getScreenPos().y, frameWidth * scale, frameHeight * scale};
-    // DrawTexturePro(*texture, source, dest, Vector2{0.f,0.f}, 0.f, WHITE);
-    // // DrawText(TextFormat("%02.02f",moveTimer), screenPos.x, screenPos.y, 10, WHITE);
 
     // KILL WITH CURSOR
     if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
