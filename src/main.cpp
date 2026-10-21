@@ -95,13 +95,10 @@ int main(void) {
     std::cout << "GAME LOOP END\n" << std::endl;
 
     // DELETE EVENT SUBSCRIBERS
-    {
-        Subscriber audioSub{EventManager::CreateSubscriber(AudioManager::NAME, AudioManager::PlayEventSound)};
-        engine.Events.DesubscribeFromEvent(EventID::HeartCollected, audioSub);
-        engine.Events.DesubscribeFromEvent(EventID::CoinCollected, audioSub);
-        engine.Events.DesubscribeFromEvent(EventID::GemCollected, audioSub);
-        engine.Events.DesubscribeFromEvent(EventID::EnemyKilled, audioSub);
-    }
+    engine.Events.DesubscribeFromEvent(EventID::HeartCollected, AudioManager::NAME);
+    engine.Events.DesubscribeFromEvent(EventID::CoinCollected, AudioManager::NAME);
+    engine.Events.DesubscribeFromEvent(EventID::GemCollected, AudioManager::NAME);
+    engine.Events.DesubscribeFromEvent(EventID::EnemyKilled, AudioManager::NAME);
 
     // UNLOAD ASSETS
     Tex::unloadTexturesArr();

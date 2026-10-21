@@ -21,43 +21,70 @@ void EventManager::Init()
 void EventManager::Shutdown()
 {
     for(auto& name : m_EventNames) name = {};
-    for(auto& sub : m_EventSubscribers) sub = {};
-    // for(auto& subList : m_EventSubscribers) subList = {};
+    for(auto& subList : m_EventSubscribers) subList = {};
 
     std::cout << "[EVENTS] Shutdown event manager instance" << std::endl;
 }
 
-Subscriber EventManager::CreateSubscriber(const std::string& ownerName, void(*logic)(EventID))
+Subscriber EventManager::CreateSubscriber(const std::string& ownerName, void(*eventLogic)(EventID))
 {
-    return {&ownerName, logic};
+    return {&ownerName, eventLogic};
 }
 
-void EventManager::SubscribeToEvent(EventID event, const Subscriber& sub)
+void EventManager::SubscribeToEvent(EventID event, const Subscriber& newSub)
 {
     size_t eventIndex{static_cast<size_t>(event)};
-    m_EventSubscribers[eventIndex] = sub;
-    // m_EventSubscribers[eventIndex].push_back(sub);
-    std::cout << "[EVENTS] " << *sub.OwnerName << " subscribed to " << m_EventNames[eventIndex] << " event successfully" << std::endl;
+    for(auto& sub : m_EventSubscribers[eventIndex])
+    {
+        if(sub.OwnerName == nullptr)
+        {
+            sub = newSub;
+            std::cout << "[EVENTS] " << *newSub.OwnerName << " subscribed to " << m_EventNames[eventIndex] << " event successfully" << std::endl;
+            return;
+        }
+        if(*sub.OwnerName == *newSub.OwnerName)
+        {
+            std::cout << "[EVENTS] Subscribe error: " << *newSub.OwnerName << " is already subscribed to " << m_EventNames[eventIndex] << " event!" << std::endl;
+            return;
+        }
+    }
+    m_EventSubscribers[eventIndex].push_back(newSub);
+    std::cout << "[EVENTS] " << *newSub.OwnerName << " subscribed to " << m_EventNames[eventIndex] << " event successfully" << std::endl;
 }
 
-void EventManager::DesubscribeFromEvent(EventID event, const Subscriber& sub)   // TODO properly search for subscriber
+void EventManager::DesubscribeFromEvent(EventID event, const std::string& subOwnerName)
 {
     size_t eventIndex{static_cast<size_t>(event)};
-    m_EventSubscribers[eventIndex] = {};    // reset to default values
-    std::cout << "[EVENTS] " << *sub.OwnerName << " desubscribed from " << m_EventNames[eventIndex] << " event successfully" << std::endl;
+    for(auto& sub : m_EventSubscribers[eventIndex])
+    {
+        if(sub.OwnerName == nullptr) break;
+        if(*sub.OwnerName == subOwnerName)
+        {
+            sub = {};
+            std::cout << "[EVENTS] " << subOwnerName << " desubscribed from " << m_EventNames[eventIndex] << " event successfully" << std::endl;
+            return;
+        }
+    }
+    std::cout << "[EVENTS] Desubscribe error: Could not find subscriber from " << subOwnerName << " to " << m_EventNames[eventIndex] << " event!" << std::endl;
 }
 
 void EventManager::DispatchEvent(EventID event) const
 {
     size_t eventIndex{static_cast<size_t>(event)};
-    
-    std::cout << "[EVENTS] Event dispatched: " << m_EventNames[eventIndex] << ". Notifying subscribers: " << *m_EventSubscribers[eventIndex].OwnerName << std::endl;
-    // std::cout << "[EVENTS] Event dispatched: " << m_EventNames[eventIndex] << ". Notifying subscribers: ";
-    // for(const auto& sub : m_EventSubscribers[eventIndex]) std::cout << *sub.OwnerName << " ";
-    // std::cout << "." << std::endl;
 
-    m_EventSubscribers[eventIndex].Logic(event);
-    // for(const auto& sub : m_EventSubscribers[eventIndex]) sub.Logic(event);
+    std::cout << "[EVENTS] Event dispatched: " << m_EventNames[eventIndex] << ". Notifying subscribers: ";
+    for(const auto& sub : m_EventSubscribers[eventIndex])
+    {
+        if(sub.OwnerName == nullptr) break;
+        std::cout << *sub.OwnerName << " ";
+    }
+    std::cout << "." << std::endl;
+
+    for(const auto& sub : m_EventSubscribers[eventIndex])
+    {
+        if(sub.OwnerName == nullptr) break;
+        sub.EventLogic(event);
+    }
 }
 
 std::string EventManager::GetEventName(EventID event) const

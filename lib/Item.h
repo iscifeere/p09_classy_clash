@@ -12,7 +12,7 @@ struct itemData{
     Texture2D* texture;
     int maxFrames;
     float updateTime = 1.f/12.f;
-    void(*effect)(Character*, EventManager&);      // effect on player collision
+    void(*effect)(Character*, const EventManager&);      // effect on player collision
 };
 
 //============================
@@ -52,7 +52,7 @@ protected:
     const itemData* data{nullptr};
 
     // effect on player collision
-    void(*item_effect)(Character*, EventManager&) = [](Character* player, EventManager& events){
+    void(*item_effect)(Character*, const EventManager&) = [](Character* player, const EventManager& events){
         player->addHealth(20.f);
     };
 
@@ -66,7 +66,7 @@ inline const itemData HEART_ITEMDATA{
     &Tex::texture_heart,
     1,
     (1.f/12.f),
-    [](Character* player, EventManager& events){
+    [](Character* player, const EventManager& events){
         player->addHealth(20.f);
         events.DispatchEvent(EventID::HeartCollected);
     }
@@ -75,7 +75,7 @@ inline const itemData HEART_2_ITEMDATA{
     &Tex::texture_heart_2,
     6,
     (1.f/12.f),
-    [](Character* player, EventManager& events){
+    [](Character* player, const EventManager& events){
         player->addHealth(20.f);
         events.DispatchEvent(EventID::HeartCollected);
     }
@@ -84,7 +84,7 @@ inline const itemData HEART_3_ITEMDATA{
     &Tex::texture_heart_2,
     6,
     (1.f/24.f),
-    [](Character* player, EventManager& events){
+    [](Character* player, const EventManager& events){
         player->addHealth(40.f);
         events.DispatchEvent(EventID::HeartCollected);
     }
@@ -93,7 +93,7 @@ inline const itemData COIN_ITEMDATA{
     &Tex::texture_coin,
     5,
     (1.f/12.f),
-    [](Character* player, EventManager& events){
+    [](Character* player, const EventManager& events){
         player->addMoney(10);
         events.DispatchEvent(EventID::CoinCollected);
     }
@@ -102,7 +102,7 @@ inline const itemData GEM_ITEMDATA{
     &Tex::texture_gem_green,
     4,
     (1.f/6.f),
-    [](Character* player, EventManager& events){
+    [](Character* player, const EventManager& events){
         player->addMoney(50);
         events.DispatchEvent(EventID::GemCollected);
     }

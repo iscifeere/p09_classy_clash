@@ -75,8 +75,6 @@ bool Item::tick(float deltaTime){
     if( player != nullptr ){
         if( CheckCollisionRecs( getCollisionRec(), player->getCollisionRec() ) ){
             // execute [EFFECT] on player...
-            // player->addHealth(20.f);
-            // data->effect(player);
             item_effect(player, *EntityMng::Events);
             setAlive(false);
         }
